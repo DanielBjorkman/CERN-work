@@ -10,7 +10,7 @@ Created on Mon Nov 13 14:12:04 2017
 
 import os
 import numpy as np
-#import math as math
+import math as math
 #directory = "//cern.ch/dfs/Users/c/cbjorkma/Documents/LSS 2"
 
 directory = "//rpclustersrv1/cbjorkma/LSS2"
@@ -99,28 +99,28 @@ def readPhaseDirectory(path):
 
 
           
-path = "//rpclustersrv1/cbjorkma/LSS2/run07"       
-#from os import listdir
-#from os.path import isfile, join   
-#onlyfiles = [f for f in listdir(path) if isfile(join(path, f))]  
-#files = filter(lambda x: x[-3:] == '.90' , onlyfiles)
+  
+
 #
-#      
-os.chdir(path)        
-fluka1 = readPhaseDirectory(path)           
-np.save('run07', fluka1)
+path = "//rpclustersrv1/cbjorkma/LSS2/run07"          
+#os.chdir(path)        
+#fluka1 = readPhaseDirectory(path)           
+#np.save('run07', fluka1)
     
-#filename = 'LSS2_exp001_fortLarge.90' 
+filename = 'LSS2_exp001_fort.90' 
 #filename = 'fort.90' 
 #fluka1 = readPhase(filename)    
 
-#fluka1 = np.load(filename + '.npy')
+fluka1 = np.load(filename + '.npy')
     
+end = math.floor(1*fluka1.shape[0])
+
+
+
+
 
 
 import matplotlib.pyplot as plt
-
-
 import matplotlib.ticker as tk
 #from matplotlib.ticker import FuncFormatter
 
@@ -129,16 +129,16 @@ import matplotlib.ticker as tk
 #plt.close()
 
 
-print 'Plotting ' + str(fluka1.shape[0]) + ' primaries'
-
-
+print 'Plotting ' + str(end) + ' primaries'
+#
+#
 #Position according to energy-------------------------------------------
 
 
 
-x = fluka1[0:,1]
-y = fluka1[0:,3]
-z = fluka1[0:,5]
+x = fluka1[0:end,1]
+y = fluka1[0:end,3]
+z = fluka1[0:end,5]
 print 'Maximum energy ' + str(max(z))
 
 
@@ -149,7 +149,7 @@ fmt1 = tk.FuncFormatter(my_func)
 
 
 fig , ax = plt.subplots(1, 1)
-plt.suptitle('Energy distribution, Phase space Y')
+plt.suptitle('Energy distribution, Phase space X')
 plot = ax.scatter(x, y, s=5, c=z, cmap="viridis", edgecolors="none")
 ymin, ymax = 0.0003 ,0.0028
 xmin, xmax = 0.036*100, 0.1*100
@@ -188,8 +188,8 @@ fig = plt.figure()
 
 plt.suptitle('Phase space Y')
 
-x = fluka1[0:,2]
-y = fluka1[0:,4]
+x = fluka1[0:end,2]
+y = fluka1[0:end,4]
 
 
 gs = GridSpec(4,4)
@@ -232,43 +232,29 @@ plt.tick_params(
     labelbottom='off') # labels along the bottom edge are off
 h = plt.ylabel('%')
 h.set_rotation(0)
+plt.grid()          
                 
-                
-#ax_marg_x.hist(x, bins = 40)
-#plt.setp(ax_marg_x.get_xticklabels(), visible=False)
-#ax_marg_x.set_xlim(-2, 2)
-#ax_marg_x.set_yscale('log')
-#ax_marg_x.grid()
-#ax_marg_x.set_ylabel('intensity')
-
-#formatter = FuncFormatter(to_percent)
-#
-#plt.gca().yaxis.set_major_formatter(formatter)
 
 
 
-
-ax_marg_y = fig.add_subplot(gs[1:4,3])
+ax = fig.add_subplot(gs[1:4,3])
 #
 
 
-#results, edges = np.histogram(y, normed=True, bins = 40)    
-#binWidth = edges[1] - edges[0]    
-#plt.bar(results*binWidth, edges[:-1], binWidth)   
-#plt.xlim(ymin, ymax )
-#plt.yscale('log')
-#
+results, edges = np.histogram(y, normed=True, bins = 40)    
+binWidth = edges[1] - edges[0]    
+plt.barh(edges[:-1], results*binWidth , binWidth)   
+plt.ylim(ymin, ymax )
+plt.xscale('log')
+plt.xlabel('%')
+
+plt.grid()
+
+plt.setp( ax.get_yticklabels(), visible=False)
 
 
 
-ax_marg_y.hist(y,orientation="horizontal",  bins= 40)
 
-plt.setp(ax_marg_y.get_yticklabels(), visible=False)
-ax_marg_y.set_ylim(-0.00065, 0.0006)
-ax_marg_y.set_xscale('log')
-ax_marg_y.grid()
-ax_marg_y.set_xlabel('Intensity')
-#plt.gca().xaxis.set_major_formatter(formatter)
 
 
 plt.show()
@@ -285,8 +271,8 @@ fig = plt.figure()
 
 plt.suptitle('Phase space X')
 
-x = fluka1[0:,1]
-y = fluka1[0:,3]
+x = fluka1[0:end,1]
+y = fluka1[0:end,3]
 
 
 gs = GridSpec(4,4)
@@ -329,6 +315,8 @@ plt.tick_params(
 h = plt.ylabel('%')
 h.set_rotation(0)
 
+plt.grid()
+
 #ax_marg_x.hist(x, bins = 80)
 #plt.setp(ax_marg_x.get_xticklabels(), visible=False)
 #ax_marg_x.set_xlim(xmin, xmax)
@@ -338,16 +326,29 @@ h.set_rotation(0)
 #
 
 
-ax_marg_y = fig.add_subplot(gs[1:4,3])
+ax = fig.add_subplot(gs[1:4,3])
 #
 
-ax_marg_y.hist(y,orientation="horizontal",  bins= 80)
+#ax_marg_y.hist(y,orientation="horizontal",  bins= 80)
+#
+#plt.setp(ax_marg_y.get_yticklabels(), visible=False)
+#ax_marg_y.set_ylim(ymin, ymax)
+#ax_marg_y.set_xscale('log')
+#ax_marg_y.grid()
+#ax_marg_y.set_xlabel('Intensity')
 
-plt.setp(ax_marg_y.get_yticklabels(), visible=False)
-ax_marg_y.set_ylim(ymin, ymax)
-ax_marg_y.set_xscale('log')
-ax_marg_y.grid()
-ax_marg_y.set_xlabel('Intensity')
+results, edges = np.histogram(y, normed=True, bins = 40)    
+binWidth = edges[1] - edges[0]    
+plt.barh(edges[:-1], results*binWidth , binWidth)   
+plt.ylim(ymin, ymax )
+plt.xscale('log')
+plt.xlabel('%')
+
+plt.grid()
+
+plt.setp( ax.get_yticklabels(), visible=False)
+
+
 
 
 
@@ -355,9 +356,9 @@ plt.show()
 
 
 
-
-
-
+#
+#
+#
 
 
 

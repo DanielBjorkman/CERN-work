@@ -25,16 +25,28 @@ import matplotlib.pyplot as plt
 #import math
 import numpy as np
 
+#plt.close()
+
 fig = plt.figure()
-ax = fig.add_subplot(1,1,1)
+ax = fig.add_subplot(1,2,1)
 
-x = np.random.randn(100)
+#x = np.random.randn(1000)
+#
+#results, edges = np.histogram(x, normed=True, bins = 40)    
+#binWidth = edges[1] - edges[0]    
 
-results, edges = np.histogram(x, normed=True, bins = 40)    
-binWidth = edges[1] - edges[0]    
-plt.bar(edges[:-1], results*binWidth, binWidth)   
+#x,y = results*binWidth, edges[:-1]
+
+x = edges[:-1]
+y = results*binWidth
+plt.bar(x, y, binWidth)   
 
 
+ax = fig.add_subplot(1,2,2)
+
+plt.barh(x, y, binWidth)   
+
+plt.show()
 
 
 
