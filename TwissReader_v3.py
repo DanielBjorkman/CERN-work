@@ -57,7 +57,7 @@ def readTwiss(filename):
 matrix = readTwiss('b0_p1.tfs')
 
 #Read fluka output
-filenameFluka = 'LSS2_exp001_TRAKFILEp1'
+filenameFluka = 'LSS2_exp001_TRAKFILE'
 fluka = np.loadtxt(filenameFluka , skiprows = 1)
 
 # Read all twiss trajectories--------------------------------------------
@@ -120,6 +120,7 @@ fluka = np.loadtxt(filenameFluka , skiprows = 1)
 
 #cosx = Px * P / Ptot
 #print('Cosx = ' + str(cosx))
+
 
 
 import matplotlib.pyplot as plt

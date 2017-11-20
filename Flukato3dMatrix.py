@@ -102,6 +102,7 @@ def Flukato3dMatrix(filename, directory,plot):
         print("Function currently not defined for minimum rbins other than 0")
         return;
 
+    #Find when to stop reading the input data
     with open(filename) as file:
         row = 0
         for line in file.readlines():
@@ -114,18 +115,10 @@ def Flukato3dMatrix(filename, directory,plot):
             
     import math
     import numpy as np
-#    print start
-#    print stop
-#    print info['xbin'][0]*info['ybin'][0]*info['zbin'][0]
+
     data = np.genfromtxt(filename, skip_header= start -1, skip_footer= stop -9)
-#    print data.shape[0]*data.shape[1]
-#    print data.shape
     data = np.reshape(data ,(data.size,1))
     
-    #Reads in all elements and puts them into a one dimensional array called data
-#    with open(filename) as file:
-#        data = np.loadtxt(filename,skiprows=start-1 + range(stop, len(file.readlines())))    
-        
 
 
     #Cube reconstruction from list
