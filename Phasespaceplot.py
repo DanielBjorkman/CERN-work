@@ -102,20 +102,22 @@ def readPhaseDirectory(path):
   
 
 #
-path = "//rpclustersrv1/cbjorkma/LSS2/run07"          
-#os.chdir(path)        
-#fluka1 = readPhaseDirectory(path)           
-#np.save('run07', fluka1)
+path = "//rpclustersrv1/cbjorkma/LSS2/run11"          
+os.chdir(path)        
+fluka1 = readPhaseDirectory(path)           
+np.save('run11', fluka1)
+#  
+
+
+  
+#filename = 'LSS2_exp001_fort.90' 
+##filename = 'fort.90' 
+##fluka1 = readPhase(filename)    
+#fluka1 = np.load('run11.npy')
     
-filename = 'LSS2_exp001_fort.90' 
-#filename = 'fort.90' 
-#fluka1 = readPhase(filename)    
+end = int(1*fluka1.shape[0])
 
-fluka1 = np.load(filename + '.npy')
-    
-end = math.floor(1*fluka1.shape[0])
-
-
+print 'Plotting ' + str(end) + ' primaries'
 
 
 
@@ -129,7 +131,7 @@ import matplotlib.ticker as tk
 #plt.close()
 
 
-print 'Plotting ' + str(end) + ' primaries'
+
 #
 #
 #Position according to energy-------------------------------------------
@@ -139,7 +141,7 @@ print 'Plotting ' + str(end) + ' primaries'
 x = fluka1[0:end,1]
 y = fluka1[0:end,3]
 z = fluka1[0:end,5]
-print 'Maximum energy ' + str(max(z))
+print 'Maximum momenta ' + str(max(z))
 
 
 def my_func(x, pos):
@@ -149,14 +151,14 @@ fmt1 = tk.FuncFormatter(my_func)
 
 
 fig , ax = plt.subplots(1, 1)
-plt.suptitle('Energy distribution, Phase space X')
+plt.suptitle('Momentum distribution, Phase space X')
 plot = ax.scatter(x, y, s=5, c=z, cmap="viridis", edgecolors="none")
 ymin, ymax = 0.0003 ,0.0028
 xmin, xmax = 0.036*100, 0.1*100
 plt.ylim(ymin, ymax)
 plt.xlim(xmin, xmax )
 cbar = fig.colorbar(plot ,format=fmt1)
-cbar.set_label('GeV', rotation = 'horizontal', labelpad=15)
+cbar.set_label('GeV/c', rotation = 'horizontal', labelpad=15)
 #h.set_rotation(0)
 
 

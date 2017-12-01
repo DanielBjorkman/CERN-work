@@ -66,11 +66,12 @@ ax = fig.add_subplot(1,1,1)
 plt.hist(maskG1, fc=(1, 0, 0, 0.8), label = '2nd mask', bins = 10, normed = 1)
 
 
-plt.hist(maskG3, fc=(0, 0, 1, 0.5), label = '1st mask', bins = 20, normed = 1)
+plt.hist(maskG3, fc=(0, 0, 1, 0.5), label = '1st mask', bins = 10, normed = 1)
 
 plt.xlabel('Energy [GeV]')
+plt.ylabel('# Cycles')
 #plt.xlabel('Energy [GeV]')
-ax.set_yscale('log')
+#ax.set_yscale('log')
 
 plt.title('Energy deposited in masks')
 

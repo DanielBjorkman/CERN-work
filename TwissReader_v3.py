@@ -216,13 +216,13 @@ x = matrix[0:,3]
 y = matrix[0:,1]
 f = interpolate.interp1d(x, y)
 
-MADXnew = f(fluka[:-1,2])
+MADXnew = f(fluka[:-2,2])
 
 
 ax = fig.add_subplot(313)
 #plt.plot(fluka[0:,2] , fluka[0:,0], label='FLUKA', color='r',linestyle = ':',linewidth=3.0) #, marker='x'
 #plt.plot(matrix[0:,0]*100 , matrix[0:,1]*100, label='MADX', color='k') #
-plt.plot(fluka[:-1,2] , MADXnew -fluka[:-1,0], color='k',label='Difference') #
+plt.plot(fluka[:-2,2] , MADXnew -fluka[:-2,0], color='k',label='Difference') #
 plt.plot(range(0,10000,1),0.001*np.ones(10000), color = 'r' , label='Precison requirement',linestyle = ':',linewidth=3.0)
 plt.plot(range(0,10000,1),-0.001*np.ones(10000), color = 'r' ,linestyle = ':',linewidth=3.0)
 plt.title('Position difference',fontweight='bold', fontsize = 15)
@@ -234,6 +234,7 @@ plt.ylabel('MADX - FLUKA [cm]', fontsize = 18)
 #plt.xlabel('S [cm]', fontsize = 14)
 #ax.set_xlim([5212, 5296])
 ax.set_ylim([-0.003, 0.003])
+#ax.set_ylim([-0.110, 0.010])
 plt.grid()
 plt.xlabel('S [cm]', fontsize = 14)
 plt.legend(loc=2)
