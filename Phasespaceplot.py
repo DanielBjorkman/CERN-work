@@ -54,7 +54,9 @@ from os import listdir
 from os.path import isfile, join         
         
 def readPhaseDirectory(path):
-
+    
+    from os import listdir
+    from os.path import isfile, join    
 
 
     onlyfiles = [f for f in listdir(path) if isfile(join(path, f))]           
@@ -64,11 +66,11 @@ def readPhaseDirectory(path):
     print 'Found ' + str(len(files)) + ' files'
     
     data = []
+    os.chdir(path)
     print "Attempting to load files..."    
     for i in range(len(files)): #
       
         filename = files[i]
-
         try:
             data.append( np.loadtxt(filename , skiprows = 1))
         except ValueError:

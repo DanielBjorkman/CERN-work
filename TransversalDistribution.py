@@ -119,15 +119,15 @@ def readPhaseDirectory(path, identifier):
 
 path = "//rpclustersrv1/cbjorkma/LSS2/run09"          
 os.chdir(path)        
-fluka1 = readPhaseDirectory(path, '.90')           
-np.save('90', fluka1)
-
+#fluka1 = readPhaseDirectory(path, '.90')           
+#np.save('90', fluka1)
+fluka1 = np.load('90.npy')
 
 path = "//rpclustersrv1/cbjorkma/LSS2/run09"          
 os.chdir(path)        
-fluka2 = readPhaseDirectory(path, '.91')           
-np.save('91', fluka2)
-
+#fluka2 = readPhaseDirectory(path, '.91')           
+#np.save('91', fluka2)
+fluka2 = np.load('91.npy')
 
 
 
@@ -151,7 +151,7 @@ plt.subplot(121)
 x = fluka1[0:end,1]
 y = fluka1[0:end,2]
 
-plt.hist2d(x, y, bins=100, norm=mpl.colors.LogNorm())
+plt.hist2d(x, y, bins=100, norm=mpl.colors.LogNorm(),cmap="viridis")
 
 
 
@@ -185,7 +185,7 @@ plt.subplot(122)
 x = fluka2[0:end,1]
 y = fluka2[0:end,2]
 
-plt.hist2d(x, y, bins=100, norm=mpl.colors.LogNorm())
+plt.hist2d(x, y, bins=100, norm=mpl.colors.LogNorm(),cmap="viridis")
 
 plt.xlabel('x [cm]', fontsize = 12)
 plt.ylabel('y [cm]', fontsize = 12)
