@@ -219,7 +219,7 @@ def Flukato3dMatrix(filename, directory,plot):
     else:
         cube = np.reshape(data, (int(info['xbin'][0]),int(info['ybin'][0]),int(info['zbin'][0])),order='F')
 
-
+#    cube = cube*normfactor
     end = time.time()
     print("Cube reconstructed in " + str(round(end - startTime,2)) + " seconds")
 

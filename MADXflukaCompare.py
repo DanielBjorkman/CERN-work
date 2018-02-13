@@ -127,13 +127,25 @@ madx = np.load('madx.npy')
 #madx = np.load('NoPc.npy')
 
 
-path = "//rpclustersrv1/cbjorkma/LSS2/PyCollimateStudy/UsingPC"
+#path = "//rpclustersrv1/cbjorkma/LSS2/PyCollimateStudy/UsingPC"
+##fluka = readPhaseDirectory(path)
+##np.save('UsingPC', fluka)
+#os.chdir(path)
+#fluka = np.load('UsingPc.npy')
+#primaries = fluka.shape[0]
+#------------------------------------------------------------------------
+
+
+
+path = "//rpclustersrv1/cbjorkma/LSS2/Run Inelastic"
 #fluka = readPhaseDirectory(path)
 #np.save('UsingPC', fluka)
 os.chdir(path)
-fluka = np.load('UsingPc.npy')
+fluka = np.load('90.npy')
 primaries = fluka.shape[0]
-#------------------------------------------------------------------------
+
+
+
 
 
 
@@ -144,11 +156,11 @@ primaries = fluka.shape[0]
 #  
 
 
-path = "//rpclustersrv1/cbjorkma/LSS2/run09"   
-##filename = 'LSS2_exp001_fort.90' 
-###filename = 'fort.90' 
-os.chdir(path)
-madx = np.load('run09.npy')
+#path = "//rpclustersrv1/cbjorkma/LSS2/run09"   
+###filename = 'LSS2_exp001_fort.90' 
+####filename = 'fort.90' 
+#os.chdir(path)
+#madx = np.load('run09.npy')
     
 end = int(1*fluka.shape[0])
 
@@ -162,20 +174,32 @@ end = int(1*fluka.shape[0])
 
 madxPrim = 10980000 
 
-madxPrim = madx.shape[0]
+#madxPrim = madx.shape[0]
 
-#Normal Setup
+##Normal Setup
+#zoom = 0
+#spatial = 0
+#title1 = '200 um Ribbon'
+#title2 = 'Aligned Wires'
+#ylabel = ["$x^p$" , "$y^p$"]
+#xlabel = ['x [cm]', 'y [cm]']
+#histTitle1 = 'Position comparison'
+#histTitle2 = 'Angle comparison'
+
+
 zoom = 1
 spatial = 0
 title1 = '200 um Ribbon'
-title2 = 'Aligned Wires'
+title2 = 'MADX'
 ylabel = ["$x^p$" , "$y^p$"]
 xlabel = ['x [cm]', 'y [cm]']
 histTitle1 = 'Position comparison'
 histTitle2 = 'Angle comparison'
 
+
+
 ##Spatial
-spatial = 1
+spatial = 0
 ##title1 = 'Fluka subset, 200 um ribbon'
 ##title2 = 'MADX'
 #ylabel = ["y [cm]"]
@@ -185,7 +209,7 @@ spatial = 1
 
 
 print 'Displayed Particles = ' +str(float(fluka.shape[0])/primaries)
-for i in range(2 - spatial):
+for i in range(1): #range(2 - spatial):
 
 
 #Normal    
@@ -195,14 +219,14 @@ for i in range(2 - spatial):
         yF = fluka[0:,3]
         
         #MADX----------------------
-        xM = madx[0:,1]#*100
+        xM = madx[0:,2]*100
         yM = madx[0:,3]
     else:
         xF = fluka[0:,2]
         yF = fluka[0:,4]
         
         #MADX----------------------
-        xM = madx[0:,2]#*100
+        xM = madx[0:,1]*100
         yM = madx[0:,4]       
 #MADX Keys = [>> >'ptdata', 'ydata', 'xdata', 'pxdata', 'pydata']    
 # FLuka # IJ               X               Y              CX              CY            PTOT     ISAMPLE  LLOUSE   
@@ -341,19 +365,23 @@ for i in range(2 - spatial):
     
     
     ax = fig.add_subplot(gs[3:11,3])
-    
+    fig = plt.figure()
     weights = 100* np.ones_like(yF)/float(primaries)
-    histy, ybins, patches = plt.hist(yF,weights = weights, bins = 100, orientation='horizontal',fc=(1, 0, 0, 1))
+    histy, ybins, patches = plt.barh(yF,weights = weights, bins = 100,fc=(1, 0, 0, 1))
+ #   histy, ybins, patches = plt.hist(yF,weights = weights, bins = 100, orientation='horizontal',fc=(1, 0, 0, 1))
     #binWidthY = histy[1][1] - histy[1][0]
     
       
     plt.ylim(ymin, ymax )
-    ax.set_yscale("log", nonposy='clip')
+    #ax.set_xscale("log", nonposy='clip')
+    plt.xscale('log')
     plt.xlabel('%')
-    ax.tick_params(labelsize=10)
+    #ax.tick_params(labelsize=10)
     plt.grid()
     
-    plt.setp( ax.get_yticklabels(), visible=False)
+    #plt.setp( ax.get_yticklabels(), visible=False)
+    
+    
     
     #---------------------------------------------------------------
     
@@ -444,7 +472,7 @@ for i in range(2 - spatial):
     
     
     ax = fig.add_subplot(gs[3:11,7])
-    #
+    #fig = plt.figure()
  #   spectrum = max(y) - min(y)
 #    binstoBeUsed = round(spectrum / binWidthY  )
     
@@ -460,7 +488,7 @@ for i in range(2 - spatial):
     ax.tick_params(labelsize=10)
     plt.grid()
     
-    plt.setp( ax.get_yticklabels(), visible=False)
+    #plt.setp( ax.get_yticklabels(), visible=False)
     
     
     

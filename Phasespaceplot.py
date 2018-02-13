@@ -104,10 +104,12 @@ def readPhaseDirectory(path):
   
 
 #
-path = "//rpclustersrv1/cbjorkma/LSS2/run11"          
+path = "//rpclustersrv1/cbjorkma/LSS2/Run Inelastic"          
 os.chdir(path)        
-fluka1 = readPhaseDirectory(path)           
-np.save('run11', fluka1)
+#fluka1 = readPhaseDirectory(path)           
+#np.save('run11', fluka1)
+
+fluka1 = np.load('90.npy')
 #  
 
 
@@ -140,40 +142,40 @@ import matplotlib.ticker as tk
 
 
 
-x = fluka1[0:end,1]
-y = fluka1[0:end,3]
-z = fluka1[0:end,5]
-print 'Maximum momenta ' + str(max(z))
-
-
-def my_func(x, pos):
-    return str(x)
-
-fmt1 = tk.FuncFormatter(my_func)
-
-
-fig , ax = plt.subplots(1, 1)
-plt.suptitle('Momentum distribution, Phase space X')
-plot = ax.scatter(x, y, s=5, c=z, cmap="viridis", edgecolors="none")
-ymin, ymax = 0.0003 ,0.0028
-xmin, xmax = 0.036*100, 0.1*100
-plt.ylim(ymin, ymax)
-plt.xlim(xmin, xmax )
-cbar = fig.colorbar(plot ,format=fmt1)
-cbar.set_label('GeV/c', rotation = 'horizontal', labelpad=15)
+#x = fluka1[0:end,1]
+#y = fluka1[0:end,3]
+#z = fluka1[0:end,5]
+#print 'Maximum momenta ' + str(max(z))
+#
+#
+#def my_func(x, pos):
+#    return str(x)
+#
+#fmt1 = tk.FuncFormatter(my_func)
+#
+#
+#fig , ax = plt.subplots(1, 1)
+#plt.suptitle('Momentum distribution, Phase space X')
+#plot = ax.scatter(x, y, s=5, c=z, cmap="viridis", edgecolors="none")
+#ymin, ymax = 0.0003 ,0.0028
+#xmin, xmax = 0.036*100, 0.1*100
+#plt.ylim(ymin, ymax)
+#plt.xlim(xmin, xmax )
+#cbar = fig.colorbar(plot ,format=fmt1)
+#cbar.set_label('GeV/c', rotation = 'horizontal', labelpad=15)
+##h.set_rotation(0)
+#
+#
+#
+#plt.xlabel('x [cm]', fontsize = 12)
+#h = plt.ylabel("$x^p$", fontsize=18)
 #h.set_rotation(0)
-
-
-
-plt.xlabel('x [cm]', fontsize = 12)
-h = plt.ylabel("$x^p$", fontsize=18)
-h.set_rotation(0)
-plt.grid()
-#
-#
-plt.show()
-#
+#plt.grid()
 ##
+##
+#plt.show()
+##
+###
 
 
 

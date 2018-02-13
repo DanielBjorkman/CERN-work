@@ -117,13 +117,13 @@ def readPhaseDirectory(path, identifier):
 #
 
 
-path = "//rpclustersrv1/cbjorkma/LSS2/run09"          
+path = "//rpclustersrv1/cbjorkma/LSS2/Run Inelastic"          
 os.chdir(path)        
 #fluka1 = readPhaseDirectory(path, '.90')           
 #np.save('90', fluka1)
 fluka1 = np.load('90.npy')
 
-path = "//rpclustersrv1/cbjorkma/LSS2/run09"          
+path = "//rpclustersrv1/cbjorkma/LSS2/Run Inelastic"          
 os.chdir(path)        
 #fluka2 = readPhaseDirectory(path, '.91')           
 #np.save('91', fluka2)
@@ -176,7 +176,7 @@ cbar = plt.colorbar()
 
 cbar.set_label('Intensity')
 
-
+plt.xlim(-2.7, 9 )
 
 
 
@@ -196,7 +196,7 @@ cbar = plt.colorbar()
 cbar.set_label('Intensity')
 
 
-
+plt.xlim(-2.7, 9 )
 
 
 

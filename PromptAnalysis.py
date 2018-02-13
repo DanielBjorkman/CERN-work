@@ -9,8 +9,7 @@ Created on Mon Nov 20 14:15:36 2017
 
 import os
 import numpy as np
-#import math as math
-#directory = "//cern.ch/dfs/Users/c/cbjorkma/Documents/LSS 2"
+
 
 path = "//rpclustersrv1/cluster_temp/cbjorkma/2017-11-09_15h10m34s_Dump7Prompt"
 
@@ -71,8 +70,7 @@ plt.hist(maskG3, fc=(0, 0, 1, 0.5), label = '1st mask', bins = 10, normed = 1)
 
 plt.xlabel('Energy [GeV]')
 plt.ylabel('# Cycles')
-#plt.xlabel('Energy [GeV]')
-#ax.set_yscale('log')
+
 
 plt.title('Energy deposited in TIDVG#5 downstream masks')
 

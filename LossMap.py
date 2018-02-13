@@ -260,28 +260,28 @@ os.chdir(directory)
 #    madx[0:,0] = data.S
 #    madx[0:,1] = data.X*100
 #    madx[0:,2] = data.Y*100
-#np.save('madxLost',madx)
+#np.save('madxLost2',madx)
 ##------------------------------------------------
 #Index([u'TURN', u'X', u'PX', u'Y', u'PY', u'T', u'PT', u'S', u'E', u'ELEMENT'], dtype='object')
-madx = np.load('madxLost.npy')
+madx = np.load('madxLost2.npy')
 madx[0:,0] = 100*(madx[0:,0] - np.ones([madx.shape[0]])*1665.4231)
 #madxPrim = madx.shape[0]
 
 
 
-#------------Run inelastic--------------------------------------
-path = "//rpclustersrv1/cluster_temp/cbjorkma/LSS2/Run inelastic"   
-os.chdir(path)        
-#data = readPhaseDirectory(path, 'dat')    
-#data = np.concatenate( (readPhaseDirectory(path, 'dat'), readPhaseDirectory(path, '.99')), axis = 0)    
-#np.save('Runinelastic', data)
-#madx = np.load('Runinelastic.npy')
-fluka = np.load('Runinelastic.npy')
+#------------Run inelastic-------------------------------------- With adjusted wire density
+#path = "//rpclustersrv1/cluster_temp/cbjorkma/LSS2/Run inelastic"   
+#os.chdir(path)        
+##data = readPhaseDirectory(path, 'dat')    
+##data = np.concatenate( (readPhaseDirectory(path, 'dat'), readPhaseDirectory(path, '.99')), axis = 0)    
+##np.save('Runinelastic', data)
+##madx = np.load('Runinelastic.npy')
+#fluka = np.load('Runinelastic.npy')
 #primaries = 0.72*fluka.shape[0]
 
 
 
-directory = "//rpclustersrv1/cbjorkma/LSS2"
+directory = "//rpclustersrv1/cbjorkma/LSS2/2018-01-25_200umRibbonZS_full_abd_z2232cm_ZSrho"
 os.chdir(directory)
 
 
@@ -351,6 +351,13 @@ suptitle2 = 'LSS2 Lost particles in aperture. Vertical comparison'
 title1 = 'Fluka, inelastic at ZSs, adjusted wire density'
 title2 = 'MADX'
 histTitle = 'Full loss map. Binning normalized to # of simulated particles'
+
+zoom = 0
+xmin = 6670
+xmax = 8370
+ymin = 2.5
+ymax = 15.5
+
 #----------------------------------------------------------------------------------------
 
 ##----------------------------------------------------------------------------------------
@@ -440,11 +447,9 @@ for i in range(2):
 #
 
 
-
-    
-    
-    ymax = max(max(yM), max(yF))*1.1
-    ymin = min(min(yM), min(yF))*1.1
+    if not zoom:
+        ymax = max(max(yM), max(yF))*1.1
+        ymin = min(min(yM), min(yF))*1.1
     
 
     
@@ -465,8 +470,12 @@ for i in range(2):
     plt.scatter(xF,yF ,c = 'r', edgecolors = None, s = 0.5, label = title1)
     plt.grid(linewidth=0.2)
     #plt.ylim(0, 35 )
-    plt.xlim(0, xlim )
-    plt.ylim(ymin, ymax )
+    if not zoom:
+        plt.xlim(0, xlim )
+    else:
+        plt.xlim(xmin,xmax)
+    if i == 0:
+        plt.ylim(ymin, ymax )
     
     
     #Quads
@@ -476,6 +485,7 @@ for i in range(2):
     plt.axvline(x=9599.31,linestyle = '--', color = 'black' )
     plt.legend(loc = 2)
     
+  
     
     
     
@@ -494,8 +504,12 @@ for i in range(2):
     plt.scatter(xM,yM ,c = 'b', edgecolors = None, s = 0.5, label = title2)
     plt.grid(linewidth=0.2)
     #plt.ylim(0, 35 )
-    plt.xlim(0, xlim )
-    plt.ylim(ymin, ymax )
+    if not zoom:
+        plt.xlim(0, xlim )
+    else:
+        plt.xlim(xmin,xmax)
+    if i == 0:
+        plt.ylim(ymin, ymax )
     
     #Quads
     plt.axvline(x=0,linestyle = '--' ,label='Quadrupoles', color = 'black')
@@ -503,21 +517,26 @@ for i in range(2):
     plt.axvline(x=6399.54,linestyle = '--', color = 'black' )
     plt.axvline(x=9599.31,linestyle = '--', color = 'black' )
     plt.legend(loc = 2)
-
+    
+    if zoom:
+        plt.xlim(xmin,xmax)
+        plt.ylim(ymin,ymax)
+    
     #plt.legend(loc = 2)
     #plt.setp( ax.get_yticklabels(), visible=False)
     #--------------------------------------------------
     ax1 = plt.subplot(313)
     
-    #x = fluka[0:,5]
+#    fig = plt.figure()
+#    ax1 = plt.subplot(111)
     weights = 100* np.ones_like(xF)/float(normFluka)
-    histx, xbins, Placeholder = plt.hist(xF,weights = weights, bins = 200,fc=(1, 0, 0, 0.8), label = title1)
+    histF, xbins, Placeholder = plt.hist(xF,weights = weights, bins = 400,fc=(1, 0, 0, 0.8), label = title1)
     
     
     
     #x = madx[0:,0]
     weights = 100* np.ones_like(xM)/float(madxPrim)
-    histx, xbins, Placeholder = plt.hist(xM,weights = weights, bins = xbins,fc=(0, 0, 1, 0.4), label = title2)
+    histM, xbins, Placeholder = plt.hist(xM,weights = weights, bins = xbins,fc=(0, 0, 1, 0.4), label = title2)
     
     
 
@@ -540,6 +559,8 @@ for i in range(2):
     plt.axvline(x=9599.31,linestyle = '--', color = 'black' )
     plt.legend(loc = 1)
     
+    if zoom:
+        plt.xlim(xmin,xmax)  
         
     
 plt.show()

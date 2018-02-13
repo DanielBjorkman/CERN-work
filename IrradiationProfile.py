@@ -38,7 +38,7 @@ average = Particles / seconds
 
 
 lastdayTime = 24*60*60
-lastdayParticles = 1.27249E+17
+lastdayParticles = 1.27249E+17 #<--- From summing 
 
 lastdayParticleRate =  lastdayParticles/lastdayTime
 
