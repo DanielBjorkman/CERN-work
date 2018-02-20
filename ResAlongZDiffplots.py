@@ -9,7 +9,7 @@ Created on Tue Oct 24 15:22:03 2017
 
 
 from Flukato3dMatrix import Flukato3dMatrix 
-
+import matplotlib.pyplot as plt
 #filename = 'Dump5Res_21.bnn.lis'
 #path = '//cern.ch/dfs/Users/c/cbjorkma/Documents/Dump TIDGV5/WithMask'
 
@@ -82,10 +82,6 @@ os.chdir(path)
 
 
 
-
-
-
-
 #------------Extracting meta info
 #path = '//cern.ch/dfs/Users/c/cbjorkma/Documents/Dump TIDGV5/WithMask'
 #os.chdir(path)
@@ -106,7 +102,7 @@ from matplotlib.colors import LogNorm
 #plt.close()
 #plt.close()
 #plt.close()
-#fig = plt.figure()
+fig = plt.figure()
 #
 #
 #

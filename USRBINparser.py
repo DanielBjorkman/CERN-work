@@ -16,7 +16,7 @@ import shutil
 
 os.chdir(directory)
 
-Numbers = [29]
+Numbers = [25,29,92]
 
 
 dirs = sorted([name for name in os.listdir(".") if os.path.isdir(name)])

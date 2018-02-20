@@ -73,6 +73,51 @@ print 'Average / lastday average = ' + str(newaverage/lastdayParticleRate)
 print 'Irradiation profile:'
 print str(seconds -lastdayTime) + ' ' + str(newaverage) + ' ' + str(lastdayTime) + ' ' + str(lastdayParticleRate) 
 
+for i in range(6):
+    print ' '
+    
+    
+print 'Scraper Geometry'
+
+TotalLosses = 200 * 120 * 7.4*10**13*0.1
+
+timePeriod = 365*24*60*60
+
+print str(timePeriod) +'     ' + str(TotalLosses/timePeriod)
+
+
+
+for i in range(6):
+    print ' '
+    
+    
+print 'LSS2'
+
+protons = np.array([8.8,6.2 ,11.2,2.9 ,5.5 ,8.7 , 5.7 , 4.9 , 2.2 , 10.3])*10**18
+import datetime #, timedelta
+#start 09 05 2004
+end2016 = datetime.datetime(2015,11,16,06,00,00)
+end2017 = datetime.datetime(2016,11,14,06,00,00)
+
+start2004 = datetime.datetime(2004,05,9,17,00,00)
+start2017 = datetime.datetime(2017,02,05,11,41,00)
+
+
+timedifference = end2016 - start2004
+amountOfSeconds = timedifference.total_seconds()
+
+print 'Long run '
+print str(amountOfSeconds) +' ' + str(sum(protons)/amountOfSeconds)
+
+print ' '
+print ' '
+
+
+timedifference = start2017 - end2016
+amountOfSeconds = timedifference.total_seconds()
+print '2017 cool down: '
+print str(amountOfSeconds) + ' 0'
+
 
 
 #plt.legend()

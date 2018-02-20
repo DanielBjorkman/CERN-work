@@ -87,11 +87,11 @@ end2016 = datetime.datetime(2015,11,16,06,00,00)
 end2017 = datetime.datetime(2016,11,14,06,00,00)
 
 
-#files = os.listdir(path)
-#files = sorted(files)
-#files = filter(lambda x: x[4:7].isdigit() , files)  
-#files = filter(lambda x: not x[0] == '.' , files)  
-#filenames = files
+files = os.listdir(path)
+files = sorted(files)
+files = filter(lambda x: x[4:7].isdigit() , files)  
+files = filter(lambda x: not x[0] == '.' , files)  
+filenames = files
 #thefile = pd.read_excel(files[0])
 #
 #data = np.zeros([len(thefile),2, len(files)])
@@ -101,7 +101,7 @@ end2017 = datetime.datetime(2016,11,14,06,00,00)
 #    for i in range(len(thefile)):
 #        instant = datetime.datetime( time[i].year, time[i].month, time[i].day, time[i].hour, time[i].minute, time[i].second)
 #    #    print instant
-#        timedifference = instant - protonEnd
+#        timedifference = instant - end2017
 #        amountOfSeconds = timedifference.total_seconds()/(60*60*24)
 #      #  print 'file ' + str(j) + '. Seconds ' + str(amountOfSeconds) + '. value ' + str(thefile.Value[i] )
 #        data[i,0,j] = amountOfSeconds
@@ -112,17 +112,10 @@ end2017 = datetime.datetime(2016,11,14,06,00,00)
 data = np.load('data.npy')
 #-------------------------------------------------------------------------------
 
+
 def func(x,a,k1,k2):
     return a*np.exp(-k1*np.power(np.log(x - start),k2))
 
-#def fitting(xes,y,guess):
-#    for i in range(10):
-#        try:
-#            popt , pcov = curve_fit(lambda x,a,k1,k2,c: a*np.exp(-k1*np.power(np.log(x - start),k2)) +c,  xes,  f(xes), p0 = guess)
-#        except:
-#            print 'Fail'
-#    return popt , pcov 
-#
 
 def extrapolate(xes,initialguess):
     for i in range(100):
@@ -156,28 +149,39 @@ files = filenames
 from scipy.interpolate import interp1d
 from scipy.optimize import curve_fit
 
+
+
+
+
 xes = [-314,-310,-308,-303,-300,-288,-295,-283,-280,-237,-224, -214,-207,-201, -198,-192,-190, -185]
-
-
-
-
 
 #xesEx = [-314,-310,-308,-303,-300,-288,-295,-283,-280,-237,-224, -214,-207,-201, -198,-192,-190, -185]
 
 
 
 #data = np.load('data3.npy')
-
+timedifference = protonEnd - end2017
 
 #Time markers. 1 hour - 1 day - 1 week - 1 month - 2 month - 80 days
 xes = np.ones([6])
 cooldowns = ['1 hour' , '1 day' , '1 week' , '1 month' , '2 month' , '80 days']
+
 xes = xes*[3600,86400,604800, 2.592*math.pow(10,6), 5.184*math.pow(10,6), 6.912*math.pow(10,6)]/(60*60*24)
+for i in range(len(xes)):
+    xes[i] = xes[i] +timedifference.total_seconds()/(60*60*24)
 
 
-
-
+xes2017 = [-314,-310,-308,-303,-300,-297,-288,-295,-283,-280,-237,-224, -214,-207,-201, -198,-192,-190, -185, -180.475 ,  -174.584]
+for i in range(len(xes2017)):
+    xes2017[i] = xes2017[i] +timedifference.total_seconds()/(60*60*24)
+    
 sampleX = [0 ,0.041668,0.0833,0.18,0.208315,1.35,3.5, 8.86, 14.2, 42.37, 49.38,56.13,70,80,84.2]
+for i in range(len(sampleX)):
+    sampleX[i] = sampleX[i] +timedifference.total_seconds()/(60*60*24)
+    
+
+
+
 alldiffs = np.zeros([8,6])
 alldiffsInterpolated = np.zeros([8,6])
 
@@ -188,7 +192,7 @@ yminimum = 10000000
 
 for i in range(data.shape[2]):
     ax = plt.subplot(4,2,i +1 )
-    
+    #ax = plt.subplot(111)
     #Interpolate 1
     x = data[0:,0,i]
     y = data[0:,1,i]
@@ -205,8 +209,8 @@ for i in range(data.shape[2]):
     g = interp1d(x,y)
     
  
-    diffsRatios = g(xes) / FlukaData[0:,i]
-    alldiffsInterpolated[i,0:] = diffsRatios
+#    diffsRatios = g(xes) / FlukaData[0:,i]
+#    alldiffsInterpolated[i,0:] = diffsRatios
     
  
     plt.plot(data[0:,0,i], data[0:,1,i], label = 'PMI data')
@@ -215,47 +219,81 @@ for i in range(data.shape[2]):
     plt.plot(sampleX , f(sampleX) , color = 'g' , label =  'Interpolation', marker = 'o')   
 #    plt.plot(data[0:,0,i], func(data[0:,0,i], *popt), 'r--', label = 'Fitted curve')
     plt.errorbar(xes,FlukaData[0:,i],FlukaData[0:,i]*FlukaSD[0:,i], linestyle='None', fmt='o', color = 'r', label = 'Fluka')
-    plt.title(files[i][:-5], y = 0.85)
+
+    Title = files[i][:-5]
+    
+    textstr = Title
+    props = dict(boxstyle='round', facecolor='white', alpha=1)
+    
+
+    ax.text(0.05, 0.95, textstr, transform=ax.transAxes, fontsize=14, verticalalignment='top',bbox=props)     
+    
+    
+    
+
+#    plt.title(Title, y = 0.85)
+    
+    
+    
+    
     plt.ylabel('uSv/h')
 
-    ax.set_yscale("log", nonposy='clip')
+#    ax.set_yscale("log", nonposy='clip')
     NoBeam = ionEnd - protonEnd
-    plt.axvline(x= NoBeam.total_seconds()/(60*60*24) ,linestyle = '--', color = 'black', label = 'Ion run ends' )
+#    plt.axvline(x= (NoBeam + timedifference).total_seconds()/(60*60*24) ,linestyle = '--', color = 'black', label = 'Ion run ends' )
 #    plt.axvline(x= protonEnd.total_seconds() ,linestyle = '--', color = 'red', label = 'Proton run ends' )
     plt.legend()
 #    
-    ymin = 0.85*min(min(FlukaData[0:,i]))
-    ymax = min(g(xes))
-    xmin = -410
-    xmax = 90
+    ymin = 0.85*min(FlukaData[0:,i])
+    ymax = 6000 #min(g(xes))
+    xmin = -10
+    xmax = 480
     
     
     plt.xlim(xmin,xmax)
     plt.ylim(ymin, ymax)
 
-    if i%2 == 0:
-        plt.xlabel('time [days]', x = 1.10, y = -1)
+#    if i%2 == 0:
+    if i == data.shape[2] -1:
+        plt.xlabel('Days since end of 2016 operations', x =  -0.1, y = -1.5) # 1.10
 
 
 
     ax2 = ax.twinx()
+    
+    print 'Attempting: ' + Title
+    
+    x = data[0:,0,i]
+    y = data[0:,1,i]
+    
     a = 1800
     k1 = 0.00019*3.0
     k2 = 5.25*0.82
-    timedifference = protonEnd - end2017
-    start = timedifference.total_seconds()/(60*60*24)
+    #timedifference = end2017 - protonEnd
+    #start = timedifference.total_seconds()/(60*60*24)
+    start = 0
     initialguess = [a,k1 ,k2] 
+    popt = extrapolate(xes2017,initialguess)
+    #popt , pcov = curve_fit(lambda x,a,k1,k2,c: a*np.exp(-k1*np.power(np.log(x - start),k2)) +c,  xes2017,  f(xes2017), p0 = initialguess)
+    plt.plot(x[0:], func(x[0:], *popt), 'k--', label = 'Baseline dose rate')    
     
-    
-    
-    
+    for j in range(len(xes2017)):
+        if j == 0:
+            plt.axvline(x= xes2017[j] ,linestyle = '--', color = 'k', linewidth = 0.3, label = 'Sampling points')
+        else:
+            plt.axvline(x= xes2017[j] ,linestyle = '--', color = 'k', linewidth = 0.3)
     
     plt.xlim(xmin,xmax)
     plt.ylim(ymin, ymax)    
+
     
+    y = FlukaData[0:,i] + func(xes, *popt)
+    plt.scatter(xes,y, color = 'c', label = 'Fluka mean + baseline')
 
-
-     
+    diffsRatios = g(xes) / y
+    alldiffsInterpolated[i,0:] = diffsRatios
+    plt.legend(loc = 3)
+   # plt.xlabel('Days since end of 2016 operations')
 plt.suptitle('Dose rate evolution per PMI unit', fontsize = 22)        
 plt.show()
 
@@ -282,7 +320,7 @@ for i in range(data.shape[2]):
     
 #    plt.bar(xcoord, alldiffs[i,0:], width, label = files[i][:-5] )
 #    plt.bar(xcoord + width, alldiffsInterpolated[i,0:], width, label = 'interpolated' )
-    plt.bar(xcoord, alldiffsInterpolated[i,0:], label = files[i][:-5] )
+    plt.bar(xcoord, alldiffsInterpolated[i,0:], label = files[i][:-5], yerr= map(lambda x: math.sqrt(x**2 + 0.2**2), FlukaSD[0:,i] )) #, yerr= FlukaSD[i,0:]
     
     #plt.plot(xcoord, np.ones(len(xcoord)), color = 'k')
     plt.axhline(y=1, color='k', linestyle='-')
@@ -321,7 +359,7 @@ for i in range(len(xes)):
 #    plt.bar(xcoord, alldiffs[0:,i], width, label = 'Measured data' )
 #    plt.bar(xcoord + width, alldiffsInterpolated[0:,i], width, label = 'Interpolated' )
     
-    plt.bar(xcoord, alldiffsInterpolated[0:,i] )
+    plt.bar(xcoord, alldiffsInterpolated[0:,i], yerr= FlukaSD[i,0:] )
     plt.axhline(y=1, color='k', linestyle='-')    
     
     plt.title(cooldowns[i] + ' cool down')    
@@ -335,6 +373,28 @@ plt.show()
 
 
 
+
+fig = plt.figure()
+
+plt.subplot(121)
+
+plt.hist(alldiffsInterpolated.reshape(-1), label = 'Means')
+
+plt.xlabel('Ratio Means')
+plt.ylabel('Counts')
+plt.title('Means comparison')
+
+plt.subplot(122)
+
+plt.hist(FlukaSD.reshape(-1), label = 'Means')
+
+plt.xlabel('Stand deviations')
+plt.ylabel('Coutns')
+plt.title('Standard deviation comparison')
+
+plt.suptitle('Mean and SD comparison. All PMIs and cooling times')
+
+plt.show()
 
 
 #---------------------------------------------------------------------------------------------------
