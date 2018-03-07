@@ -32,7 +32,7 @@ data[0:,0:,2] = np.loadtxt(filename , skiprows = 1)
 
 
 
-#Hack
+#Hack 
 data[0:,2,1] = 0.01*data[0:,2,1]
 data[0:,2,2] = 0.0001*data[0:,2,2]
 

@@ -182,6 +182,11 @@ for i in range(len(sampleX)):
 
 
 
+
+
+
+
+
 alldiffs = np.zeros([8,6])
 alldiffsInterpolated = np.zeros([8,6])
 
@@ -292,7 +297,7 @@ for i in range(data.shape[2]):
 
     diffsRatios = g(xes) / y
     alldiffsInterpolated[i,0:] = diffsRatios
-    plt.legend(loc = 3)
+#    plt.legend(loc = 3)
    # plt.xlabel('Days since end of 2016 operations')
 plt.suptitle('Dose rate evolution per PMI unit', fontsize = 22)        
 plt.show()
@@ -373,6 +378,9 @@ plt.show()
 
 
 
+#alldiffsInterpolated
+
+
 
 fig = plt.figure()
 
@@ -382,7 +390,7 @@ plt.hist(alldiffsInterpolated.reshape(-1), label = 'Means')
 
 plt.xlabel('Ratio Means')
 plt.ylabel('Counts')
-plt.title('Means comparison')
+plt.title('Means histogram')
 
 plt.subplot(122)
 
@@ -390,7 +398,7 @@ plt.hist(FlukaSD.reshape(-1), label = 'Means')
 
 plt.xlabel('Stand deviations')
 plt.ylabel('Coutns')
-plt.title('Standard deviation comparison')
+plt.title('SD histogram')
 
 plt.suptitle('Mean and SD comparison. All PMIs and cooling times')
 
