@@ -29,15 +29,25 @@ plt.close()
 
 
 
+
+
+
+
 # Fluka data------------------------------------------------------------------
 #path = '//rpclustersrv1/cbjorkma/LSS2/ActivationDetectors/USRBINs' 
 
-path = '//cern.ch/dfs/Users/c/cbjorkma/Documents/LSS 2/ActivationDetectors'
+path = '//cern.ch/dfs/Users/c/cbjorkma/Documents/LSS 2/ActivationDetectors/NoLongProfile1' #/NoLongProfile1
+interpolation = 1
+
+
+#path = '//cern.ch/dfs/Users/c/cbjorkma/Documents/LSS 2/ActivationDetectors/WithLongProfile1'
+#interpolation = 0
+
 os.chdir(path)
 
 files = os.listdir(path)
 files = sorted(files)
-#files = filter(lambda x: x[9:-8].isdigit() , files)  
+#files = filter(lambda x: x[9:-8].isdigit() , files)
 files = filter(lambda x: x[0:5] == 'Fluka' , files) 
 
 
@@ -66,6 +76,8 @@ FlukaData = normFactor * FlukaData
 Volume = math.pi*8*8*21.5
 FlukaData = FlukaData /Volume
 
+#Convert to %
+FlukaSD = FlukaSD/100
 
 #----------------------------------------------------------------------------
 
@@ -110,6 +122,10 @@ filenames = files
 #np.save('data', data)
 
 data = np.load('data.npy')
+if interpolation == 0:
+    np.save('FlukaPMIdata', FlukaData)
+    np.save('FlukaPMIerrors', FlukaSD)
+
 #-------------------------------------------------------------------------------
 
 
@@ -263,40 +279,44 @@ for i in range(data.shape[2]):
         plt.xlabel('Days since end of 2016 operations', x =  -0.1, y = -1.5) # 1.10
 
 
+    if interpolation:
 
-    ax2 = ax.twinx()
+        ax2 = ax.twinx()
+        
+        print 'Attempting: ' + Title
+        
+        x = data[0:,0,i]
+        y = data[0:,1,i]
+        
+        a = 1800
+        k1 = 0.00019*3.0
+        k2 = 5.25*0.82
+        #timedifference = end2017 - protonEnd
+        #start = timedifference.total_seconds()/(60*60*24)
+        start = 0
+        initialguess = [a,k1 ,k2] 
+        popt = extrapolate(xes2017,initialguess)
+        #popt , pcov = curve_fit(lambda x,a,k1,k2,c: a*np.exp(-k1*np.power(np.log(x - start),k2)) +c,  xes2017,  f(xes2017), p0 = initialguess)
+        plt.plot(x[0:], func(x[0:], *popt), 'k--', label = 'Baseline dose rate')    
+        
+        for j in range(len(xes2017)):
+            if j == 0:
+                plt.axvline(x= xes2017[j] ,linestyle = '--', color = 'k', linewidth = 0.3, label = 'Sampling points')
+            else:
+                plt.axvline(x= xes2017[j] ,linestyle = '--', color = 'k', linewidth = 0.3)
+        
+        plt.xlim(xmin,xmax)
+        plt.ylim(ymin, ymax)    
     
-    print 'Attempting: ' + Title
+        
+        y = FlukaData[0:,i] + func(xes, *popt)
+        plt.scatter(xes,y, color = 'c', label = 'Fluka mean + baseline')
     
-    x = data[0:,0,i]
-    y = data[0:,1,i]
-    
-    a = 1800
-    k1 = 0.00019*3.0
-    k2 = 5.25*0.82
-    #timedifference = end2017 - protonEnd
-    #start = timedifference.total_seconds()/(60*60*24)
-    start = 0
-    initialguess = [a,k1 ,k2] 
-    popt = extrapolate(xes2017,initialguess)
-    #popt , pcov = curve_fit(lambda x,a,k1,k2,c: a*np.exp(-k1*np.power(np.log(x - start),k2)) +c,  xes2017,  f(xes2017), p0 = initialguess)
-    plt.plot(x[0:], func(x[0:], *popt), 'k--', label = 'Baseline dose rate')    
-    
-    for j in range(len(xes2017)):
-        if j == 0:
-            plt.axvline(x= xes2017[j] ,linestyle = '--', color = 'k', linewidth = 0.3, label = 'Sampling points')
-        else:
-            plt.axvline(x= xes2017[j] ,linestyle = '--', color = 'k', linewidth = 0.3)
-    
-    plt.xlim(xmin,xmax)
-    plt.ylim(ymin, ymax)    
-
-    
-    y = FlukaData[0:,i] + func(xes, *popt)
-    plt.scatter(xes,y, color = 'c', label = 'Fluka mean + baseline')
-
-    diffsRatios = g(xes) / y
-    alldiffsInterpolated[i,0:] = diffsRatios
+        diffsRatios = g(xes) / y
+        alldiffsInterpolated[i,0:] = diffsRatios
+    else:
+        #Very strange choice of name for variable
+        alldiffsInterpolated[i,0:] = diffsRatios 
 #    plt.legend(loc = 3)
    # plt.xlabel('Days since end of 2016 operations')
 plt.suptitle('Dose rate evolution per PMI unit', fontsize = 22)        
@@ -306,7 +326,7 @@ plt.show()
 
 
 
-
+print 'How are we on the errors here?'
 
 
 
@@ -325,7 +345,8 @@ for i in range(data.shape[2]):
     
 #    plt.bar(xcoord, alldiffs[i,0:], width, label = files[i][:-5] )
 #    plt.bar(xcoord + width, alldiffsInterpolated[i,0:], width, label = 'interpolated' )
-    plt.bar(xcoord, alldiffsInterpolated[i,0:], label = files[i][:-5], yerr= map(lambda x: math.sqrt(x**2 + 0.2**2), FlukaSD[0:,i] )) #, yerr= FlukaSD[i,0:]
+    values = alldiffsInterpolated[i,0:]
+    plt.bar(xcoord, values, label = files[i][:-5], yerr=values* map(lambda x: math.sqrt(x**2 + 0.2**2), FlukaSD[0:,i] )) #, yerr= FlukaSD[i,0:]
     
     #plt.plot(xcoord, np.ones(len(xcoord)), color = 'k')
     plt.axhline(y=1, color='k', linestyle='-')
@@ -363,8 +384,8 @@ for i in range(len(xes)):
         
 #    plt.bar(xcoord, alldiffs[0:,i], width, label = 'Measured data' )
 #    plt.bar(xcoord + width, alldiffsInterpolated[0:,i], width, label = 'Interpolated' )
-    
-    plt.bar(xcoord, alldiffsInterpolated[0:,i], yerr= FlukaSD[i,0:] )
+    values =alldiffsInterpolated[0:,i]
+    plt.bar(xcoord, values, yerr=values* map(lambda x: math.sqrt(x**2 + 0.2**2), FlukaSD[i,0:]) )
     plt.axhline(y=1, color='k', linestyle='-')    
     
     plt.title(cooldowns[i] + ' cool down')    
@@ -394,10 +415,11 @@ plt.title('Means histogram')
 
 plt.subplot(122)
 
-plt.hist(FlukaSD.reshape(-1), label = 'Means')
+allerrors = map(lambda x: math.sqrt(x**2 + 0.2**2), FlukaSD[0:,0:].reshape(-1))
+plt.hist(allerrors, label = 'Errors')
 
-plt.xlabel('Stand deviations')
-plt.ylabel('Coutns')
+plt.xlabel('Stand deviations [%]')
+plt.ylabel('Counts')
 plt.title('SD histogram')
 
 plt.suptitle('Mean and SD comparison. All PMIs and cooling times')
@@ -408,11 +430,46 @@ plt.show()
 #---------------------------------------------------------------------------------------------------
 
 
+if interpolation:
+    np.save( 'DiffsWithInterpolated',alldiffsInterpolated)
+    np.save('SDsWithInterpolated',FlukaSD)
+else:
+    np.save( 'DiffsWithOUTInterpolated',alldiffsInterpolated)
+    np.save('SDsWithOUTInterpolated',FlukaSD)
 
 
 
+fig = plt.figure()
 
+plt.subplot(121)
 
+alldiffsInterpolated = np.load('DiffsWithInterpolated.npy')
+n,xbins,patches = plt.hist(alldiffsInterpolated.reshape(-1), label = 'With extrapolation')
+
+alldiffsInterpolated = np.load('DiffsWithOUTInterpolated.npy')
+plt.hist(alldiffsInterpolated.reshape(-1), bins = xbins, label = 'Model only',alpha = 0.5, color = 'r')
+
+plt.legend()
+plt.xlabel('Ratio Means')
+plt.ylabel('Counts')
+plt.title('Means histogram')
+
+plt.subplot(122)
+
+FlukaSD = np.load('SDsWithInterpolated.npy')
+n,xbins,patches = plt.hist(FlukaSD.reshape(-1), label = 'With extrapolation')
+
+FlukaSD = np.load('SDsWithOUTInterpolated.npy')
+plt.hist(FlukaSD.reshape(-1),bins = xbins, label = 'Model only',alpha = 0.5, color = 'r')
+
+plt.legend()
+plt.xlabel('Stand deviations [%]')
+plt.ylabel('Coutns')
+plt.title('SD histogram')
+
+plt.suptitle('Mean and SD comparison. All PMIs and cooling times')
+
+plt.show()
 
 
 

@@ -16,7 +16,7 @@ import datetime #, timedelta
 import matplotlib.pyplot as plt
 import math
 import matplotlib.patches as patches
-from Flukato3dMatrix import Flukato3dMatrix
+#from Flukato3dMatrix import Flukato3dMatrix
 
 plt.close()
 plt.close()
@@ -182,11 +182,14 @@ quad219 = 99.7841*100
 
 
 
-data[0:,0] = (thefile.position -216)*(quad217 - quad216) -500
+data[0:,0] = (thefile.position -216)*(quad217 - quad216) -480
 data[0:,1] = thefile.doserate
+data[0:,2] = (thefile.position1m30h -216)*(quad217 - quad216) -630
+data[0:,3] = thefile.doserate1m30h
 
-x = data[0:,0]
-y = data[0:,1]
+
+#x = data[0:,0]
+#y = data[0:,1]
 
 
 #from scipy.interpolate import interp1d
@@ -200,12 +203,12 @@ y = data[0:,1]
 #datalines = []
 
 
-def openFluka(filename):
+def openFluka(filename,shift = 0):
     data = []
     fp = open(filename)
     lines = fp.readlines()
     for i in range(len(lines)):
-        if i > 23 and i < 124:
+        if i > 23 +shift and i < 124+shift:
     #        datalines.append(lines[i])
             for j in range(len(lines[i].split())):
                 data.append(lines[i].split()[j])
@@ -217,12 +220,12 @@ def openFluka(filename):
     
     return dataout
 
-def openFlukaErrors(filename):
+def openFlukaErrors(filename,shift = 0):
     errors = []
     fp = open(filename)
     lines = fp.readlines()
     for i in range(len(lines)):
-        if i > 126 and i < 227:
+        if i > 126 +shift and i < 227 +shift:
     #        datalines.append(lines[i])
             for j in range(len(lines[i].split())):
                 errors.append(lines[i].split()[j])
@@ -246,8 +249,22 @@ normFactor = 1 / 0.1772837
 data1 = normFactor * data1
 
 #Volume compensation
-Volume = 20*20*(90+10100)/float(1000)
-data1 = data1 /Volume
+#Volume = 20*20*(500+10100)/float(1000)
+#data1 = data1 /Volume
+
+
+
+filename = '1m30h'
+data2 = openFluka(filename, -15)
+errors2 = openFlukaErrors(filename, -15)
+
+
+#Converts data to uSv/h
+data2 = 0.0036*data2
+
+#Normalization
+normFactor = 1 / 0.1772837
+data2 = normFactor * data2
 
 
 
@@ -258,33 +275,143 @@ data1 = data1 /Volume
 
 
 
+
+#Volume compensation
+#Volume = 20*20*(500+10100)/float(1000)
+#data2 = data2 /Volume
+import datetime #, timedelta
+from scipy.interpolate import interp1d
+import pandas as pd
+protonEnd = datetime.datetime(2017,10,23,06,00,00)
+ionEnd = datetime.datetime(2017,12,18,06,00,00)
+end2016 = datetime.datetime(2015,11,16,06,00,00)
+end2017 = datetime.datetime(2016,11,14,06,00,00)
+manualMeasurement = datetime.datetime(2017,10,24,12,00,00)
+
+
+
+path = '//cern.ch/dfs/Users/c/cbjorkma/Documents/LSS 2/ActivationDetectors'
+
+os.chdir(path)
+
+#protonEnd = '2017-11-23 06:00:00.940000'
+protonEnd = datetime.datetime(2017,10,23,06,00,00)
+ionEnd = datetime.datetime(2017,12,18,06,00,00)
+end2016 = datetime.datetime(2015,11,16,06,00,00)
+end2017 = datetime.datetime(2016,11,14,06,00,00)
+
+
+#files = os.listdir(path)
+#files = sorted(files)
+#files = filter(lambda x: x[4:7].isdigit() , files)  
+#files = filter(lambda x: not x[0] == '.' , files)  
+#filenames = files
+#thefile = pd.read_excel(files[0])
+#
+#dataPMI = np.zeros([len(thefile),2, len(files)])
+#for j in range(len(files)):
+#    thefile = pd.read_excel(files[j])
+#    time = thefile.Timestamp
+#    for i in range(len(thefile)):
+#        instant = datetime.datetime( time[i].year, time[i].month, time[i].day, time[i].hour, time[i].minute, time[i].second)
+#    #    print instant
+#        timedifference = instant - manualMeasurement
+#        amountOfSeconds = timedifference.total_seconds()/(60*60*24)
+#      #  print 'file ' + str(j) + '. Seconds ' + str(amountOfSeconds) + '. value ' + str(thefile.Value[i] )
+#        dataPMI[i,0,j] = amountOfSeconds
+#        dataPMI[i,1,j] = thefile.Value[i]   
+#assert dataPMI[1200,1,2] != dataPMI[1200,1,3]
+#np.save('dataPMI', dataPMI)
+
+xpos = [595, 1207, 1697 , 1992, 5351 , 5800,7096, 7743]
+
+dataPMI = np.load('dataPMI.npy')
+
+
+
+
+
+
+
+
+
+from scipy.interpolate import interp1d
 
 
 
 
 xmin = -500
-xmax = 12000
+xmax = 10100
+
+
+ymin = 1
+ymax = max(data[0:,1])*5
+
+
+
+useshift = 0
+
+
+
+
+
+
 
 fig = plt.figure()
 
-ax = plt.subplot(111)
+ax = plt.subplot(211)
 
-plt.plot(data[0:,0],data[0:,1])
-
+plt.plot(data[0:,0],data[0:,1], label = 'Manual measurement')
 
 
 plt.axvline(x= 0 ,linestyle = '--', color = 'k', linewidth = 0.3)
 plt.axvline(x= quad217 - quad216 ,linestyle = '--', color = 'k', linewidth = 0.3)
 plt.axvline(x= quad218 - quad216 ,linestyle = '--', color = 'k', linewidth = 0.3)
 plt.axvline(x= quad219 - quad216 ,linestyle = '--', color = 'k', linewidth = 0.3)
+plt.legend(loc = 2)
 
+plt.ylim(ymin , ymax)
 
+plt.xlim(xmin , xmax)
 
+plt.ylabel('uSv/h',fontsize = 16)
+plt.xlabel('z [cm from quad216]')
 plt.yscale("log", nonposy='clip')
 #plt.xlim(data[0,0],max(data[0:,0]))
 
+for i in range(dataPMI.shape[2]):
+#    i = 0
+    x = dataPMI[0:,0,i]
+    y = dataPMI[0:,1,i]
+    f = interp1d(x, y)
+    timeval = -1.15741e-05
+    
+    if i == 0:
+        plt.errorbar(xpos[i], f(timeval), color = 'b', linestyle='None', fmt='o', label = 'PMI data',yerr = f(timeval)*0.2)
+    else:
+        plt.errorbar(xpos[i], f(timeval), color = 'b', linestyle='None', fmt='o',yerr = f(timeval)*0.2)
+    print f(timeval)
+
+FlukaData  =  np.load('FlukaPMIdata.npy')
+FlukaSD =    np.load('FlukaPMIerrors.npy')
 
 
+plt.errorbar(xpos,FlukaData[1,0:],yerr = FlukaData[1,0:]*FlukaSD[1,0:]/100, linestyle='None', fmt='o', color = 'r', label = 'Fluka PMI 1 day cool down')
+
+
+#yerr = FlukaData[1,0:]*FlukaSD[1,0:]/100?
+
+print 'How are we on the errors here?'
+
+plt.legend(loc = 1)
+
+
+
+ax3 = ax.twinx()
+plotSepta(ax3)
+plt.legend(loc = 3)
+plt.ylim(2,18)
+ax3.yaxis.set_ticklabels([])
 
 
 
@@ -292,16 +419,414 @@ ax2 = ax.twinx()
 
 #plotSepta(ax2)
 
+shift = 40000
+
+plt.xlim(xmin,xmax)
+#plt.ylim(0,15)
+
+xes = np.arange(-500,10100,(10100+500)/float(1000))
+if useshift:
+    plt.plot(xes,shift*data1, color = 'r', label = "Fluka")
+else:
+    #plt.plot(xes,data1, color = 'r', label = "Fluka")
+    plt.errorbar(xes,data1,yerr =data1*errors1/100, color = 'r', label = "Fluka")
+
+plt.yscale("log", nonposy='clip')
+plt.ylim(ymin , ymax)
+plt.legend(loc = 2)
+ax2.yaxis.set_ticklabels([])
+#
+
+
+if useshift:
+    plt.title('30h after 2017 operations. Amplitude difference at TPST = ' + str(shift))
+else:
+    plt.title('30h after 2017 operations')
+
+
+
+ax = plt.subplot(212)
+
+plt.plot(data[0:,2],data[0:,3], label = 'Manual measurement')
+
+
+plt.axvline(x= 0 ,linestyle = '--', color = 'k', linewidth = 0.3)
+plt.axvline(x= quad217 - quad216 ,linestyle = '--', color = 'k', linewidth = 0.3)
+plt.axvline(x= quad218 - quad216 ,linestyle = '--', color = 'k', linewidth = 0.3)
+plt.axvline(x= quad219 - quad216 ,linestyle = '--', color = 'k', linewidth = 0.3)
+plt.legend(loc = 2)
+
+plt.ylim(ymin , ymax)
+#
+plt.xlim(xmin , xmax)
+#
+plt.ylabel('uSv/h',fontsize = 16)
+plt.xlabel('z [cm from quad216]')
+plt.yscale("log", nonposy='clip')
+plt.xlim(data[0,0],max(data[0:,0]))
+
+
+
+instant = datetime.datetime(2017,11,24,12,00,00)
+timedifference = instant - manualMeasurement
+
+for i in range(dataPMI.shape[2]):
+#    i = 0
+    x = dataPMI[0:,0,i]
+    y = dataPMI[0:,1,i]
+    f = interp1d(x, y)
+    timeval = 30.9167
+    
+    if i == 0:
+        plt.errorbar(xpos[i], f(timeval), color = 'b', linestyle='None', fmt='o', label = 'PMI data',yerr = f(timeval)*0.2)
+    else:
+        plt.errorbar(xpos[i], f(timeval), color = 'b', linestyle='None', fmt='o',yerr = f(timeval)*0.2)
+    print f(timeval)
+
+plt.errorbar(xpos,FlukaData[3,0:],yerr = FlukaData[3,0:]*FlukaSD[3,0:]/100, linestyle='None', fmt='o', color = 'r', label = 'Fluka PMI 1 month cool down')
+
+plt.legend(loc = 1)
+
+
+
+
+
+ax3 = ax.twinx()
+plotSepta(ax3)
+plt.legend(loc = 3)
+plt.ylim(2,18)
+ax3.yaxis.set_ticklabels([])
+
+
+ax2 = ax.twinx()
+
+#plotSepta(ax2)
+
+shift = 400
+
 plt.xlim(xmin,xmax)
 #plt.ylim(0,15)
 
 xes = np.arange(-500,10100,(10100+500)/float(1000))
 
-plt.plot(xes,data1)
-#plt.errorbar(xes,data1,yerr = errors1)
+if useshift:
+    plt.plot(xes,shift*data2, color = 'r', label = "Fluka")
+else:
+#    plt.plot(xes,data2, color = 'r', label = "Fluka")
+    print 'No shift'
+    plt.errorbar(xes,data2,yerr =data2*errors2/100, color = 'r', label = "Fluka")
 
 plt.yscale("log", nonposy='clip')
+plt.ylim(ymin , ymax)
+plt.legend(loc = 2)
+ax2.yaxis.set_ticklabels([])
+#
+
+
+if useshift:
+    plt.title('1 month and 30h after 2017 operations. Amplitude difference at TPST = ' + str(shift) )
+    plt.suptitle('Dose rate comparison in LSS2 after 2017 operations. NOTE: Fluka data plotted with adjusted amplitudes',fontsize = 22)
+else:
+    plt.title('1 month and 30h after 2017 operations' )
+    plt.suptitle('LSS2 Dose rate 1 meter from beam axis after 2017 operations. ',fontsize = 22)
+
+
+
+
+#plt.suptitle('Dose rate comparison in LSS2 after 2017 operations. NOTE: Fluka data plotted with adjusted amplitudes',fontsize = 22)
+
 plt.show()
+
+
+
+
+
+
+#----------------------------------------------------------------------------------------
+
+
+
+
+from matplotlib.gridspec import GridSpec
+
+every = 10
+
+fig = plt.figure()
+
+
+gs = GridSpec(2,3)
+
+ax = fig.add_subplot(gs[0:2,0:2])
+plt.plot(data[0:,0],data[0:,1], label = 'Manual measurement 30h' ,color = 'b')
+plt.errorbar(xes,data1,yerr = data1*errors1/100, color = 'b', label = "Fluka. 30h",errorevery=every,linestyle = '--')
+
+plt.plot(data[0:,2],data[0:,3], label = 'Manual measurement 1 month + 30h',color = 'r')
+plt.errorbar(xes,data2,yerr =data2*errors2/100, color = 'r', label = "Fluka. 1month + 30h",linestyle = '--',errorevery=every) 
+
+
+plt.xlim(xmin , xmax)
+plt.yscale("log", nonposy='clip')
+plt.ylabel('uSv/h',fontsize = 16)
+plt.xlabel('z [cm from quad216]')
+plt.legend()
+plt.axvline(x= 0 ,linestyle = '--', color = 'k', linewidth = 0.3)
+plt.axvline(x= quad217 - quad216 ,linestyle = '--', color = 'k', linewidth = 0.3)
+plt.axvline(x= quad218 - quad216 ,linestyle = '--', color = 'k', linewidth = 0.3)
+plt.axvline(x= quad219 - quad216 ,linestyle = '--', color = 'k', linewidth = 0.3)
+plt.ylim(ymin , ymax)
+
+
+
+
+ax3 = ax.twinx()
+plotSepta(ax3)
+plt.legend(loc = 3)
+plt.ylim(2,18)
+ax3.yaxis.set_ticklabels([])
+
+
+
+every = 50
+
+
+
+# 30h
+ax = fig.add_subplot(gs[0,2])
+
+x = data[0:,0]
+y = data[0:,1]
+f = interp1d(x, y)
+
+plt.axvline(x= 0 ,linestyle = '--', color = 'k', linewidth = 0.3)
+plt.axvline(x= quad217 - quad216 ,linestyle = '--', color = 'k', linewidth = 0.3)
+plt.axvline(x= quad218 - quad216 ,linestyle = '--', color = 'k', linewidth = 0.3)
+plt.axvline(x= quad219 - quad216 ,linestyle = '--', color = 'k', linewidth = 0.3)
+
+
+plt.errorbar( xes, f(xes)/data1,yerr =f(xes)/data1*errors1/100, label ='Manual / Fluka', color = 'darkcyan',errorevery=every)
+plt.axhline(y=1, color='k', linestyle='-')
+
+plt.title('Ratios: 30h after 2017 operations')
+plt.ylabel('Manual / Fluka')
+plt.xlabel('z [cm from quad216]')
+plt.legend()
+
+# 30h
+ax = fig.add_subplot(gs[1,2])
+
+x = data[0:,2]
+y = data[0:,3]
+f = interp1d(x, y)
+plt.axvline(x= 0 ,linestyle = '--', color = 'k', linewidth = 0.3)
+plt.axvline(x= quad217 - quad216 ,linestyle = '--', color = 'k', linewidth = 0.3)
+plt.axvline(x= quad218 - quad216 ,linestyle = '--', color = 'k', linewidth = 0.3)
+plt.axvline(x= quad219 - quad216 ,linestyle = '--', color = 'k', linewidth = 0.3)
+
+plt.errorbar( xes, f(xes)/data2,yerr = f(xes)/data2*errors2/100, label ='Manual / Fluka', color = 'darkcyan',errorevery=every)
+plt.axhline(y=1, color='k', linestyle='-')
+
+plt.title('Ratios: 1 month and 30h after 2017 operations')
+plt.ylabel('Manual / Fluka')
+plt.xlabel('z [cm from quad216]')
+plt.legend()
+
+plt.suptitle('LSS2 Residual dose rate comparison along Z', fontsize = 30)
+
+plt.show()
+
+
+
+
+
+
+
+
+
+
+#----------------------------------------------------------------------------------------
+
+
+fig = plt.figure()
+
+
+ax = plt.subplot(211)
+
+plt.plot(data[0:,0],data[0:,1]/max(data[0:,1]), label = 'Manual measurement')
+#plt.plot(data[0:,0],data[0:,1], label = 'Manual measurement')
+plt.errorbar(xes,data1/max(data1), yerr =data1/max(data1)*errors1/100,  color = 'r', label = "Fluka")
+#plt.errorbar(xes,data1, color = 'r', label = "Fluka")
+
+plt.axvline(x= 0 ,linestyle = '--', color = 'k', linewidth = 0.3)
+plt.axvline(x= quad217 - quad216 ,linestyle = '--', color = 'k', linewidth = 0.3)
+plt.axvline(x= quad218 - quad216 ,linestyle = '--', color = 'k', linewidth = 0.3)
+plt.axvline(x= quad219 - quad216 ,linestyle = '--', color = 'k', linewidth = 0.3)
+plt.legend(loc = 2)
+
+#plt.ylim(ymin , ymax)
+
+plt.xlim(xmin , xmax)
+
+plt.ylabel('Dose rate [a.u]',fontsize = 16)
+plt.xlabel('z [cm from quad216]')
+#plt.yscale("log", nonposy='clip')
+#plt.xlim(data[0,0],max(data[0:,0]))
+plt.legend(loc = 1)
+
+
+
+ax3 = ax.twinx()
+plotSepta(ax3)
+plt.legend(loc = 3)
+plt.ylim(2,18)
+ax3.yaxis.set_ticklabels([])
+
+
+
+#ax2 = ax.twinx()
+#
+##plotSepta(ax2)
+#
+#shift = 40000
+#
+#plt.xlim(xmin,xmax)
+##plt.ylim(0,15)
+#
+#xes = np.arange(-500,10100,(10100+500)/float(1000))
+#
+#
+#
+##plt.yscale("log", nonposy='clip')
+##plt.ylim(ymin , ymax)
+#plt.legend(loc = 2)
+#ax2.yaxis.set_ticklabels([])
+#
+
+
+
+plt.title('30h after 2017 operations')
+
+
+
+ax = plt.subplot(212)
+
+plt.plot(data[0:,2],data[0:,3]/max(data[0:,3]), label = 'Manual measurement')
+plt.errorbar(xes,data2/max(data2),yerr =data2/max(data2)*errors2/100, color = 'r', label = "Fluka")
+
+plt.axvline(x= 0 ,linestyle = '--', color = 'k', linewidth = 0.3)
+plt.axvline(x= quad217 - quad216 ,linestyle = '--', color = 'k', linewidth = 0.3)
+plt.axvline(x= quad218 - quad216 ,linestyle = '--', color = 'k', linewidth = 0.3)
+plt.axvline(x= quad219 - quad216 ,linestyle = '--', color = 'k', linewidth = 0.3)
+plt.legend(loc = 2)
+
+#plt.ylim(ymin , ymax)
+#
+plt.xlim(xmin , xmax)
+#
+plt.ylabel('Dose rate [a.u]',fontsize = 16)
+plt.xlabel('z [cm from quad216]')
+#plt.yscale("log", nonposy='clip')
+plt.xlim(data[0,0],max(data[0:,0]))
+
+
+plt.legend(loc = 1)
+
+
+
+
+
+ax3 = ax.twinx()
+plotSepta(ax3)
+plt.legend(loc = 3)
+plt.ylim(2,18)
+ax3.yaxis.set_ticklabels([])
+plt.xlim(xmin , xmax)
+#
+
+plt.title('1 month and 30h after 2017 operations' )
+
+
+
+
+
+#plt.suptitle('Dose rate comparison in LSS2 after 2017 operations. NOTE: Fluka data plotted with adjusted amplitudes',fontsize = 22)
+
+plt.suptitle('LSS2 Normalized dose rates 1 meter from beam axis after 2017 operations. ',fontsize = 22)
+
+plt.show()
+
+
+
+
+
+#----------------------------------------------------------------------------------------
+
+
+fig = plt.figure()
+
+
+ax = plt.subplot(111)
+
+x = data[0:,0]
+y = data[0:,1]
+f = interp1d(x, y)
+
+startIndex = 5
+endIndex = 2837
+
+plt.plot(data[startIndex:endIndex,2],f(data[startIndex:endIndex,2])/data[startIndex:endIndex,3], label = 'Manual/Manual measurement')
+
+plt.plot(xes, data1/data2, label = 'Fluka/Fluka', color = 'r')
+
+
+
+
+
+#plt.plot(data[0:,0],data[0:,1], label = 'Manual measurement')
+#plt.errorbar(xes,data1/max(data1), yerr =data1/max(data1)*errors1/100,  color = 'r', label = "Fluka")
+#plt.errorbar(xes,data1, color = 'r', label = "Fluka")
+
+plt.axvline(x= 0 ,linestyle = '--', color = 'k', linewidth = 0.3)
+plt.axvline(x= quad217 - quad216 ,linestyle = '--', color = 'k', linewidth = 0.3)
+plt.axvline(x= quad218 - quad216 ,linestyle = '--', color = 'k', linewidth = 0.3)
+plt.axvline(x= quad219 - quad216 ,linestyle = '--', color = 'k', linewidth = 0.3)
+plt.legend(loc = 1)
+
+#plt.ylim(ymin , ymax)
+
+plt.xlim(xmin , xmax)
+
+plt.ylim(0.1,10)
+
+plt.axhline(y=1, color='k', linestyle='-')
+
+#plt.ylabel('Dose rate [a.u]',fontsize = 16)
+plt.xlabel('z [cm from quad216]')
+plt.yscale("log", nonposy='clip')
+#plt.xlim(data[0,0],max(data[0:,0]))
+#plt.legend(loc = 1)
+plt.ylabel('30hours/(1month+30hours)',fontsize = 16)
+
+
+ax3 = ax.twinx()
+plotSepta(ax3)
+plt.legend(loc = 3)
+plt.ylim(2,14)
+ax3.yaxis.set_ticklabels([])
+
+plt.title('Ratio comparison: Manual measurement vs. Fluka',fontsize = 22)
+
+
+
+plt.show()
+
+
+
+
+
+
+
+
+
 
 
 

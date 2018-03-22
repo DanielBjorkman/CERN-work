@@ -36,7 +36,7 @@ os.chdir(path)
 #cube = 0.0036* Flukato3dMatrix(filename, path,0)
 #np.save(filename, cube)
 #
-
+#
 #filename = 'Dump10ResMarbleDownstream3_21.bnn.lis'
 #cube = 0.0036* Flukato3dMatrix(filename, path,0)
 #np.save(filename, cube)
@@ -190,7 +190,7 @@ def curiosa(ax):
 
 def drawings(ax2):
     
-    transp = 0.3
+    transp = 0.45
     
 
     r2 = patches.Rectangle((0.586*cube.shape[2],14.25), 12,8000,fc='maroon', alpha = 0.5*transp)
@@ -268,28 +268,28 @@ plt.plot(range(0,cube.shape[2]),vector, color='k',linestyle = '--', label = 'Mar
 #----------------------------------------------------
 
 
-#--------------1h cool down------------
-
-filename = 'Dump10ResLongerMask_21.bnn.lis.npy'
-cube = np.load(filename)
-vector = np.zeros([cube.shape[2]])
-vector, maxVal = calcThis(cube,maxVal)        
-        
-        
-        
-plt.plot(range(0,cube.shape[2]),vector, color='y',linestyle = ':', label = 'Elongated Mask 20 cm extra',linewidth=3)
-#----------------------------------------------------
-
-#-------Concrete2-------1h cool down------------
-
-filename = 'Dump10ResMarbleDownstream3_21.bnn.lis.npy'
-cube = np.load(filename)
-vector = np.zeros([cube.shape[2]])
-vector, maxVal = calcThis(cube,maxVal)        
-        
-        
-        
-plt.plot(range(0,cube.shape[2]),vector, color='c',linestyle = '--', label = 'Marble platform 30 cm + Elongated mask',linewidth=3)
+##--------------1h cool down------------
+#
+#filename = 'Dump10ResLongerMask_21.bnn.lis.npy'
+#cube = np.load(filename)
+#vector = np.zeros([cube.shape[2]])
+#vector, maxVal = calcThis(cube,maxVal)        
+#        
+#        
+#        
+#plt.plot(range(0,cube.shape[2]),vector, color='y',linestyle = ':', label = 'Elongated Mask 20 cm extra',linewidth=3)
+##----------------------------------------------------
+#
+##-------Concrete2-------1h cool down------------
+#
+#filename = 'Dump10ResMarbleDownstream3_21.bnn.lis.npy'
+#cube = np.load(filename)
+#vector = np.zeros([cube.shape[2]])
+#vector, maxVal = calcThis(cube,maxVal)        
+#        
+#        
+#        
+#plt.plot(range(0,cube.shape[2]),vector, color='c',linestyle = '--', label = 'Marble platform 30 cm + Elongated mask',linewidth=3)
 
 
 ##os.chdir('//cern.ch/dfs/Users/c/cbjorkma/Documents/Dump TIDGV5/WithMask')
@@ -347,7 +347,7 @@ vector = np.zeros([cube.shape[2]])
 vector, maxVal = calcThis(cube,maxVal)
 
 
-plt.plot(range(0,cube.shape[2]),vector, color='r', label = 'New Reference')
+plt.plot(range(0,cube.shape[2]),vector, color='r', label = 'Reference')
 #----------------------------------------------------
 
 #-------Concrete2-------1 day cool down------------
@@ -373,25 +373,25 @@ vector, maxVal = calcThis(cube,maxVal)
         
 plt.plot(range(0,cube.shape[2]),vector, color='k',linestyle = '--', label = 'Marble 30 cm',linewidth=3)
 
-#--------------1 day cool down------------
-
-filename = 'Dump10ResLongerMask_22.bnn.lis.npy'
-cube = np.load(filename)
-vector = np.zeros([cube.shape[2]])
-vector, maxVal = calcThis(cube,maxVal)        
-        
-        
-        
-plt.plot(range(0,cube.shape[2]),vector, color='y',linestyle = ':', label = 'Mask 20 cm extra',linewidth=3)
-#----------------------------------------------------
-filename = 'Dump10ResMarbleDownstream3_22.bnn.lis.npy'
-cube = np.load(filename)
-vector = np.zeros([cube.shape[2]])
-vector, maxVal = calcThis(cube,maxVal)        
-        
-        
-        
-plt.plot(range(0,cube.shape[2]),vector, color='c',linestyle = '--', label = 'Marble platform 30 cm + Elongated mask',linewidth=3)
+##--------------1 day cool down------------
+#
+#filename = 'Dump10ResLongerMask_22.bnn.lis.npy'
+#cube = np.load(filename)
+#vector = np.zeros([cube.shape[2]])
+#vector, maxVal = calcThis(cube,maxVal)        
+#        
+#        
+#        
+#plt.plot(range(0,cube.shape[2]),vector, color='y',linestyle = ':', label = 'Mask 20 cm extra',linewidth=3)
+##----------------------------------------------------
+#filename = 'Dump10ResMarbleDownstream3_22.bnn.lis.npy'
+#cube = np.load(filename)
+#vector = np.zeros([cube.shape[2]])
+#vector, maxVal = calcThis(cube,maxVal)        
+#        
+#        
+#        
+#plt.plot(range(0,cube.shape[2]),vector, color='c',linestyle = '--', label = 'Marble platform 30 cm + Elongated mask',linewidth=3)
 
 ##path = 
 ##os.chdir('//cern.ch/dfs/Users/c/cbjorkma/Documents/Dump TIDGV5/WithMask')
@@ -441,7 +441,7 @@ vector = np.zeros([cube.shape[2]])
 vector, maxVal = calcThis(cube,maxVal)
 
 
-plt.plot(range(0,cube.shape[2]),vector, color='r', label = 'New Reference')
+plt.plot(range(0,cube.shape[2]),vector, color='r', label = 'Reference')
 #----------------------------------------------------
 
 #-------Concrete2-------1 day cool down------------
@@ -468,29 +468,29 @@ vector, maxVal = calcThis(cube,maxVal)
 plt.plot(range(0,cube.shape[2]),vector, color='k',linestyle = '--', label = 'Marble 30 cm',linewidth=3)
 #----------------------------------------------------
 
-
-#-------Concrete2-------1 day cool down------------
-
-filename = 'Dump10ResLongerMask_23.bnn.lis.npy'
-cube = np.load(filename)
-vector = np.zeros([cube.shape[2]])
-vector, maxVal = calcThis(cube,maxVal)        
-        
-        
-        
-plt.plot(range(0,cube.shape[2]),vector, color='y',linestyle = ':', label = 'Mask 20 cm extra',linewidth=3)
-#----------------------------------------------------
-
-
-filename = 'Dump10ResMarbleDownstream3_23.bnn.lis.npy'
-cube = np.load(filename)
-vector = np.zeros([cube.shape[2]])
-vector, maxVal = calcThis(cube,maxVal)        
-        
-        
-        
-plt.plot(range(0,cube.shape[2]),vector, color='c',linestyle = '--', label = 'Marble platform 30 cm + Elongated mask',linewidth=3)
-##path = 
+#
+##-------Concrete2-------1 day cool down------------
+#
+#filename = 'Dump10ResLongerMask_23.bnn.lis.npy'
+#cube = np.load(filename)
+#vector = np.zeros([cube.shape[2]])
+#vector, maxVal = calcThis(cube,maxVal)        
+#        
+#        
+#        
+#plt.plot(range(0,cube.shape[2]),vector, color='y',linestyle = ':', label = 'Mask 20 cm extra',linewidth=3)
+##----------------------------------------------------
+#
+#
+#filename = 'Dump10ResMarbleDownstream3_23.bnn.lis.npy'
+#cube = np.load(filename)
+#vector = np.zeros([cube.shape[2]])
+#vector, maxVal = calcThis(cube,maxVal)        
+#        
+#        
+#        
+#plt.plot(range(0,cube.shape[2]),vector, color='c',linestyle = '--', label = 'Marble platform 30 cm + Elongated mask',linewidth=3)
+###path = 
 ##os.chdir('//cern.ch/dfs/Users/c/cbjorkma/Documents/Dump TIDGV5/WithMask')
 #filename = 'Dump5Res_23.bnn.lis'
 #cube = np.load(filename +'.npy')
