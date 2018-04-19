@@ -20,8 +20,8 @@ import os
 import numpy as np
 
 #------Load Data-------------------------------------
-path = '//cern.ch/dfs/Users/c/cbjorkma/Documents/Dump TIDGV5/WithMask'
-os.chdir(path)
+#path = '//cern.ch/dfs/Users/c/cbjorkma/Documents/Dump TIDGV5/WithMask'
+#os.chdir(path)
 #filename = 'Dump5Res_21.bnn.lis'
 #cube = 0.0036* Flukato3dMatrix(filename, path,0 )
 #np.save(filename, cube)
@@ -34,8 +34,8 @@ os.chdir(path)
 #cube = 0.0036* Flukato3dMatrix(filename, path,0 )
 #np.save(filename, cube)
 
-path = '//cern.ch/dfs/Users/c/cbjorkma/Documents/Dump TIDGV5/WithoutMask'
-os.chdir(path)
+#path = '//cern.ch/dfs/Users/c/cbjorkma/Documents/Dump TIDGV5/WithoutMask'
+#os.chdir(path)
 #filename = 'Dump5ResNoMask2_21.bnn.lis'
 #cube = 0.0036* Flukato3dMatrix(filename, path,0 )
 #np.save(filename, cube)

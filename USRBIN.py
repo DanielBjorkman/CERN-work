@@ -15,8 +15,13 @@ class USRBIN():
         self.horizontal = []
         self.vertical = []
         self.max = []
+        self.min = []
         self.normfactor = normfactor
         self.binningtype = []
+        self.below = [] 
+        self.side = []
+        self.xcoodinates = []
+        self.zcut = []
     
     def read(self):
         import os
@@ -234,12 +239,13 @@ class USRBIN():
     
         self.cube = cube * self.normfactor
         self.max = np.amax(cube)
+        self.min = np.amin(cube)
         self.info = info
     
     def plot(self):
         
         cube = self.cube
-        print 'faaf'
+#        print 'faaf'
         
         import math
         import numpy as np
@@ -309,60 +315,75 @@ class USRBIN():
         import numpy as np
         
         cube = self.cube
-        self.vertical = cube[int(x.cube.shape[0]/2),0:,0:]       
-        self.horizontal = cube[0:,int(x.cube.shape[1]/2),0:]  
+        self.vertical = cube[int(cube.shape[0]/2),0:,0:]       
+        self.horizontal = cube[0:,int(cube.shape[1]/2),0:]  
+        self.zcut = cube[0:,0:,int(cube.shape[2]/2)]  
         
         vector = np.zeros((cube.shape[2]))
+        vector2 = np.zeros((cube.shape[2]))
+        vector3 = np.zeros((cube.shape[2]))
         for r in range(0,cube.shape[2]):
             vector[r] = np.sum(cube[0:,0:,r])
+            vector2[r] = cube[int(cube.shape[0]/2), 5,r]
+            vector3[r] = cube[14 ,int( cube.shape[1]/2),r]
         self.depthdeposition = vector
+        self.below = vector2
+        self.side = vector3
+        self.xcoodinates = np.arange(int(self.info['zmin'][0]),int(self.info['zmax'][0]),self.info['zwidth'][0]*1.0001)
         
         
         
-import math
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.colors import LogNorm
-import matplotlib.gridspec as gridspec
-import matplotlib.ticker as ticker       
-
-filename = 'Dump5Res_22.bnn.lis'
-path = '//rpclustersrv1/cbjorkma/Dump studies'
-    
-x = USRBIN(filename, path)
-
-
-print x.filename
-
-print x.cube
-
-x.read()
-
-print x.cube
-
-print x.max
-
-print x.info['xbin'][0]
-
-
-
-#x.plot()
-
-
-x.calc()
-
-fig = plt.figure()
-
-plt.plot(x.depthdeposition)
-plt.yscale("log", nonposy='clip')
-
-plt.show()
-
-
-
-
-
-
+#import math
+#import numpy as np
+#import matplotlib.pyplot as plt
+#from matplotlib.colors import LogNorm
+#import matplotlib.gridspec as gridspec
+#import matplotlib.ticker as ticker       
+#
+#filename = 'LSS2_exp_24.bnn.lis'
+#
+#path = '//rpclustersrv1/cbjorkma/LSS2'
+#    
+#x = USRBIN(filename, path)
+#
+#
+#print x.filename
+#
+#print x.cube
+#
+#x.read()
+#
+#print x.cube
+#
+#print x.max
+#
+#print x.info['xbin'][0]
+#
+#
+#
+##x.plot()
+#
+#
+#x.calc()
+#
+##fig = plt.figure()
+##
+##plt.plot(x.depthdeposition)
+##plt.yscale("log", nonposy='clip')
+##
+##plt.show()
+#
+#
+#
+#a = np.arange(int(x.info['zmin'][0]),int(x.info['zmax'][0]),x.info['zwidth'][0]*1.0001)
+#
+#assert a.shape == x.below.shape
+#
+###
+###
+##
+#
+#
 
 
 

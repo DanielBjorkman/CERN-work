@@ -16,6 +16,7 @@ import datetime #, timedelta
 import matplotlib.pyplot as plt
 import math
 import matplotlib.patches as patches
+from PMIs import PMI
 #from Flukato3dMatrix import Flukato3dMatrix
 
 plt.close()
@@ -291,7 +292,7 @@ manualMeasurement = datetime.datetime(2017,10,24,12,00,00)
 
 
 path = '//cern.ch/dfs/Users/c/cbjorkma/Documents/LSS 2/ActivationDetectors'
-
+#path = '//cern.ch/dfs/Users/c/cbjorkma/Documents/LSS 2/ActivationDetectors/Monitors4April'
 os.chdir(path)
 
 #protonEnd = '2017-11-23 06:00:00.940000'
@@ -304,7 +305,8 @@ end2017 = datetime.datetime(2016,11,14,06,00,00)
 #files = os.listdir(path)
 #files = sorted(files)
 #files = filter(lambda x: x[4:7].isdigit() , files)  
-#files = filter(lambda x: not x[0] == '.' , files)  
+#files = filter(lambda x: not x[0] == '.' , files)
+##files = filter(lambda x: x[0:5] == 'Fluka',files)
 #filenames = files
 #thefile = pd.read_excel(files[0])
 #
@@ -345,7 +347,7 @@ xmax = 10100
 
 
 ymin = 1
-ymax = max(data[0:,1])*5
+ymax = 5000000 #max(data[0:,1])*5
 
 
 
@@ -353,7 +355,9 @@ useshift = 0
 
 
 
-
+path = '//cern.ch/dfs/Users/c/cbjorkma/Documents/LSS 2/ActivationDetectors/Monitors4April'
+pmi = PMI(path, end2017)
+pmi.readFluka(path)
 
 
 
@@ -384,7 +388,7 @@ for i in range(dataPMI.shape[2]):
     x = dataPMI[0:,0,i]
     y = dataPMI[0:,1,i]
     f = interp1d(x, y)
-    timeval = -1.15741e-05
+    timeval = 1.25 #Approx 30h
     
     if i == 0:
         plt.errorbar(xpos[i], f(timeval), color = 'b', linestyle='None', fmt='o', label = 'PMI data',yerr = f(timeval)*0.2)
@@ -392,16 +396,20 @@ for i in range(dataPMI.shape[2]):
         plt.errorbar(xpos[i], f(timeval), color = 'b', linestyle='None', fmt='o',yerr = f(timeval)*0.2)
     print f(timeval)
 
-FlukaData  =  np.load('FlukaPMIdata.npy')
-FlukaSD =    np.load('FlukaPMIerrors.npy')
+#FlukaData  =  np.load('FlukaPMIdata.npy')
+#FlukaSD =    np.load('FlukaPMIerrors.npy')
 
 
-plt.errorbar(xpos,FlukaData[1,0:],yerr = FlukaData[1,0:]*FlukaSD[1,0:]/100, linestyle='None', fmt='o', color = 'r', label = 'Fluka PMI 1 day cool down')
+
+
+
+
+plt.errorbar(xpos,pmi.FlukaData[1,0:],yerr = pmi.FlukaData[1,0:]*pmi.FlukaSD[1,0:]/100, linestyle='None', fmt='o', color = 'r', label = 'Fluka PMI 1 day cool down')
 
 
 #yerr = FlukaData[1,0:]*FlukaSD[1,0:]/100?
 
-print 'How are we on the errors here?'
+#print 'How are we on the errors here?'
 
 plt.legend(loc = 1)
 
@@ -483,7 +491,7 @@ for i in range(dataPMI.shape[2]):
         plt.errorbar(xpos[i], f(timeval), color = 'b', linestyle='None', fmt='o',yerr = f(timeval)*0.2)
     print f(timeval)
 
-plt.errorbar(xpos,FlukaData[3,0:],yerr = FlukaData[3,0:]*FlukaSD[3,0:]/100, linestyle='None', fmt='o', color = 'r', label = 'Fluka PMI 1 month cool down')
+plt.errorbar(xpos,pmi.FlukaData[3,0:],yerr = pmi.FlukaData[3,0:]*pmi.FlukaSD[3,0:]/100, linestyle='None', fmt='o', color = 'r', label = 'Fluka PMI 1 month cool down')
 
 plt.legend(loc = 1)
 
