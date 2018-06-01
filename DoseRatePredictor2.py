@@ -13,6 +13,10 @@ plt.close()
 plt.close()
 plt.close()
 plt.close()
+plt.close()
+plt.close()
+plt.close()
+plt.close()
 
 #from PMIs import PMI
 from USRBIN import USRBIN
@@ -190,16 +194,29 @@ pmi.read()
 pathFluka = '//rpclustersrv1/cbjorkma/LSS2/FullActivation8/PMIs'
 pmi.readFluka(pathFluka, normfactor)
 pmi.calc()
-pmi.predictAmplitudes(0) #4
+#pmi.predictAmplitudes(0) #4
 
 
 
+
+#Load Generic profile
+path = '//rpclustersrv1/cbjorkma/LSS2/FullActivation8/Generic'
+#os.chdir(path)
+pmi.readGeneric('FlukaPMIgeneric', path)
+filename = 'FlukaUSRBINgeneric'
+generic = USRBIN(filename, path, normfactor)
+generic.read()
+generic.calc()
+#x.read()
+#x.calc()
+
+
+pmi.predictAmplitudes2()
 
 
 path = '//rpclustersrv1/cbjorkma/LSS2/FullActivation8/USRBINs'
 os.chdir(path)
 filenames = sorted(os.listdir(path))
-
 try:
     print USRBINS
     print Predicted
@@ -211,11 +228,15 @@ except:
         x = USRBIN(filenames[i], path, normfactor)
         x.read()
         x.calc()
-        USRBINS.append(x)    
-        x = USRBIN(filenames[i], path, normfactor*(1 + pmi.As[i]))
-        x.read()
-        x.calc()
-        Predicted.append(x)  
+        USRBINS.append(x)
+        y =  x#USRBIN(filenames[i], path, normfactor)
+        #y.read()
+        y.cube = x.cube + generic.cube*pmi.As[i]
+        y.calc()
+#        x = USRBIN(filenames[i], path, normfactor*(1 + pmi.As[i]))
+#        x.read()
+#        x.calc()
+        Predicted.append(y)  
 
 
 filename = 'ManualMeasurent.xlsx'
@@ -270,10 +291,11 @@ for i in range(len(pmi.cooldowns)):
     plt.title(pmi.cooldownsText[i])
     
     usrbin = USRBINS[i]
+    predicted = Predicted[i]
 #    smoothed = smoothListGaussian(usrbin.below)
 #    plt.plot(np.arange(min(usrbin.xcoodinates),max(usrbin.xcoodinates),(max(usrbin.xcoodinates) + abs(min(usrbin.xcoodinates)))/len(smoothed) ) ,smoothed, label = 'Fluka, smoothed')
     plt.plot(usrbin.xcoodinates, usrbin.below, label = 'Fluka')
-    plt.plot(usrbin.xcoodinates, pmi.As[i]*usrbin.below, label = 'Predicted base activation')
+    plt.plot(generic.xcoodinates, generic.below*pmi.As[i], label = 'Predicted base activation')
     
     
     plt.errorbar(pmi.xpos,pmi.FlukaData[i,0:],yerr = pmi.FlukaData[i,0:]*pmi.FlukaSD[i,0:], label = 'Fluka PMI',linestyle='None', fmt='o', color = 'r')
@@ -297,10 +319,23 @@ plt.suptitle('Below beamline at PMI height. Simulation and baseline activation',
 plt.show()
 
 
+fig = plt.figure()
+ax = plt.subplot(111)
+i = 0
+cooldown = pmi.cooldowns[i]
+plt.errorbar(pmi.xpos,pmi.targetdoseratepercooldown[i], color = 'c', label = 'Target PMIs',linestyle='None', fmt='o')  
+plt.plot(generic.xcoodinates, generic.below, label = 'Generic profile')
+plt.errorbar(pmi.xpos,pmi.generic[0:],yerr = pmi.genericError[0:]*pmi.generic[0:], label = 'generic PMI',linestyle='None', fmt='o', color = 'r')
+plt.plot(generic.xcoodinates, generic.below*pmi.As[i], label = 'Predicted base activation')
+plt.ylabel('uSv/h',fontsize = 16)
+plt.xlabel('z [cm from quad216]')
+plt.legend()
+plt.title('Below beamline at PMI height')
+ax2 = ax.twinx()
+plotSepta(ax2)
+ax2.get_yaxis().set_visible(False)
 
-
-
-
+plt.show()
 #-------------------------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------------------------
@@ -323,15 +358,18 @@ for i in range(len(pmi.cooldowns)):
             
     plt.title('Predicted Baseline profiles. Sampled at PMI height', fontsize = 16)
     
-    usrbin = USRBINS[i]
+#    usrbin = USRBINS[i]
+#    predicted = Predicted[i]
 
-    plt.plot(usrbin.xcoodinates, pmi.As[i]*usrbin.below, label = pmi.cooldownsText[i])
+    plt.plot(generic.xcoodinates, generic.below*pmi.As[i], label = pmi.cooldownsText[i])
 
     plt.legend()
 
 #plt.plot(pmi.extrapolations[2])
+    plt.ylim(10,2000)
 plt.ylabel('uSv/h',fontsize = 16)
 plt.xlabel('z [cm from quad216]')
+plt.yscale("log", nonposy='clip')
 ax2 = ax.twinx()
 plotSepta(ax2)
 ax2.get_yaxis().set_visible(False)
@@ -349,9 +387,10 @@ for i in range(len(pmi.cooldowns)):
             
     plt.title('Normalized predicted baseline profiles. PMI height', fontsize = 16)
     
-    usrbin = USRBINS[i]
+#    usrbin = USRBINS[i]
+#    predicted = Predicted[i]
 
-    plt.plot(usrbin.xcoodinates, pmi.As[i]*usrbin.below/max(pmi.As[i]*usrbin.below), label = pmi.cooldownsText[i])
+    plt.plot(generic.xcoodinates, generic.below*pmi.As[i]/max(generic.below*pmi.As[i]), label = pmi.cooldownsText[i])
 
     plt.legend()
 
@@ -438,9 +477,115 @@ plt.show()
 #-------------------------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------------------------
 
-
-
 from matplotlib.gridspec import GridSpec
+gs = GridSpec(2, 2)
+
+fig = plt.figure()
+
+
+
+
+ax = fig.add_subplot(gs[0,0])
+for i in range(len(pmi.cooldowns)):
+
+    
+    cooldown = pmi.cooldowns[i]
+     
+            
+    plt.title('Absolut values', fontsize = 16)
+    
+    usrbin = USRBINS[i]
+
+    plt.plot(usrbin.xcoodinates, usrbin.below, label = pmi.cooldownsText[i])
+
+    plt.legend()
+
+#plt.plot(pmi.extrapolations[2])
+
+plt.ylabel('uSv/h',fontsize = 16)
+plt.xlabel('z [cm from quad216]')
+ax2 = ax.twinx()
+plotSepta(ax2)
+ax2.get_yaxis().set_visible(False)
+
+
+
+
+ax = fig.add_subplot(gs[0,1])
+for i in range(len(pmi.cooldowns)):
+
+    
+    cooldown = pmi.cooldowns[i]
+     
+            
+    plt.title('Normalized fluka profiles', fontsize = 16)
+    
+    usrbin = USRBINS[i]
+
+    plt.plot(usrbin.xcoodinates, usrbin.below/max(usrbin.below), label = pmi.cooldownsText[i])
+
+    plt.legend()
+
+plt.yscale("log", nonposy='clip')
+plt.ylabel('uSv/h',fontsize = 16)
+plt.xlabel('z [cm from quad216]')
+ax2 = ax.twinx()
+plotSepta(ax2)
+ax2.get_yaxis().set_visible(False)
+
+
+
+
+ax = fig.add_subplot(gs[1,0:2])
+refUsrbin = USRBINS[len(USRBINS)-1]
+for i in range(len(pmi.cooldowns) -1):
+
+    
+    cooldown = pmi.cooldowns[i]
+     
+            
+    plt.title('Normalized fluka profiles / 80 days normalized profile', fontsize = 16)
+    
+    usrbin = USRBINS[i]
+    ys = usrbin.below/max(usrbin.below)
+    reference = refUsrbin.below/max(usrbin.below)
+    
+    
+    plt.plot(usrbin.xcoodinates, ys / reference, label = pmi.cooldownsText[i])
+
+    plt.legend()
+
+plt.yscale("log", nonposy='clip')
+#plt.plot(pmi.extrapolations[2])
+plt.ylabel('Ratio',fontsize = 16)
+plt.xlabel('z [cm from quad216]')
+ax2 = ax.twinx()
+plotSepta(ax2)
+ax2.get_yaxis().set_visible(False)
+
+
+plt.suptitle('Fluka profiles. 1m from beam axis', fontsize = 22)
+
+
+
+
+
+
+
+#-------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+#from matplotlib.gridspec import GridSpec
 gs = GridSpec(5, 2)
 
 
@@ -448,7 +593,7 @@ xmin = -500
 xmax = 10100
 
 ymin = 5
-ymax = 1.2*10**4
+ymax = 1.7*10**4
 
 
 #xes = np.arange(-500,10100,(10100+500)/float(1000))
@@ -461,8 +606,8 @@ ax = fig.add_subplot(gs[0:2,0])
 
 plt.plot(manual.data[0:,0],manual.data[0:,1], label = 'Manual measurement')
 
-plt.errorbar(manual.xes, manual.fluka1, yerr = manual.fluka1*manual.errors1/100, label = 'Fluka', color = 'r')
-plt.plot(Predicted[0].xcoodinates,Predicted[0].side[0:], label = 'Prediction', color = 'g')
+plt.errorbar(manual.xes, manual.fluka1, yerr = manual.fluka1*manual.errors1/100, label = 'Fluka only', color = 'r')
+#plt.plot(Predicted[0].xcoodinates,Predicted[0].side[0:], label = 'Prediction', color = 'g')
 
 plt.xlim(xmin, xmax)
 plt.ylim(ymin,ymax)
@@ -492,14 +637,14 @@ ax = fig.add_subplot(gs[0:2,1])
 
 
 ymin = 0.8
-ymax = 3.4*10**3
+ymax = 5.6*10**3
 
 
 
 plt.plot(manual.data[0:,2],manual.data[0:,3], label = 'Manual measurement')
 
-plt.errorbar(manual.xes, manual.fluka2, yerr = manual.fluka2*manual.errors2/100, color = 'r', label = 'Fluka')
-plt.plot(Predicted[2].xcoodinates,Predicted[2].side[0:], color = 'g', label = 'Prediction')
+plt.errorbar(manual.xes, manual.fluka2, yerr = manual.fluka2*manual.errors2/100, color = 'r', label = 'Fluka only')
+#plt.plot(Predicted[2].xcoodinates,Predicted[2].side[0:], color = 'g', label = 'Prediction')
 
 
 
@@ -540,15 +685,15 @@ f = interp1d(x,y)
 #plt.plot(manual.data[0:,0],f(manual.data[0:,0])/manual.data[0:,1], label = 'Predicted/Manual measurement')
 
 #plt.errorbar(xes, Predicted[0].side[0:]/manual.fluka1, yerr = manual.fluka1*manual.errors1/100, label = 'Fluka')
-plt.plot(Predicted[0].xcoodinates,f(Predicted[0].xcoodinates) - Predicted[0].side[0:], label = 'Measured - Predicted', color = 'g')
+#plt.plot(Predicted[0].xcoodinates,f(Predicted[0].xcoodinates) - Predicted[0].side[0:], label = 'Measured - Predicted', color = 'g')
 plt.plot(manual.xes, f(manual.xes) - manual.fluka1 , label = 'Measured - Fluka only', color = 'r')
 
 
-textstr = 'Sum diff predicted/Fluka only: ' +  str( round(sum(abs(f(Predicted[0].xcoodinates) - Predicted[0].side[0:]))/sum(abs(f(manual.xes) - manual.fluka1)),5)) 
-props = dict(boxstyle='round', facecolor='white', alpha=1)
-
-ax.text(0.05, 0.95, textstr, transform=ax.transAxes, fontsize=10,
-    verticalalignment='top',bbox=props) 
+#textstr = 'Sum diff predicted/Fluka only: ' +  str( round(sum(abs(f(Predicted[0].xcoodinates) - Predicted[0].side[0:]))/sum(abs(f(manual.xes) - manual.fluka1)),5)) 
+#props = dict(boxstyle='round', facecolor='white', alpha=1)
+#
+#ax.text(0.05, 0.95, textstr, transform=ax.transAxes, fontsize=10,
+#    verticalalignment='top',bbox=props) 
 
 
 
@@ -581,15 +726,15 @@ f = interp1d(x,y)
 #plt.plot(manual.data[0:,0],f(manual.data[0:,0])/manual.data[0:,1], label = 'Predicted/Manual measurement')
 
 #plt.errorbar(xes, Predicted[0].side[0:]/manual.fluka1, yerr = manual.fluka1*manual.errors1/100, label = 'Fluka')
-plt.plot(Predicted[2].xcoodinates,f(Predicted[2].xcoodinates) - Predicted[2].side[0:] , label = 'Measured - Predicted', color = 'g')
+#plt.plot(Predicted[2].xcoodinates,f(Predicted[2].xcoodinates) - Predicted[2].side[0:] , label = 'Measured - Predicted', color = 'g')
 plt.plot(manual.xes, f(manual.xes) - manual.fluka2, label = 'Measured - Fluka only', color = 'r')
 
 
-textstr = 'Sum diff predicted/Fluka only: ' +  str( round(sum(abs(f(Predicted[2].xcoodinates) - Predicted[2].side[0:]))/sum(abs(f(manual.xes) - manual.fluka2)),5)) 
-props = dict(boxstyle='round', facecolor='white', alpha=1)
-
-ax.text(0.05, 0.95, textstr, transform=ax.transAxes, fontsize=10,
-    verticalalignment='top',bbox=props) 
+#textstr = 'Sum diff predicted/Fluka only: ' +  str( round(sum(abs(f(Predicted[2].xcoodinates) - Predicted[2].side[0:]))/sum(abs(f(manual.xes) - manual.fluka2)),5)) 
+#props = dict(boxstyle='round', facecolor='white', alpha=1)
+#
+#ax.text(0.05, 0.95, textstr, transform=ax.transAxes, fontsize=10,
+#    verticalalignment='top',bbox=props) 
 
 
 plt.xlim(xmin, xmax)
@@ -628,8 +773,8 @@ f = interp1d(x,y)
 #plt.plot(manual.data[0:,0],f(manual.data[0:,0])/manual.data[0:,1], label = 'Predicted/Manual measurement')
 
 #plt.errorbar(xes, Predicted[0].side[0:]/manual.fluka1, yerr = manual.fluka1*manual.errors1/100, label = 'Fluka')
-plt.plot(Predicted[0].xcoodinates,f(Predicted[0].xcoodinates)/Predicted[0].side[0:], label = 'Measured/Predicted',color = 'g')
-plt.plot(manual.xes, f(manual.xes)/manual.fluka1, label = 'Measured/Fluka only', color = 'r')
+#plt.plot(Predicted[0].xcoodinates,f(Predicted[0].xcoodinates)/Predicted[0].side[0:], label = 'Measured/Predicted',color = 'g')
+plt.plot(manual.xes, manual.fluka1/f(manual.xes), label = 'Fluka only/Measured', color = 'r')
 
 
 
@@ -672,8 +817,8 @@ f = interp1d(x,y)
 #plt.plot(manual.data[0:,0],f(manual.data[0:,0])/manual.data[0:,1], label = 'Predicted/Manual measurement')
 
 #plt.errorbar(xes, Predicted[0].side[0:]/manual.fluka1, yerr = manual.fluka1*manual.errors1/100, label = 'Fluka')
-plt.plot(Predicted[2].xcoodinates,f(Predicted[2].xcoodinates)/Predicted[2].side[0:], label = 'Measured/Predicted', color = 'g')
-plt.plot(manual.xes, f(manual.xes)/manual.fluka2, label = 'Measured/Fluka only', color = 'r')
+#plt.plot(Predicted[2].xcoodinates,f(Predicted[2].xcoodinates)/Predicted[2].side[0:], label = 'Measured/Predicted', color = 'g')
+plt.plot(manual.xes, manual.fluka2/f(manual.xes), label = 'Fluka only/Measured', color = 'r')
 
 
 plt.xlim(xmin, xmax)
@@ -717,6 +862,92 @@ plt.show()
 
 
 
+
+
+
+#------------------------------------
+
+
+xmin = -500
+xmax = 10100
+
+ymin = 5
+ymax = 1.8*10**4
+
+
+#xes = np.arange(-500,10100,(10100+500)/float(1000))
+
+fig = plt.figure()
+
+#ax = plt.subplot(221)
+ax = fig.add_subplot(211)
+
+
+plt.plot(manual.data[0:,0],manual.data[0:,1], label = 'Ring measurement',linewidth = 4)
+
+for i in range(1,5):
+    plt.errorbar(manual.xes, i*manual.fluka1, yerr = manual.fluka1*manual.errors1/100, label = 'Fluka *' + str(i))
+#plt.plot(Predicted[0].xcoodinates,Predicted[0].side[0:], label = 'Prediction', color = 'g')
+
+plt.xlim(xmin, xmax)
+plt.ylim(ymin,ymax)
+plt.ylabel('uSv/h',fontsize = 16)
+#plt.xlabel('z [cm from quad216]')
+#plt.yscale("log", nonposy='clip')
+
+
+plt.legend()
+
+
+plt.title('30h cool down', fontsize = 22)
+
+ax2 = ax.twinx()
+plotSepta(ax2)
+plt.ylim(0,25)
+
+ax2.get_yaxis().set_visible(False)
+
+
+
+
+
+
+#ax = plt.subplot(222)
+ax = fig.add_subplot(212)
+
+
+ymin = 0.8
+ymax = 5*10**3
+
+
+
+plt.plot(manual.data[0:,2],manual.data[0:,3], label = 'Ring measurement',linewidth = 4)
+for i in range(1,5):
+    plt.errorbar(manual.xes, i*manual.fluka2, yerr = manual.fluka2*manual.errors2/100, label = 'Fluka *' + str(i))
+#plt.plot(Predicted[2].xcoodinates,Predicted[2].side[0:], color = 'g', label = 'Prediction')
+
+
+
+
+plt.xlim(xmin, xmax)
+plt.ylim(ymin,ymax)
+plt.ylabel('uSv/h',fontsize = 16)
+#plt.xlabel('z [cm from quad216]')
+#plt.yscale("log", nonposy='clip')
+plt.axvline(x= 0 ,linestyle = '--', color = 'k', linewidth = 0.3)
+plt.axvline(x= quad217 - quad216 ,linestyle = '--', color = 'k', linewidth = 0.3)
+plt.axvline(x= quad218 - quad216 ,linestyle = '--', color = 'k', linewidth = 0.3)
+plt.axvline(x= quad219 - quad216 ,linestyle = '--', color = 'k', linewidth = 0.3)
+
+plt.legend()
+
+plt.title('1 month + 30h cool down', fontsize = 22)
+
+ax2 = ax.twinx()
+plotSepta(ax2)
+
+plt.ylim(0,25)
+ax2.get_yaxis().set_visible(False)
 
 
 

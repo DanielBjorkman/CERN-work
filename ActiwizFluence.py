@@ -30,7 +30,8 @@ def ActiwizFluence(path,volume = 1):
     
     onlyfiles = [f for f in listdir(path) if isfile(join(path, f))]           
     files = filter(lambda x: x[-4:] == '.txt' , onlyfiles)             
-    files = filter(lambda x: x[-8:-4] == 'NEUT'or x[-8:-4] == 'PROT' or x[-8:-4] == '_PI+' or x[-8:-4] == '_PI-', files)
+    #files = filter(lambda x: x[-8:-4] == 'NEUT'or x[-8:-4] == 'PROT' or x[-8:-4] == '_PI+' or x[-8:-4] == '_PI-', files)
+    files = filter(lambda x: x[-7:-4] == 'Neu'or x[-7:-4] == 'Pro' or x[-7:-4] == 'Pi+' or x[-7:-4] == 'Pi-', files)
     files = sorted(files)      
                    
          
@@ -75,3 +76,10 @@ def ActiwizFluencePlot(In ,ax, prim =1):
         plt.ylabel('E * Fluence [cm-2]', fontsize = 16)
         plt.grid(True)
         plt.legend()
+
+
+
+path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/ZSa/Out73_dir'
+
+
+data = ActiwizFluence(path, 1)

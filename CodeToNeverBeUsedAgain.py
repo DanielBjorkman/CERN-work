@@ -19,24 +19,28 @@ import math
 import numpy as np
 
 
-path = '//rpclustersrv1/cbjorkma/Dump studies/Uppstream Hole study/Fluence/AirTunnel_dir'
+path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/ZSa/Out73_dir'
 
 
-data = ActiwizFluence(path, 15912)
+data = ActiwizFluence(path, 1)
 
 prim = 1
 fig = plt.figure()
 ax = plt.subplot(211)
 ActiwizFluencePlot(data, ax, prim)
-plt.title('Downstream tunnel fluence, with first downstream mask', fontsize = 20)
-plt.ylim([math.pow(10,-9), math.pow(10,-1)])
+plt.title('ZSa', fontsize = 20)
+#plt.ylim([math.pow(10,-9), math.pow(10,-1)])
 
-path = '//rpclustersrv1/cbjorkma/Dump studies/Uppstream Hole study/Fluence/AirTunnelNoMASK_dir'
-data = ActiwizFluence(path, 15912)
+
+
+
+
+path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/ZSb/Out73_dir'
+data2 = ActiwizFluence(path, 1)
 ax = plt.subplot(212)
-ActiwizFluencePlot(data, ax, prim)
-plt.title('Downstream tunnel fluence, WITHOUT first downstream mask', fontsize = 20)
-plt.ylim([math.pow(10,-9), math.pow(10,-1)])
+ActiwizFluencePlot(data2, ax, prim)
+plt.title('ZSb', fontsize = 20)
+#plt.ylim([math.pow(10,-9), math.pow(10,-1)])
 plt.show()
 
 

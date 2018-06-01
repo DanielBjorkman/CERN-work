@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Mar 21 11:27:49 2018
+Created on Mon May 28 11:44:46 2018
 
 @author: cbjorkma
 """
 
-class USRBIN():
-    
-    
-    
+#FluenceParser
+

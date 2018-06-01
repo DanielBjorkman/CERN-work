@@ -20,7 +20,13 @@ import math
 plt.close()
 plt.close()
 plt.close()
-#plt.clf()
+plt.close()
+plt.close()
+plt.close()
+plt.close()
+plt.close()
+plt.close()
+plt.clf()
 
 septaColor = 'limegreen'
 
@@ -242,30 +248,39 @@ fluka = np.load('Run02usermed.npy')
 directory = "//rpclustersrv1/cbjorkma/LSS2"
 os.chdir(directory)
 
+#xmin = -1200 #cm from quad 216
+#xmax = 10100
 ##load MADX------------------------------
 
-#
-#import pickle
-#with open('lost.pkl', 'rb') as f:
-#    data = pickle.load(f)
-#   
-#
-##madxListed = data.values()
-#
-#keys = data.keys()
-#print keys
-#madx = np.zeros([data.shape[0],3])
-#
-#for i in range(data.shape[0]):
-#    madx[0:,0] = data.S
-#    madx[0:,1] = data.X*100
-#    madx[0:,2] = data.Y*100
-#np.save('madxLost2',madx)
-##------------------------------------------------
+try:
+    madx = np.load('madxLost3.npy')
+except:
+    import pickle
+    with open('distribution_losses_full.pkl', 'rb') as f:
+        data = pickle.load(f)
+       
+#    Smax = xmax/100 + 1665.4231
+#    Smin = xmin/100 + 1665.4231
+#    
+#    data= data[data['S'].between(Smin,Smax)]
+    #madxListed = data.values()
+    
+    keys = data.keys()
+    print keys
+    madx = np.zeros([data.shape[0],3])
+    
+    for i in range(data.shape[0]):
+        madx[0:,0] = data.S
+        madx[0:,1] = data.X*100
+        madx[0:,2] = data.Y*100
+    np.save('madxLost3',madx)
+#------------------------------------------------
 #Index([u'TURN', u'X', u'PX', u'Y', u'PY', u'T', u'PT', u'S', u'E', u'ELEMENT'], dtype='object')
-madx = np.load('madxLost2.npy')
+
 madx[0:,0] = 100*(madx[0:,0] - np.ones([madx.shape[0]])*1665.4231)
 #madxPrim = madx.shape[0]
+
+
 
 
 
@@ -280,47 +295,60 @@ madx[0:,0] = 100*(madx[0:,0] - np.ones([madx.shape[0]])*1665.4231)
 #primaries = 0.72*fluka.shape[0]
 
 
-
-directory = "//rpclustersrv1/cbjorkma/LSS2/2018-01-25_200umRibbonZS_full_abd_z2232cm_ZSrho"
+print 'Reading Fluka'
+#directory = "//rpclustersrv1/cbjorkma/LSS2/LSS2_diffuser2018-04-12_200umRibbonZS_ZSint_full_2011_abd"
+directory = '//rpclustersrv1/cbjorkma/LSS2/LSS2_mt20180529_sloex_ZSint_abd'
 os.chdir(directory)
 
+filename = 'FlukaMultiTurn'
+try:
+    fluka = np.load(filename + '.npy')
+except:
+
+    print 'First...'    
+    import pickle
+    with open('LSS2_exp001_fort.99.pkl', 'rb') as f:
+        data = pickle.load(f)
+    
+    #madxListed = data.values()
+    
+    keys = data.keys()
+
+    print keys
+    fluka1 = np.zeros([data.shape[0],3])
+    
+    for i in range(data.shape[0]):
+        fluka1[0:,0] = data.X*100
+        fluka1[0:,1] = data.Y*100
+        fluka1[0:,2] = data.Z*100
 
 
-import pickle
-with open('LSS2_exp001_fort.99.pkl', 'rb') as f:
-    data = pickle.load(f)
+    print 'Second...'    
+    with open('LSS2_exp001_usrmed.dat.pkl', 'rb') as f:
+        data = pickle.load(f)
+    
+    #madxListed = data.values()
+    
+    keys = data.keys()
 
-#madxListed = data.values()
+    print keys
+    fluka2 = np.zeros([data.shape[0],3])
+    
+    for i in range(data.shape[0]):
+        fluka2[0:,0] = data.X*100
+        fluka2[0:,1] = data.Y*100
+        fluka2[0:,2] = data.Z*100
+    
+    fluka = np.concatenate((fluka1,fluka2), axis = 0)
+    
+    np.save(filename,fluka )
+print 'Fluka loaded'
+#normFluka = 20000000
 
-keys = data.keys()
-print keys
-fluka1 = np.zeros([data.shape[0],3])
 
-for i in range(data.shape[0]):
-    fluka1[0:,0] = data.X*100
-    fluka1[0:,1] = data.Y*100
-    fluka1[0:,2] = data.Z*100
 
-with open('LSS2_exp001_usrmed.pkl', 'rb') as f:
-    data = pickle.load(f)
-
-#madxListed = data.values()
-
-keys = data.keys()
-print keys
-fluka2 = np.zeros([data.shape[0],3])
-
-for i in range(data.shape[0]):
-    fluka2[0:,0] = data.X*100
-    fluka2[0:,1] = data.Y*100
-    fluka2[0:,2] = data.Z*100
-
-fluka = np.concatenate((fluka1,fluka2), axis = 0)
-
-np.save('FlukaInelasticAdjustedDensity',fluka )
-
+#normFluka = 160000000
 normFluka = 20000000
-
 #toPlot =normHist( data[0:,5])    
 
 #end = math.floor(1* fluka.shape[0])
@@ -348,16 +376,17 @@ suptitle1 = 'LSS2 Lost particles in aperture. Horizontal comparison'
 
 suptitle2 = 'LSS2 Lost particles in aperture. Vertical comparison'
 
-title1 = 'Fluka, inelastic at ZSs, adjusted wire density'
+#title1 = 'Fluka, inelastic at ZSs, adjusted wire density'
+title1 = 'Fluka, inelastic at ZSs'
 title2 = 'MADX'
 histTitle = 'Full loss map. Binning normalized to # of simulated particles'
 
-zoom = 0
-xmin = 6670
-xmax = 8370
-ymin = 2.5
-ymax = 15.5
+zoom = 1
 
+#ymin = 2.5
+ymin = -15
+ymax = 16
+bins = int(400/float(xmax) * (xmax - xmin))
 #----------------------------------------------------------------------------------------
 
 ##----------------------------------------------------------------------------------------
@@ -373,12 +402,51 @@ ymax = 15.5
 ##----------------------------------------------------------------------------------------
 #
 
+madxPrim = 10980000/4
+##----------------------------------------------------------------------------------------
+print 'Normalizing to #Extracted + #lost'
+
+#weight = 6.32802429234
+weight = 1.55904513163
+normFluka = normFluka/weight
+
+extracted = 1719621
+madxPrim = (float(madx.shape[0]) + extracted)
 
 
+histTitle = 'Full loss map. Binning normalized to # extracted + #lost particles'
+##----------------------------------------------------------------------------------------
+#
+
+#ones = madx[0][madx[0] < xmax ] #
+
+#condition = madx[0:,0] > xmin and madx[0:,0] < xmax
+
+#madx = filter(lambda x: x[0] > xmin and x[0] < xmax, madx)
+#madx2
+#madx = madx[np.where(madx>xmin)]
+#madx = madx[np.where(madx<xmax)]
+
+#list = []
+#for i in range(len(madx)):
+#    if madx[i,0] < xmax and madx[i,0] > xmin:
+#        list.append(i)
+#        
+#madx2 = np.zeros([len(list),3])
+#for i in range(len(list)):
+#    madx2[i,0:] = madx[list[i],0:]
+#    
+#
+#madx = madx2
 
 #normFluka = fluka.shape[0]
 #madxPrim = madx.shape[0]
-madxPrim = 10980000
+
+
+
+
+
+
 
 
 
@@ -483,7 +551,10 @@ for i in range(2):
     plt.axvline(x=3199.77,linestyle = '--', color = 'black' )
     plt.axvline(x=6399.54,linestyle = '--', color = 'black' )
     plt.axvline(x=9599.31,linestyle = '--', color = 'black' )
-    plt.legend(loc = 2)
+    if i == 0:
+        plt.legend(loc = 1)
+    else:
+        plt.legend(loc = 2)
     
   
     
@@ -516,11 +587,14 @@ for i in range(2):
     plt.axvline(x=3199.77,linestyle = '--', color = 'black' )
     plt.axvline(x=6399.54,linestyle = '--', color = 'black' )
     plt.axvline(x=9599.31,linestyle = '--', color = 'black' )
-    plt.legend(loc = 2)
+    if i == 0:
+        plt.legend(loc = 1)
+    else:
+        plt.legend(loc = 2)
     
-    if zoom:
-        plt.xlim(xmin,xmax)
-        plt.ylim(ymin,ymax)
+#    if zoom:
+#        plt.xlim(xmin,xmax)
+#        plt.ylim(ymin,ymax)
     
     #plt.legend(loc = 2)
     #plt.setp( ax.get_yticklabels(), visible=False)
@@ -529,20 +603,29 @@ for i in range(2):
     
 #    fig = plt.figure()
 #    ax1 = plt.subplot(111)
-    weights = 100* np.ones_like(xF)/float(normFluka)
-    histF, xbins, Placeholder = plt.hist(xF,weights = weights, bins = 400,fc=(1, 0, 0, 0.8), label = title1)
-    
-    
     
     #x = madx[0:,0]
-    weights = 100* np.ones_like(xM)/float(madxPrim)
-    histM, xbins, Placeholder = plt.hist(xM,weights = weights, bins = xbins,fc=(0, 0, 1, 0.4), label = title2)
+
     
+    weights = np.ones_like(xF)/float(normFluka)
+    histF, xbins, Placeholder = plt.hist(xF,weights = weights, bins = bins,fc=(1, 0, 0, 0.8), label = title1)
+    
+    weights = np.ones_like(xM)/float(madxPrim)
+    histM, xbins, Placeholder = plt.hist(xM,weights = weights, bins = xbins,fc=(0, 0, 1, 0.4), label = title2)        
     
 
     
-    h = plt.ylabel('%')
-    h.set_rotation(0)
+
+    
+#    textstr = 'Sum diff predicted/Fluka only: '  
+#    props = dict(boxstyle='round', facecolor='white', alpha=1)
+#    
+#    ax1.text(0.05, 0.95, textstr, transform=ax.transAxes, fontsize=10,
+#        verticalalignment='top',bbox=props)     
+
+    
+    h = plt.ylabel('Fraction')
+    h.set_rotation(90)
     plt.title(histTitle)
     #plt.title('LSS2 Lossmap')
     ax1.set_yscale("log", nonposy='clip')
@@ -562,25 +645,177 @@ for i in range(2):
     if zoom:
         plt.xlim(xmin,xmax)  
         
+
+
     
 plt.show()
 
 
-#fig = plt.figure()
+
+
+
+
+
+
+#assert xbins.shape[0] -1 == 400
+#TPST = range(187,198 +1)
+#sum(histF[TPST])
 #
-#ax1 = plt.subplot(111)
+#MST1 = range(201, 211+1)
+#sum(histF[MST1])
+#sum(histM[MST1])
 #
-##xF = fluka[0:,5]
-#weights = 100* np.ones_like(xF)/float(normFluka)
-#histx, xbins, Placeholder = plt.hist(xF,weights = weights, bins = 200,fc=(1, 0, 0, 0.8), label = title1)
+#MST2 = range(213,225+1)
 #
+#MST3 = range(226, 240+1)
 #
+#quad218 = range(244,272)
 #
-##xM = madx[0:,0]
-#weights = 100* np.ones_like(xM)/float(madxPrim)
-#histx, xbins, Placeholder = plt.hist(xM,weights = weights, bins = xbins,fc=(0, 0, 1, 0.4), label = title2)
+#MSE1 = range(275,286)
 #
+#MSE2 = range(289 , 301+1)
 #
+#MSE3 = range(303 , 315)
+#
+#MSE4 = range(317, 329+1)
+#
+#MSE5 = range(331, 344+1)
+
+ZSs = range(60,140 +1 )
+
+TPST = range(242,252+1)
+sum(histF[TPST])
+
+MST1 = range(255, 265+1)
+sum(histF[MST1])
+sum(histM[MST1])
+
+MST2 = range(268,280+1)
+
+MST3 = range(282, 293+1)
+
+quad218 = range(300,323+1)
+
+MSE1 = range(328,338+1)
+
+MSE2 = range(341 , 351+1)
+
+MSE3 = range(355 , 365+1)
+
+MSE4 = range(369, 379+1)
+
+MSE5 = range(382, 392+1)
+
+
+
+test = histM + histF
+
+
+def func(histF,histM,x):
+    return str(sum(histF[x]) /sum(histM[x]))
+
+
+print 'Fluka/MADX'
+print 'ZSs: ' + func(histF,histM,ZSs)
+print 'TPST: ' + func(histF,histM,TPST)
+print 'MST1: ' + func(histF,histM,MST1)
+print 'MST2: ' + func(histF,histM,MST2)
+print 'MST3: ' + func(histF,histM,MST3)
+
+print 'Around Quad218: ' + func(histF,histM,quad218)
+print 'MSE1: ' + func(histF,histM,MSE1)
+print 'MSE2: ' + func(histF,histM,MSE2)
+print 'MSE3: ' + func(histF,histM,MSE3)
+print 'MSE4: ' + func(histF,histM,MSE4)
+print 'MSE5: ' + func(histF,histM,MSE5)
+print ' '
+
+
+
+
+
+
+
+
+
+
+
+
+
+fig = plt.figure()
+ax1 = plt.subplot(211)
+
+weights = np.ones_like(xF)/float(normFluka)
+histF, xbins, Placeholder = plt.hist(xF,weights = weights, bins = bins,fc=(1, 0, 0, 0.8), label = title1)
+
+weights = np.ones_like(xM)/float(madxPrim)
+histM, xbins, Placeholder = plt.hist(xM,weights = weights, bins = xbins,fc=(0, 0, 1, 0.4), label = title2)      
+
+
+
+
+h = plt.ylabel('Fraction')
+h.set_rotation(90)
+plt.title(histTitle)
+#plt.title('LSS2 Lossmap')
+ax1.set_yscale("log", nonposy='clip')
+#plt.grid()
+#plt.xlim(0, 10400 )
+plt.xlim(0, xlim )
+plt.grid(linewidth=0.2)
+plt.xlabel('Z [cm]')    
+
+#Quads
+plt.axvline(x=0,linestyle = '--' ,label='Quadrupoles', color = 'black')
+plt.axvline(x=3199.77,linestyle = '--', color = 'black' )
+plt.axvline(x=6399.54,linestyle = '--', color = 'black' )
+plt.axvline(x=9599.31,linestyle = '--', color = 'black' )
+plt.legend(loc = 1)
+
+if zoom:
+    plt.xlim(xmin,xmax)  
+  
+    
+    
+    
+    
+
+ax1 = plt.subplot(212)
+
+weights = np.ones_like(xF)/float(normFluka)
+histF, xbins, Placeholder = plt.hist(xF,weights = weights, bins = bins,fc=(1, 0, 0, 0.8), label = title1)
+
+weights = np.ones_like(xM)/float(madxPrim)
+histM, xbins, Placeholder = plt.hist(xM,weights = weights, bins = xbins,fc=(0, 0, 1, 0.4), label = title2)      
+
+
+h = plt.ylabel('Fraction')
+h.set_rotation(90)
+plt.title('Linear loss distribution. Normalized to #Extracted + #Lost particles')
+#plt.title('LSS2 Lossmap')
+#ax1.set_yscale("log", nonposy='clip')
+#plt.grid()
+plt.ylim(0, 0.001)
+plt.xlim(0, xlim )
+plt.grid(linewidth=0.2)
+plt.xlabel('Z [cm]')    
+
+#Quads
+plt.axvline(x=0,linestyle = '--' ,label='Quadrupoles', color = 'black')
+plt.axvline(x=3199.77,linestyle = '--', color = 'black' )
+plt.axvline(x=6399.54,linestyle = '--', color = 'black' )
+plt.axvline(x=9599.31,linestyle = '--', color = 'black' )
+plt.legend(loc = 1)
+
+if zoom:
+    plt.xlim(xmin,xmax)  
+  
+
+      
+plt.show()
+
+#
+
 #
 #
 ##plt.isinteractive()

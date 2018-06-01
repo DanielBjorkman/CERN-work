@@ -35,6 +35,9 @@ class PMI():
         self.diffratios = []
         self.targetdoseratepercooldown = []
         self.As = []
+        self.generic = []
+        self.genericError = []
+        self.Volume = math.pi*8*8*21.5
         
     def read(self):     
         import os
@@ -104,8 +107,9 @@ class PMI():
 #        FlukaData = normFactor * FlukaData
         
         #Volume compensation
-        Volume = math.pi*8*8*21.5
-        self.FlukaData = FlukaData * normfactor /Volume
+        #Volume = math.pi*8*8*21.5
+        self.normfactor = normfactor
+        self.FlukaData = FlukaData * self.normfactor /self.Volume
         
         #Convert to %
         self.FlukaSD = FlukaSD/100
@@ -269,6 +273,8 @@ class PMI():
                 y = FlukaData[0:,i] + func(xes, *popt)
                 plt.errorbar(xes,y,yerr = y*FlukaSD[0:,i], color = 'c', label = 'Fluka mean + baseline',linestyle='None', fmt='o')
             
+                plt.legend()
+            
                 diffsRatios = g(xes) / y
                 alldiffsInterpolated[i,0:] = diffsRatios
                 
@@ -302,7 +308,16 @@ class PMI():
                 doseratesperposition[j] = f(cooldown)
             targetdoseratepercooldown.append(doseratesperposition)
         self.targetdoseratepercooldown = targetdoseratepercooldown
-            
+    
+    def readGeneric(self, filename, path):
+        import os
+        os.chdir(path)
+        thefile = open(filename,'r')
+        cont = thefile.readlines()
+        #self.generic =  [float(i) for i in cont[10].split()]
+        self.generic =  np.array(cont[10].split()).astype(np.float) * self.normfactor /self.Volume
+        self.genericError =  np.array(cont[14].split()).astype(np.float) /100
+       
     def predictAmplitudes(self,first):
         #from scipy.optimize import minimize , rosen
         #pmi.targetdoseratepercooldown[0][4:]
@@ -331,6 +346,40 @@ class PMI():
     
         self.As = Avec
         print 'Amplitudes predicted'
+
+    def predictAmplitudes2(self):
+        #from scipy.optimize import minimize , rosen
+        #pmi.targetdoseratepercooldown[0][4:]
+        #pmi.FlukaData[0,4:]
+        steps = 50000
+        lbound = 0.1
+        hbound = 9
+        
+        Avec = []
+        for i in range(len(self.FlukaData[0:,0])):
+            data1 = self.targetdoseratepercooldown[i][0:]
+            data2 = self.generic[0:]
+#            print i
+#            print data1
+#            print data2
+    
+            As = np.zeros(steps)
+            sums = np.zeros(steps)
+            
+            for j in range(steps):
+                A = np.arange(lbound,hbound,(hbound - lbound)/float(steps))[j]
+                sums[j] = sum(abs(data1 -A*data2))
+                As[j] = A
+                
+            #print min(sums)
+            idx = np.argmin(sums)
+            Avec.append(As[idx])
+    
+        self.As = Avec
+        assert not all(x==self.As[0] for x in self.As)
+        
+        print 'Amplitudes predicted'
+
 
 
 import datetime

@@ -202,8 +202,8 @@ foamed2.append(thefile.Foamed1[11]*2*chromMass/(2*chromMass + 3*oxygenMass)   )
 #foamed2.append(thefile.Foamed1[12]*1*nickelMass/(1*nickelMass + 1*oxygenMass)   )
 
 idx = elements.index('Ni')
-structural[14] = structural[14] + thefile.Structural1[12]*1*nickelMass/(1*nickelMass + 1*oxygenMass)
-foamed[14] = foamed[14] + thefile.Foamed1[12]*1*nickelMass/(1*nickelMass + 1*oxygenMass) 
+structural[idx] = structural[idx] + thefile.Structural1[12]*1*nickelMass/(1*nickelMass + 1*oxygenMass)
+foamed[idx] = foamed[idx] + thefile.Foamed1[12]*1*nickelMass/(1*nickelMass + 1*oxygenMass) 
 
 
 for i in range(13, len(elements)):
@@ -299,4 +299,66 @@ print 'Fluka: ' + str(sum(fluka))
 print 'Structural: ' + str(sum(struct))
 
 print 'Foamed: ' + str(sum(fom))
+
+
+
+
+fig = plt.figure()
+
+
+ax = plt.subplot(211)
+plt.title('Concrete composition comparison. Samples extracted from ECX5 abutment',fontsize = 22)
+transp = 0.70
+
+width = 0.30
+x = np.arange(len(elements2))
+
+stop = len(x)/2
+
+plt.bar(x[0:stop] -width, struct[0:stop],width = width, label = 'Structural sample')
+plt.bar(x[0:stop]  , fom[0:stop],width = width, label = 'Foamy sample', alpha = transp, color = 'g') #/sum(foamed)
+plt.bar(x[0:stop] + width ,fluka[0:stop],width = width, label = 'Fluka', alpha = transp, color = 'r')
+
+plt.xticks(x[0:stop])
+ax.set_xticklabels(elements2[0:stop])
+
+plt.ylabel('Fraction',fontsize = 20)
+plt.yscale("log", nonposy='clip')
+#plt.title('Structural concrete composition',fontsize = 16)
+
+plt.legend()
+
+ax = plt.subplot(212)
+
+plt.title('Continuation',fontsize = 14)
+
+plt.bar(x[stop:] -width, struct[stop:],width = width, label = 'Structural sample')
+plt.bar(x[stop:]  , fom[stop:],width = width, label = 'Foamy sample', alpha = transp, color = 'g') #/sum(foamed)
+plt.bar(x[stop:] + width ,fluka[stop:],width = width, label = 'Fluka', alpha = transp, color = 'r')
+
+plt.xticks(x[stop:])
+ax.set_xticklabels(elements2[stop:])
+
+plt.ylabel('Fraction',fontsize = 20)
+plt.yscale("log", nonposy='clip')
+
+
+
+
+plt.xlabel('*for Co, the estimated mean is a maximal estimate; the true value is lower, .\n ** Hydrogen added after best estimate     ', fontsize = 16)
+
+
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
 
