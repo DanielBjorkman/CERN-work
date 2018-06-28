@@ -257,7 +257,6 @@ class USRBIN():
     def plot(self):
         
         cube = self.cube
-#        print 'faaf'
         
         import math
         import numpy as np
