@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Nov 16 10:42:36 2017
+Created on Fri Jun 01 13:17:05 2018
 
 @author: cbjorkma
 """
 
-#Loss map
+#Loss map 2
 
 
 import os
@@ -243,47 +243,46 @@ fluka = np.load('Run02usermed.npy')
 
 
 
-##Load madx
-##---------------------------------------------------------------------------------------------------------
-#directory = "//rpclustersrv1/cbjorkma/LSS2"
-#os.chdir(directory)
-#
-xmin = -1200 #cm from quad 216
-xmax = 10100
-###load MADX------------------------------
-#
-#try:
-#    madx = np.load('madxLost3.npy')
-#except:
-#    import pickle
-#    with open('distribution_losses_full.pkl', 'rb') as f:
-#        data = pickle.load(f)
-#       
-##    Smax = xmax/100 + 1665.4231
-##    Smin = xmin/100 + 1665.4231
-##    
-##    data= data[data['S'].between(Smin,Smax)]
-#    #madxListed = data.values()
-#    
-#    keys = data.keys()
-#    print keys
-#    madx = np.zeros([data.shape[0],3])
-#    
-#    for i in range(data.shape[0]):
-#        madx[0:,0] = data.S
-#        madx[0:,1] = data.X*100
-#        madx[0:,2] = data.Y*100
-#    np.save('madxLost3',madx)
-##------------------------------------------------
-##Index([u'TURN', u'X', u'PX', u'Y', u'PY', u'T', u'PT', u'S', u'E', u'ELEMENT'], dtype='object')
-#
-#madx[0:,0] = 100*(madx[0:,0] - np.ones([madx.shape[0]])*1665.4231)
-##madxPrim = madx.shape[0]
-##---------------------------------------------------------------------------------------------------------
-directory = "//rpclustersrv1/cbjorkma/LSS2/LSS2_diffuser2018-04-12_200umRibbonZS_ZSint_full_2011_abd"
+
+
+directory = "//rpclustersrv1/cbjorkma/LSS2"
 os.chdir(directory)
-madx = np.load('FlukaDiffuserZSinteractionFull.npy')
-madx[:,[0,1,2]] = madx[:,[2,0,1]]
+
+#xmin = -1200 #cm from quad 216
+#xmax = 10100
+##load MADX------------------------------
+
+try:
+    madx = np.load('madxLost3.npy')
+except:
+    import pickle
+    with open('distribution_losses_full.pkl', 'rb') as f:
+        data = pickle.load(f)
+       
+#    Smax = xmax/100 + 1665.4231
+#    Smin = xmin/100 + 1665.4231
+#    
+#    data= data[data['S'].between(Smin,Smax)]
+    #madxListed = data.values()
+    
+    keys = data.keys()
+    print keys
+    madx = np.zeros([data.shape[0],3])
+    
+    for i in range(data.shape[0]):
+        madx[0:,0] = data.S
+        madx[0:,1] = data.X*100
+        madx[0:,2] = data.Y*100
+    np.save('madxLost3',madx)
+#------------------------------------------------
+#Index([u'TURN', u'X', u'PX', u'Y', u'PY', u'T', u'PT', u'S', u'E', u'ELEMENT'], dtype='object')
+
+madx[0:,0] = 100*(madx[0:,0] - np.ones([madx.shape[0]])*1665.4231)
+#madxPrim = madx.shape[0]
+
+
+
+
 
 #------------Run inelastic-------------------------------------- With adjusted wire density
 #path = "//rpclustersrv1/cluster_temp/cbjorkma/LSS2/Run inelastic"   
@@ -297,11 +296,12 @@ madx[:,[0,1,2]] = madx[:,[2,0,1]]
 
 
 print 'Reading Fluka'
-#directory = "//rpclustersrv1/cbjorkma/LSS2/LSS2_diffuser2018-04-12_200umRibbonZS_ZSint_full_2011_abd"
-directory = '//rpclustersrv1/cbjorkma/LSS2/LSS2_mt20180529_sloex_ZSint_abd'
+directory = "//rpclustersrv1/cbjorkma/LSS2/LSS2_diffuser2018-04-12_200umRibbonZS_ZSint_full_2011_abd"
+#directory = '//rpclustersrv1/cbjorkma/LSS2/LSS2_mt20180529_sloex_ZSint_abd'
 os.chdir(directory)
 
-filename = 'FlukaMultiTurn'
+#filename = 'FlukaMultiTurn'
+filename = 'FlukaDiffuserZSinteractionFull'
 try:
     fluka = np.load(filename + '.npy')
 except:
@@ -348,8 +348,8 @@ print 'Fluka loaded'
 
 
 
-#normFluka = 160000000
-normFluka = 20000000
+normFluka = 160000000
+#normFluka = 20000000
 #toPlot =normHist( data[0:,5])    
 
 #end = math.floor(1* fluka.shape[0])
@@ -403,50 +403,22 @@ bins = int(400/float(xmax) * (xmax - xmin))
 ##----------------------------------------------------------------------------------------
 #
 
-
-
-
-###----------------------------------------------------------------------------------------
-#print 'Normalizing to #Extracted + #lost'
-#
-##weight = 6.32802429234
-#weight = 1.55904513163
-#normFluka = normFluka/weight
-#
-#
-#madxPrim = 10980000/4 #real
-#extracted = 1719621
-#madxPrim = (float(madx.shape[0]) + extracted)
-#
-#
-#histTitle = 'Full loss map. Binning normalized to # extracted + #lost particles'
-###----------------------------------------------------------------------------------------
-#
-
-
-
+madxPrim = 10980000/4
 ##----------------------------------------------------------------------------------------
 print 'Normalizing to #Extracted + #lost'
 
-
-title2 = 'Single turn'
-title1 = 'Multi turn'
-
-
-weight = 1.55904513163
+weight = 6.32802429234
+#weight = 1.55904513163
 normFluka = normFluka/weight
 
-
-madxPrim = 160000000
-weight = 6.32802429234
-
-madxPrim = madxPrim /weight
-#extracted = 1719621
-#madxPrim = (float(madx.shape[0]) + extracted)
+extracted = 1719621
+madxPrim = (float(madx.shape[0]) + extracted)
 
 
 histTitle = 'Full loss map. Binning normalized to # extracted + #lost particles'
 ##----------------------------------------------------------------------------------------
+#
+
 #ones = madx[0][madx[0] < xmax ] #
 
 #condition = madx[0:,0] > xmin and madx[0:,0] < xmax
@@ -710,30 +682,56 @@ plt.show()
 #
 #MSE5 = range(331, 344+1)
 
-ZSs = range(60,140 +1 )
+ZSs = range(0,91+1 )
 
-TPST = range(242,252+1)
+TPST = range(209,220+1)
 sum(histF[TPST])
 
-MST1 = range(255, 265+1)
+MST1 = range(223, 234+1)
 sum(histF[MST1])
 sum(histM[MST1])
 
-MST2 = range(268,280+1)
+MST2 = range(239,252+1)
 
-MST3 = range(282, 293+1)
+MST3 = range(254, 267+1)
 
-quad218 = range(300,323+1)
+quad218 = range(275,302 +1)
 
-MSE1 = range(328,338+1)
+MSE1 = range(307,319+1)
 
-MSE2 = range(341 , 351+1)
+MSE2 = range(323 , 335+1)
 
-MSE3 = range(355 , 365+1)
+MSE3 = range(339 , 350+1)
 
-MSE4 = range(369, 379+1)
+MSE4 = range(354, 366+1)
 
-MSE5 = range(382, 392+1)
+MSE5 = range(370, 382+1)
+
+
+#ZSs = range(60,140 +1 )
+#
+#TPST = range(242,252+1)
+#sum(histF[TPST])
+#
+#MST1 = range(255, 265+1)
+#sum(histF[MST1])
+#sum(histM[MST1])
+#
+#MST2 = range(268,280+1)
+#
+#MST3 = range(282, 293+1)
+#
+#quad218 = range(300,323+1)
+#
+#MSE1 = range(328,338+1)
+#
+#MSE2 = range(341 , 351+1)
+#
+#MSE3 = range(355 , 365+1)
+#
+#MSE4 = range(369, 379+1)
+#
+#MSE5 = range(382, 392+1)
 
 
 
@@ -744,7 +742,7 @@ def func(histF,histM,x):
     return str(sum(histF[x]) /sum(histM[x]))
 
 
-print 'Multi turn/Single turn'
+print 'Fluka/MADX'
 print 'ZSs: ' + func(histF,histM,ZSs)
 print 'TPST: ' + func(histF,histM,TPST)
 print 'MST1: ' + func(histF,histM,MST1)
@@ -824,7 +822,7 @@ plt.title('Linear loss distribution. Normalized to #Extracted + #Lost particles'
 #plt.title('LSS2 Lossmap')
 #ax1.set_yscale("log", nonposy='clip')
 #plt.grid()
-plt.ylim(0, 0.001)
+plt.ylim(0, 0.00087)
 plt.xlim(0, xlim )
 plt.grid(linewidth=0.2)
 plt.xlabel('Z [cm]')    

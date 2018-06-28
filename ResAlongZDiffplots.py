@@ -185,7 +185,7 @@ def curiosa(ax):
     plt.xticks(initialrange, newrange)
 #    ax.axvline(x=143.7,linestyle = '--', color = 'black', label = 'Marble floor ends' )
 #    ax.axvline(x=float(1950)/3000 * 200,linestyle = ':', color = 'black', label = 'Platform starts' )
-    plt.legend(loc = 1)
+    plt.legend(loc = 1, prop={'size': 6})
 
 
 def drawings(ax2):
@@ -529,18 +529,64 @@ print 'Done'
 
 
 
+fig = plt.figure()
+
+ax = fig.add_subplot(111)
+
+os.chdir(path)
+maxVal = 0
+
+
+filename = 'Dump10Res_21.bnn.lis.npy'
+cube = np.load(filename)
+vector = np.zeros([cube.shape[2]])
+vector, maxVal = calcThis(cube,maxVal)
+
+
+plt.plot(range(0,cube.shape[2]),vector, color='r', label = '1 hour', linewidth = 3)
+
+
+
+filename = 'Dump10Res_22.bnn.lis.npy'
+cube = np.load(filename)
+vector = np.zeros([cube.shape[2]])
+vector, maxVal = calcThis(cube,maxVal)
+
+
+plt.plot(range(0,cube.shape[2]),vector, color='b', label = '1 day', linewidth = 3)
+#
 
 
 
 
 
+filename = 'Dump10Res_23.bnn.lis.npy'
+cube = np.load(filename)
+vector = np.zeros([cube.shape[2]])
+vector, maxVal = calcThis(cube,maxVal)
+
+
+plt.plot(range(0,cube.shape[2]),vector, color='g', label = '1 week', linewidth = 3)
 
 
 
 
 
+curiosa(ax)
+plt.title('Maximal dose rates at downstream exit', fontsize = 22)
+plt.xlim( start, end )
+plt.xlabel('z [cm from downstream exit]', fontsize = 15)
 
 
+ax2 = ax.twinx()
+
+ax2.set_ylim(-150,100)
+
+
+drawings(ax2)
+ax2.set_yticklabels([])
+
+plt.show()
 
 
 

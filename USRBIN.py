@@ -1,11 +1,23 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Mar 21 11:27:49 2018
 
-@author: cbjorkma
-"""
+
+
+
 
 class USRBIN():
+    """
+    Class for reconstructing and handling ASCII formatted Fluka USRBIN outputs
+    
+    Developed by Daniel Björkman 2018
+    daniel.bjorkman@cern.ch
+    
+    call:
+    from USRBIN import USRBIN
+    x = USRBIN(filenames, path, normfactor)
+    x.read()
+    x.calc()
+    x.plot()
+    
+    """
     def __init__(self, filename, path, normfactor = 1):
         self.filename = filename
         self.path = path
