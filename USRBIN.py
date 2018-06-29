@@ -12,7 +12,7 @@ class USRBIN():
     
     call:
     from USRBIN import USRBIN
-    x = USRBIN(filenames, path, normfactor)
+    x = USRBIN(filename, path, normfactor)
     x.read()
     x.calc()
     x.plot()
@@ -356,8 +356,8 @@ class USRBIN():
 #path = '//rpclustersrv1/cbjorkma/LSS2'
 #    
 #x = USRBIN(filename, path)
-#
-#
+##
+##
 #print x.filename
 #
 #print x.cube
@@ -372,19 +372,19 @@ class USRBIN():
 #
 #
 #
-##x.plot()
+#x.plot()
 #
 #
 #x.calc()
 #
-##fig = plt.figure()
-##
-##plt.plot(x.depthdeposition)
-##plt.yscale("log", nonposy='clip')
-##
-##plt.show()
+#fig = plt.figure()
 #
+#plt.plot(x.depthdeposition)
+#plt.yscale("log", nonposy='clip')
 #
+#plt.show()
+#
+
 #
 #a = np.arange(int(x.info['zmin'][0]),int(x.info['zmax'][0]),x.info['zwidth'][0]*1.0001)
 #
