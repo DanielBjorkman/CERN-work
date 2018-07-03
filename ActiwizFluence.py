@@ -58,18 +58,18 @@ def ActiwizFluence(path,volume = 1):
     Out.append(particles)
     return Out
  
-def ActiwizFluencePlot(In ,ax, prim =1):
+def ActiwizFluencePlot(In ,ax, prim =1, line = '-'):
 
     import matplotlib.pyplot as plt
     
     for i in range(len(In) -1):
-        #print 
+
         data = In[i]
         particle = In[len(In)-1][i]        
 
         #plt.loglog((data[0:,0] +  data[0:,1])/2, data[0:,2],label= particle)
         xes = (data[0:,0] +  data[0:,1])/2
-        plt.errorbar(xes, xes*prim*data[0:,2], yerr = xes*data[0:,3]*data[0:,2], label= particle)
+        plt.errorbar(xes, xes*prim*data[0:,2], yerr = xes*data[0:,3]*data[0:,2], label= particle, linestyle = line)
         ax.set_xscale("log", nonposx='clip')
         ax.set_yscale("log", nonposy='clip')
         plt.xlabel('E [GeV]', fontsize = 13)
@@ -79,7 +79,7 @@ def ActiwizFluencePlot(In ,ax, prim =1):
 
 
 
-path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/ZSa/Out73_dir'
-
-
-data = ActiwizFluence(path, 1)
+#path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/ZSa/Out73_dir'
+#
+#
+#data = ActiwizFluence(path, 1)

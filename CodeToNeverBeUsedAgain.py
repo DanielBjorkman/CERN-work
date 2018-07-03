@@ -19,6 +19,13 @@ import math
 import numpy as np
 
 
+#70 ZShell
+#71 Cathode electric
+#72 Septholder
+#73 Wires        
+
+
+
 path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/ZSa/Out73_dir'
 
 
@@ -26,8 +33,8 @@ data = ActiwizFluence(path, 1)
 
 prim = 1
 fig = plt.figure()
-ax = plt.subplot(211)
-ActiwizFluencePlot(data, ax, prim)
+ax = plt.subplot(111)
+ActiwizFluencePlot(data, ax, prim, '-')
 plt.title('ZSa', fontsize = 20)
 #plt.ylim([math.pow(10,-9), math.pow(10,-1)])
 
@@ -38,10 +45,54 @@ plt.title('ZSa', fontsize = 20)
 path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/ZSb/Out73_dir'
 data2 = ActiwizFluence(path, 1)
 ax = plt.subplot(212)
-ActiwizFluencePlot(data2, ax, prim)
+ActiwizFluencePlot(data2, ax, prim, '--')
 plt.title('ZSb', fontsize = 20)
 #plt.ylim([math.pow(10,-9), math.pow(10,-1)])
 plt.show()
+
+
+
+
+
+
+
+
+
+fig = plt.figure()
+
+
+import matplotlib.pyplot as plt
+
+for i in range(len(data)-1):
+    ax =plt.subplot(2,2,i+1)
+    info = data[i]
+    info2 = data2[i]
+    particle = data[len(data)-1][i]        
+    
+    #plt.loglog((data[0:,0] +  data[0:,1])/2, data[0:,2],label= particle)
+    xes = (info[0:,0] +  info[0:,1])/2
+    plt.errorbar(xes, xes*prim*info[0:,2], yerr = xes*info[0:,3]*info[0:,2], label= 'ZS1', linestyle = '-')
+    plt.errorbar(xes, xes*prim*info2[0:,2], yerr = xes*info2[0:,3]*info2[0:,2], label= 'ZS2', linestyle = '--')
+    plt.title(particle , fontsize = 16)
+    ax.set_xscale("log", nonposx='clip')
+    ax.set_yscale("log", nonposy='clip')
+    if i == 2 or i == 3 :
+        plt.xlabel('E [GeV]', fontsize = 13)
+    plt.ylabel('E * Fluence [cm-2]', fontsize = 16)
+    plt.grid(True)
+    plt.legend()
+    plt.suptitle('Septa support fluences comparison', fontsize = 18)
+    
+    
+    
+    
+
+
+
+print 'Done'
+
+
+
 
 
 
