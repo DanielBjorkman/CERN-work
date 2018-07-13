@@ -9,7 +9,7 @@ Created on Mon May 28 11:44:46 2018
 
 import os
 
-path = '//rpclustersrv1/cbjorkma/LSS2/Fluence' 
+path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/Carbon wire' 
 
 os.chdir(path)
 

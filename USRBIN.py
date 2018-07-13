@@ -1,14 +1,11 @@
-
-
-
+# coding=utf-8
 
 
 class USRBIN():
     """
     Class for reconstructing and handling ASCII formatted Fluka USRBIN outputs
     
-    Developed by Daniel Björkman 2018
-    daniel.bjorkman@cern.ch
+    Developed by Daniel Björkman 2018, daniel.bjorkman@cern.ch
     
     call:
     from USRBIN import USRBIN
@@ -334,15 +331,38 @@ class USRBIN():
         vector2 = np.zeros((cube.shape[2]))
         vector3 = np.zeros((cube.shape[2]))
         for r in range(0,cube.shape[2]):
-            vector[r] = np.sum(cube[0:,0:,r])
-            vector2[r] = cube[int(cube.shape[0]/2), 5,r]
-            vector3[r] = cube[14 ,int( cube.shape[1]/2),r]
+            try:
+                vector[r] = np.sum(cube[0:,0:,r])
+                vector2[r] = cube[int(cube.shape[0]/2), 5,r]
+                vector3[r] = cube[14 ,int( cube.shape[1]/2),r]
+            except:
+                pass
         self.depthdeposition = vector
         self.below = vector2
         self.side = vector3
         self.xcoodinates = np.arange(int(self.info['zmin'][0]),int(self.info['zmax'][0]),self.info['zwidth'][0]*1.0001)
         
-        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
         
 #import math
 #import numpy as np

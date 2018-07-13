@@ -77,14 +77,18 @@ fig = plt.figure()
 ax = plt.subplot(111)
 
 path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/ZSa/Out73_dir'
-
 os.chdir(path)
 
 rhe = np.loadtxt('W-26ReaEvolution.txt', skiprows = 4)
 rhe[0:,0] = rhe[0:,0]/(60*60*24)
 rhe[0:,1] = rhe[0:,1]/(148)
 
-graphite = np.loadtxt('GraphiteEvolution.txt', skiprows = 4)
+
+
+path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/Carbon wire/ZSa/Out73_dir'
+os.chdir(path)
+
+graphite = np.loadtxt('CarbonEvolution.txt', skiprows = 4)
 
 graphite[0:,0] = graphite[0:,0]/(60*60*24)
 graphite[0:,1] = graphite[0:,1]/(148)
@@ -274,6 +278,52 @@ plt.grid(linewidth = 0.3)
 plt.show()
 
 
+
+fig = plt.figure()
+
+ax = plt.subplot(111)
+
+path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/ZSd/Out80_dir'
+
+os.chdir(path)
+
+
+SS = np.loadtxt('SSEvolution.txt', skiprows = 4)
+norm = SS[0,1]
+SS[0:,0] = SS[0:,0]/(60*60*24)
+SS[0:,1] = SS[0:,1]/(norm)
+
+
+invar = np.loadtxt('InvarEvolution.txt', skiprows = 4)
+
+invar[0:,0] = invar[0:,0]/(60*60*24)
+invar[0:,1] = invar[0:,1]/(norm)
+
+titanium = np.loadtxt('TitaniumEvolution.txt', skiprows = 4)
+
+titanium[0:,0] = titanium[0:,0]/(60*60*24)
+titanium[0:,1] = titanium[0:,1]/(norm)
+
+
+
+plt.plot(SS[0:,0], SS[0:,1], label = 'SS304L', linewidth = 3)
+
+plt.plot(invar[0:,0], invar[0:,1], label = 'Invar', linewidth = 3)
+
+plt.plot(titanium[0:,0], titanium[0:,1], label = 'Titanium', linewidth = 3)
+
+plt.legend()
+
+plt.xlabel('Days after operations', fontsize = 16)
+
+plt.ylabel('Relative hazard', fontsize = 16)
+
+plt.title('ZS septa support material. H*(10) at 1 meter distance', fontsize = 16)
+
+plt.grid(linewidth = 0.3)
+
+
+plt.show()
 
 
 
