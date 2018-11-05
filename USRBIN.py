@@ -31,6 +31,8 @@ class USRBIN():
         self.side = []
         self.xcoodinates = []
         self.zcut = []
+        self.maxalongz = []
+        self.TIDP1meter = []
     
     def read(self):
         import os
@@ -56,6 +58,7 @@ class USRBIN():
                     if line_content[5] == 'A(ir,ip,iz),':
                         info = {'rbin':[],'zbin':[],'pbin':[], 'rmin':[],'rmax':[], 'zmin':[],'zmax':[], 'rwidth':[], 'zwidth':[],'prad':[]}
                         RPZ = 1
+                        self.binningtype = 'RPZ'
                         print('R-Phi-Z binning detected')
                     if line_content[5] == 'A(ix,iy,iz),':
                         info = {'xbin':[], 'ybin':[],'zbin':[], 'xmin':[],'xmax':[], 'ymin':[],'ymax':[], 'zmin':[],'zmax':[], 'xwidth':[], 'ywidth':[], 'zwidth':[]}
@@ -66,6 +69,7 @@ class USRBIN():
                         info = {'rbin':[],'zbin':[],'pbin':[], 'rmin':[],'rmax':[], 'zmin':[],'zmax':[], 'rwidth':[], 'zwidth':[],'prad':[]}
                         info['pbin'].append(float(1))
                         RZ = 1
+                        self.binningtype = 'RZ'
                         print('R-Z binning detected')
                     try:
                         a = float(line_content[0])
@@ -123,23 +127,40 @@ class USRBIN():
             print("Function currently not defined for minimum rbins other than 0")
             return;
     
-        #Find when to stop reading the input data
-        with open(filename) as file:
-            row = 0
-#            stop = len(file.readlines())
+
+#        with open(filename) as file:
+#            row = 0
+##            stop = len(file.readlines())
+#            for line in file.readlines():
+#                line_content = line.split()   
+#                if row > start and len(line_content) != 10:
+#                    stop = row -1
+#                row = row +1
+            
+            
+        #Find when to stop reading the input data                
+        indecies = []   
+        counter = 0    
+        with open(filename) as file:       
             for line in file.readlines():
-                line_content = line.split()   
-                if row > start and len(line_content) != 10:
-                    stop = row -1
-                row = row +1
-                
+                if line == '\n':
+                    indecies.append(counter)
+                counter = counter +1
+        filelength = counter
+        print indecies  
+        stop = indecies[1]
+        print stop
+        print start
+
     
                 
         import math
         import numpy as np
     
-        data = np.genfromtxt(filename, skip_header= start -1, skip_footer= stop -9)
-        print data.size
+#        data = np.genfromtxt(filename, skip_header= start -1, skip_footer= stop -9)
+        data = np.genfromtxt(filename, skip_header= start -1, skip_footer= filelength - stop -2)
+        
+        #print data.size
         data = np.reshape(data ,(data.size,1))
         
     
@@ -327,42 +348,112 @@ class USRBIN():
         self.horizontal = cube[0:,int(cube.shape[1]/2),0:]  
         self.zcut = cube[0:,0:,int(cube.shape[2]/2)]  
         
-        vector = np.zeros((cube.shape[2]))
-        vector2 = np.zeros((cube.shape[2]))
-        vector3 = np.zeros((cube.shape[2]))
+        integration = np.zeros((cube.shape[2]))
+        below = np.zeros((cube.shape[2]))
+        side = np.zeros((cube.shape[2]))
+        maxalongz = np.zeros((cube.shape[2]))
+        TIDP1meter = np.zeros((cube.shape[2]))
         for r in range(0,cube.shape[2]):
+            integration[r] = np.sum(cube[0:,0:,r])
+            maxalongz[r] = np.max(cube[0:,0:,r])
             try:
-                vector[r] = np.sum(cube[0:,0:,r])
-                vector2[r] = cube[int(cube.shape[0]/2), 5,r]
-                vector3[r] = cube[14 ,int( cube.shape[1]/2),r]
+                TIDP1meter[r] = cube[33,13,r]
+                below[r] = cube[int(cube.shape[0]/2), 5,r]
+                val = 0
+                bins = 0
+                for i in range(-1,2):
+                    for j in range(-1,2): 
+                        val = val + cube[14 + i ,int( cube.shape[1]/2) + j,r]
+                        bins = bins +1
+                side[r] = val/bins
             except:
                 pass
-        self.depthdeposition = vector
-        self.below = vector2
-        self.side = vector3
-        self.xcoodinates = np.arange(int(self.info['zmin'][0]),int(self.info['zmax'][0]),self.info['zwidth'][0]*1.0001)
+        self.depthdeposition = integration
+        self.below = below
+        self.side = side
+        self.maxalongz = maxalongz
+        self.TIDP1meter = TIDP1meter
+        
+        
+        if self.binningtype == 'CAR':
+            self.xcoodinates = np.arange(int(self.info['zmin'][0]),int(self.info['zmax'][0]),self.info['zwidth'][0]*1.0001)
+            self.realxcoodinates = np.arange(int(self.info['xmin'][0]),int(self.info['xmax'][0]),self.info['xwidth'][0]*1.0001)
         
 
 
 
 
+#path = '//rpclustersrv1/cbjorkma/ATLAS/Previous'
+#os.chdir(path)
+#
+##try:
+##    print carmona
+##except:
+##    print 'Loading USRBINs...'
+##    
+#filename = 'ATLAS_LS2_Carmona'
+#
+#carmona = USRBIN(filename, path, normfactor)
+#carmona.read()
+#carmona.calc()
+#
+#
+#
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
+#
+#
+#
+#
+#
+#path = '//rpclustersrv1/cluster_temp/cbjorkma'
+#os.chdir(path)
+#
+##try:
+##    print carmona
+##except:
+#print 'Loading USRBINs...'
+#
+#filename = 'ATLAS_LS3_Carmona2'
+#
+#carmona = USRBIN(filename, path, normfactor)
+#carmona.read()
+#carmona.calc()
+#
+#
+#
+#
+##Find when to stop reading the input data
+#with open(filename) as file:
+#    a = file.readlines()
+#    row = 0
+##            stop = len(file.readlines())
+#    for line in file.readlines():
+#        line_content = line.split()   
+#        if 0 and len(line_content) != 10:
+#            stop = row -1
+#            print stop  
+#        row = row +1
+# 
+#indecies = []   
+#counter = 0    
+#with open(filename) as file:       
+#    for line in file.readlines():
+#        if line == '\n':
+#            indecies.append(counter)
+#        counter = counter +1
+#            
+#print indecies  
+#
+#stop = indecies[1]
+#
+#filelength = counter
+#
+#import numpy as np
+#
+#data = np.genfromtxt(filename, skip_header= 9, skip_footer= filelength - stop -2)
+#
+#    
         
 #import math
 #import numpy as np

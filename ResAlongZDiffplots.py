@@ -99,9 +99,9 @@ import matplotlib.pyplot as plt
 import math
 import matplotlib.patches as patches
 from matplotlib.colors import LogNorm
-#plt.close()
-#plt.close()
-#plt.close()
+plt.close()
+plt.close()
+plt.close()
 fig = plt.figure()
 #
 #
@@ -154,6 +154,7 @@ def calcThis(cube,maxVal):
             for y in range( cube.shape[1]):
                 #if math.pow(xbin*(x - i),2) + math.pow(ybin*(y - j),2) < math.pow(outerRadi,2) and math.pow(xbin*(x - i),2) + math.pow(ybin*(y - j),2) > math.pow(innerRadi,2):
                 if abs(xbin*(x - i)) < 20 and y < j and ybin*abs(y - j) < 100 and ybin*abs(y - j) > 70:
+                #if abs(ybin*(y - i)) < 20 and x < i and xbin*abs(x - i) < 100 and xbin*abs(x - i) > 70:
                     tot = tot + cube[x,y,z]
                     numberBins = numberBins + 1
         val = tot/numberBins
@@ -161,6 +162,10 @@ def calcThis(cube,maxVal):
         if val > maxVal and z >= start:
             maxVal = val
     return vector, maxVal
+
+
+
+
 
 def curiosa(ax):
 #    r1 = patches.Rectangle((0.827*cube.shape[2],0), 0.894*cube.shape[2] -0.827*cube.shape[2],8000,fc=(0,0,1,0.1), label = 'QD519')
@@ -185,7 +190,7 @@ def curiosa(ax):
     plt.xticks(initialrange, newrange)
 #    ax.axvline(x=143.7,linestyle = '--', color = 'black', label = 'Marble floor ends' )
 #    ax.axvline(x=float(1950)/3000 * 200,linestyle = ':', color = 'black', label = 'Platform starts' )
-    plt.legend(loc = 1, prop={'size': 6})
+    plt.legend(loc = 1, prop={'size': 10})
 
 
 def drawings(ax2):
@@ -213,8 +218,8 @@ def drawings(ax2):
     r6 = patches.Rectangle((0.65*cube.shape[2],-150), 100,38,fc='lightgrey', alpha = 0.8*transp)
     ax2.add_patch(r6) 
 
-    r6 = patches.Rectangle((0.65*cube.shape[2],-141), 143.7 -float(1950)/3000 * 200,30,fc='maroon', alpha = 0.4*transp)
-    ax2.add_patch(r6) 
+#    r6 = patches.Rectangle((0.65*cube.shape[2],-141), 143.7 -float(1950)/3000 * 200,30,fc='maroon', alpha = 0.4*transp)
+#    ax2.add_patch(r6) 
 
 print 'Plotting...'
 
@@ -573,11 +578,12 @@ plt.plot(range(0,cube.shape[2]),vector, color='g', label = '1 week', linewidth =
 
 
 curiosa(ax)
-plt.title('Maximal dose rates at downstream exit', fontsize = 22)
+plt.title('Dose rates at downstream exit, below beamline', fontsize = 22)
 plt.xlim( start, end )
 plt.xlabel('z [cm from downstream exit]', fontsize = 15)
 
-
+plt.yscale("log", nonposy='clip')
+plt.ylim(10,10000)
 ax2 = ax.twinx()
 
 ax2.set_ylim(-150,100)

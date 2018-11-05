@@ -142,7 +142,7 @@ plt.title('ZSd', fontsize = 20)
 
 
 
-path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/Carbon wire/ZSa/Out73_dir'
+path = '//rpclustersrv1/cbjorkma/LSS2/TitaniumWir/ZSa/Out73_dir'
 data4 = ActiwizFluence(path, 1)
 ax = plt.subplot(212)
 ActiwizFluencePlot(data4, ax, prim, '--')
@@ -170,7 +170,7 @@ for i in range(len(data3)-1):
 #    plt.errorbar(xes, xes*prim*info[0:,2], yerr = xes*info[0:,3]*info[0:,2], label= 'ZS1', linestyle = '-')
 #    plt.errorbar(xes, xes*prim*info2[0:,2], yerr = xes*info2[0:,3]*info2[0:,2], label= 'ZS2', linestyle = '--')
     plt.errorbar(xes, xes*prim*info3[0:,2], yerr = xes*info3[0:,3]*info3[0:,2], label= 'Rhenium/Tungsten', linestyle = '-')
-    plt.errorbar(xes, xes*prim*info4[0:,2], yerr = xes*info4[0:,3]*info4[0:,2], label= 'Graphite wire', linestyle = '--')
+    plt.errorbar(xes, xes*prim*info4[0:,2], yerr = xes*info4[0:,3]*info4[0:,2], label= 'Titanium wire', linestyle = '--')
     plt.title(particle , fontsize = 16)
     ax.set_xscale("log", nonposx='clip')
     ax.set_yscale("log", nonposy='clip')

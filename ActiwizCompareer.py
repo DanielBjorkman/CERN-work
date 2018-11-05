@@ -72,6 +72,11 @@ plt.title('ZS septa wires. H*(10) at 1 meter distance. 0 cooling ')
 plt.show()
 
 
+
+
+
+
+
 fig = plt.figure()
 
 ax = plt.subplot(111)
@@ -93,6 +98,27 @@ graphite = np.loadtxt('CarbonEvolution.txt', skiprows = 4)
 graphite[0:,0] = graphite[0:,0]/(60*60*24)
 graphite[0:,1] = graphite[0:,1]/(148)
 
+
+
+path = '//rpclustersrv1/cbjorkma/LSS2/TitaniumWir/'
+os.chdir(path)
+
+titanium1 = np.loadtxt('TI-AL6-Vevolution.txt', skiprows = 4)
+
+titanium1[0:,0] = titanium1[0:,0]/(60*60*24)
+titanium1[0:,1] = titanium1[0:,1]/(148)
+
+titanium2 = np.loadtxt('TitaniumGrade1evolution.txt', skiprows = 4)
+
+titanium2[0:,0] = titanium2[0:,0]/(60*60*24)
+titanium2[0:,1] = titanium2[0:,1]/(148)
+
+titanium3 = np.loadtxt('TitaniumGrade12evolution.txt', skiprows = 4)
+
+titanium3[0:,0] = titanium3[0:,0]/(60*60*24)
+titanium3[0:,1] = titanium3[0:,1]/(148)
+
+
 #SS = np.loadtxt('SSEvolution.txt', skiprows = 4)
 #
 #SS[0:,0] = SS[0:,0]/(60*60*24)
@@ -102,6 +128,11 @@ graphite[0:,1] = graphite[0:,1]/(148)
 plt.plot(rhe[0:,0], rhe[0:,1], label = 'Rhenium/Tungsten', linewidth = 3)
 
 plt.plot(graphite[0:,0], graphite[0:,1], label = 'Graphite', linewidth = 3)
+
+plt.plot(titanium1[0:,0], titanium1[0:,1], label = 'Ti-Al6-V', linewidth = 1.5, color = 'k', linestyle = '-')
+plt.plot(titanium2[0:,0], titanium2[0:,1], label = 'Titanium grade 1', linewidth = 1.5, color = 'k', linestyle = '--')
+plt.plot(titanium3[0:,0], titanium3[0:,1], label = 'Titanium grade 12', linewidth = 1.5, color = 'k', linestyle = ':')
+
 
 #plt.plot(titanium[0:,0], titanium[0:,1], label = 'Titanium', linewidth = 3)
 
@@ -183,9 +214,11 @@ SS[0:,1] = SS[0:,1]/(246)
 
 plt.plot(SS[0:,0], SS[0:,1], label = 'SS304L', linewidth = 3)
 
+plt.plot(titanium[0:,0], titanium[0:,1], label = 'Titanium', linewidth = 3)
+
 plt.plot(alu[0:,0], alu[0:,1], label = 'Alu6061', linewidth = 3)
 
-plt.plot(titanium[0:,0], titanium[0:,1], label = 'Titanium', linewidth = 3)
+
 
 plt.legend()
 
@@ -448,6 +481,10 @@ block4[0:,1] = block4[0:,1]/(5280*2)
 
 norm = max(rhe[0:,1])
 
+
+sizes = [2,1.5, 1, 0.5]
+
+
 plt.plot(cathode[0:,0], cathode[0:,1]/norm, label = 'Cathode', linewidth = 3)
 
 plt.plot(support[0:,0], support[0:,1]/norm, label = 'Wire support', linewidth = 3)
@@ -456,13 +493,23 @@ plt.plot(tank[0:,0], tank[0:,1]/norm, label = 'Tank', linewidth = 3)
 
 plt.plot(rhe[0:,0], rhe[0:,1]/norm, label = 'Wire septa', linewidth = 3)
 
-plt.plot(block1[0:,0], block1[0:,1]/norm, label = 'Lead block 1', linewidth = 2, color = 'k', linestyle = lines.pop(0))
+#plt.plot(block1[0:,0], block1[0:,1]/norm, label = 'Lead block 1', linewidth = 2, color = 'k', linestyle = lines.pop(0))
+#
+#plt.plot(block2[0:,0], block2[0:,1]/norm, label = 'Lead block 2', linewidth = 2, color = 'k', linestyle = lines.pop(0))
+#
+#plt.plot(block3[0:,0], block3[0:,1]/norm, label = 'Lead block 3', linewidth = 2, color = 'k', linestyle = lines.pop(0))
+#
+#plt.plot(block4[0:,0], block4[0:,1]/norm, label = 'Lead block 4', linewidth = 2, color = 'k', linestyle = lines.pop(0))
 
-plt.plot(block2[0:,0], block2[0:,1]/norm, label = 'Lead block 2', linewidth = 2, color = 'k', linestyle = lines.pop(0))
 
-plt.plot(block3[0:,0], block3[0:,1]/norm, label = 'Lead block 3', linewidth = 2, color = 'k', linestyle = lines.pop(0))
+plt.plot(block1[0:,0], block1[0:,1]/norm, label = 'Lead block 1', linewidth = sizes.pop(0), color = 'k')
 
-plt.plot(block4[0:,0], block4[0:,1]/norm, label = 'Lead block 4', linewidth = 2, color = 'k', linestyle = lines.pop(0))
+plt.plot(block2[0:,0], block2[0:,1]/norm, label = 'Lead block 2', linewidth = sizes.pop(0), color = 'k',linestyle = lines.pop(1))
+
+plt.plot(block3[0:,0], block3[0:,1]/norm, label = 'Lead block 3', linewidth = sizes.pop(0), color = 'k')
+
+plt.plot(block4[0:,0], block4[0:,1]/norm, label = 'Lead block 4', linewidth = sizes.pop(0), color = 'k')
+
 
 plt.legend()
 
@@ -470,7 +517,7 @@ plt.xlabel('Days after operations', fontsize = 16)
 
 plt.ylabel('Relative hazard', fontsize = 16)
 
-plt.title('ZS components, relative hazards. H*(10) at 1 meter distance', fontsize = 16)
+plt.title('Relative hazard per cm3 of material', fontsize = 16)
 
 plt.grid(linewidth = 0.3)
 ax.set_yscale("log", nonposy='clip')
@@ -482,6 +529,127 @@ plt.show()
 
 
 
+
+
+
+
+# All TRACK LENGTH--------------------------------------------------------------------
+
+fig = plt.figure()
+
+
+lines = ['-', '--',':','-.']
+
+
+ax = plt.subplot(111)
+
+path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/ZSa/Out71_dir'
+os.chdir(path)
+
+cathode = np.loadtxt('Peraluman300evolution.txt', skiprows = 4)
+cathode[0:,0] = cathode[0:,0]/(60*60*24)
+cathode[0:,1] = cathode[0:,1]/(1)
+
+
+path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/ZSa/Out72_dir'
+os.chdir(path)
+
+support = np.loadtxt('InvarEvolution.txt', skiprows = 4)
+support[0:,0] = support[0:,0]/(60*60*24)
+support[0:,1] = support[0:,1]/(1)
+
+
+path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/ZSa/Out70_dir'
+os.chdir(path)
+
+tank = np.loadtxt('SSEvolution.txt', skiprows = 4)
+
+tank[0:,0] = tank[0:,0]/(60*60*24)
+tank[0:,1] = tank[0:,1]/(1)
+
+
+path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/ZSa/Out73_dir'
+os.chdir(path)
+
+rhe = np.loadtxt('W-26ReaEvolution.txt', skiprows = 4)
+rhe[0:,0] = rhe[0:,0]/(60*60*24)
+rhe[0:,1] = rhe[0:,1]/(1)
+
+path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/Lead blocks/NewFormat/Block1_dir' 
+os.chdir(path)
+
+block1 = np.loadtxt('Block1Evolution.txt', skiprows = 4)
+block1[0:,0] = block1[0:,0]/(60*60*24)
+block1[0:,1] = block1[0:,1]/(1)
+
+path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/Lead blocks/NewFormat/Block2_dir' 
+os.chdir(path)
+
+block2 = np.loadtxt('Block2Evolution.txt', skiprows = 4)
+block2[0:,0] = block2[0:,0]/(60*60*24)
+block2[0:,1] = block2[0:,1]/(1)
+
+path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/Lead blocks/NewFormat/Block3_dir' 
+os.chdir(path)
+
+block3 = np.loadtxt('Block3Evolution.txt', skiprows = 4)
+block3[0:,0] = block3[0:,0]/(60*60*24)
+block3[0:,1] = block3[0:,1]/(1)
+
+path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/Lead blocks/NewFormat/Block4_dir' 
+os.chdir(path)
+
+block4 = np.loadtxt('Block4Evolution.txt', skiprows = 4)
+block4[0:,0] = block4[0:,0]/(60*60*24)
+block4[0:,1] = block4[0:,1]/(1)
+
+norm = max(support[0:,1])
+
+
+sizes = [2,1.5, 1, 0.5]
+
+
+plt.plot(cathode[0:,0], cathode[0:,1]/norm, label = 'Cathode', linewidth = 3)
+
+plt.plot(support[0:,0], support[0:,1]/norm, label = 'Wire support', linewidth = 3)
+
+plt.plot(tank[0:,0], tank[0:,1]/norm, label = 'Tank', linewidth = 3)
+
+plt.plot(rhe[0:,0], rhe[0:,1]/norm, label = 'Wire septa', linewidth = 3)
+
+#plt.plot(block1[0:,0], block1[0:,1]/norm, label = 'Lead block 1', linewidth = 2, color = 'k', linestyle = lines.pop(0))
+#
+#plt.plot(block2[0:,0], block2[0:,1]/norm, label = 'Lead block 2', linewidth = 2, color = 'k', linestyle = lines.pop(0))
+#
+#plt.plot(block3[0:,0], block3[0:,1]/norm, label = 'Lead block 3', linewidth = 2, color = 'k', linestyle = lines.pop(0))
+#
+#plt.plot(block4[0:,0], block4[0:,1]/norm, label = 'Lead block 4', linewidth = 2, color = 'k', linestyle = lines.pop(0))
+
+
+plt.plot(block1[0:,0], block1[0:,1]/norm, label = 'Lead block 1', linewidth = sizes.pop(0), color = 'k')
+
+plt.plot(block2[0:,0], block2[0:,1]/norm, label = 'Lead block 2', linewidth = sizes.pop(0), color = 'k',linestyle = lines.pop(1))
+
+plt.plot(block3[0:,0], block3[0:,1]/norm, label = 'Lead block 3', linewidth = sizes.pop(0), color = 'k')
+
+plt.plot(block4[0:,0], block4[0:,1]/norm, label = 'Lead block 4', linewidth = sizes.pop(0), color = 'k')
+
+
+plt.legend()
+
+plt.xlabel('Days after operations', fontsize = 16)
+
+plt.ylabel('Relative hazard', fontsize = 16)
+
+plt.title('ZS1 components, relative hazards. H*(10) at 1 meter distance', fontsize = 16)
+
+plt.grid(linewidth = 0.3)
+ax.set_yscale("log", nonposy='clip')
+
+
+#plt.suptitle('ZS1 components, relative hazards. H*(10) at 1 meter distance', fontsize = 20)
+
+plt.show()
 
 
 

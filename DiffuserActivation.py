@@ -6,7 +6,8 @@ Created on Thu Jul 12 17:11:35 2018
 """
 
 #DiffuserActivation
-
+plt.close()
+plt.close()
 from USRBIN import USRBIN
 
 import os
@@ -48,10 +49,9 @@ for i in range(len(files)):
 
 
 import matplotlib.pyplot as plt
-from matplotlib.colors import LogNorm
+#from matplotlib.colors import LogNorm
 
-plt.close()
-plt.close()
+
 #xes = range(0,250-250/15*4,250/15)
 #
 #fig = plt.figure()
@@ -69,38 +69,67 @@ plt.close()
 #lengths = [15,18,20,22.5 , 25]
 #
 
+labels = ['1h', '12h', '30h', '1m','4m']
+
 fig = plt.figure()
 
-
-ax = plt.subplot(1,2,1)
+i = 0
+ax = plt.subplot(111)
 for i in range(len(files)):
-
-    plt.plot(xes, list[i].cube[11:None:-1, 5:6,0]/2, label = 'Shielding width: ' +str(lengths[i]) + ' cm')
+    cube  = list[i]
     
+    #info = cube.info
+    
+    xes = range(0,100,2)
+    
+    
+    plt.plot(xes,cube.cube[0:,2,2], label = labels[i])
+
 plt.legend()
-plt.title('1 day cool down', fontsize = 20)
+plt.title('Dose rate evolution for diffuser contribution ', fontsize = 20)
 plt.grid(linewidth = 0.25)
 plt.ylabel('uSv/h', fontsize = 16)
-plt.xlabel('cm from marble shielding', fontsize = 16)
-props = dict(boxstyle='round', facecolor='white', alpha=1)
+plt.xlabel('cm outside beampipe, laterally from diffuser', fontsize = 16)
+ax.set_yscale("log", nonposy='clip')
 
-#ax.text(0.25, 0.98, '1 day cool down', transform=ax.transAxes, fontsize=18, verticalalignment='top',bbox=props)     
-#plt.show()
-
-
-
-plt.subplot(1,2,2)
-for i in range(len(files)):
-        
-    plt.plot(xes, list2[i].cube[11:None:-1, 5:6,0]/2, label = 'Shielding width: ' +str(lengths[i]) + ' cm')
-    
-plt.legend()
-plt.suptitle('Dose rate behind marble shielding', fontsize = 25)
-plt.title('1 month cool down', fontsize = 20)
-plt.grid(linewidth = 0.3)
-plt.ylabel('uSv/h', fontsize = 16)
-plt.xlabel('cm from marble shielding', fontsize = 16)
 plt.show()
 
+
+
+#
+#
+#
+#
+#
+#ax = plt.subplot(1,2,1)
+#for i in range(len(files)):
+#
+#    plt.plot(xes, list[i].cube[11:None:-1, 5:6,0]/2, label = 'Shielding width: ' +str(lengths[i]) + ' cm')
+#    
+#plt.legend()
+#plt.title('1 day cool down', fontsize = 20)
+#plt.grid(linewidth = 0.25)
+#plt.ylabel('uSv/h', fontsize = 16)
+#plt.xlabel('cm from marble shielding', fontsize = 16)
+#props = dict(boxstyle='round', facecolor='white', alpha=1)
+#
+##ax.text(0.25, 0.98, '1 day cool down', transform=ax.transAxes, fontsize=18, verticalalignment='top',bbox=props)     
+##plt.show()
+#
+#
+#
+#plt.subplot(1,2,2)
+#for i in range(len(files)):
+#        
+#    plt.plot(xes, list2[i].cube[11:None:-1, 5:6,0]/2, label = 'Shielding width: ' +str(lengths[i]) + ' cm')
+#    
+#plt.legend()
+#plt.suptitle('Dose rate behind marble shielding', fontsize = 25)
+#plt.title('1 month cool down', fontsize = 20)
+#plt.grid(linewidth = 0.3)
+#plt.ylabel('uSv/h', fontsize = 16)
+#plt.xlabel('cm from marble shielding', fontsize = 16)
+#plt.show()
+#
 
 

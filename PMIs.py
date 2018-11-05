@@ -382,12 +382,12 @@ class PMI():
 
 
 
-import datetime
-import numpy as np
-import math
-
-
-
+#import datetime
+#import numpy as np
+#import math
+#
+#
+#
 #protonEnd = datetime.datetime(2017,10,23,06,00,00)
 #ionEnd = datetime.datetime(2017,12,18,06,00,00)
 #end2016 = datetime.datetime(2015,11,16,06,00,00)
@@ -410,17 +410,17 @@ import math
 ##x.readFluka('//cern.ch/dfs/Users/c/cbjorkma/Documents/LSS 2/ActivationDetectors/NoLongProfile1')
 ##
 #
-#assert x.FlukaData.shape == (6L, 8L)
-#
-#
-#
-#
-##x.calc()
+##assert x.FlukaData.shape == (6L, 8L)
 ##
-##
-##print len(x.extrapolations)
+
+
+
+#x.calc()
 #
 #
+#print len(x.extrapolations)
+
+
 
 
 
