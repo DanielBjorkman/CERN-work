@@ -137,17 +137,39 @@ lumi = readLumi(filename)
 
 
 
-#end2010 = datetime.datetime(2010,10,11,00,00,00)
+##end2010 = datetime.datetime(2010,10,11,00,00,00)
+#end2011 = datetime.datetime(2011,10,30,9,57,00)
+#end2012 = datetime.datetime(2012,12,05,20,53,00)
+#end2015 = datetime.datetime(2015,11,02,17,20,00)
+#end2016 = datetime.datetime(2016,10,26,07,49,00)
+#end2017 = datetime.datetime(2017,11,9,12,02,00)
+#end2018 = LS2 #datetime.datetime(2018,10,27,00,00,00)
+#end2018a = datetime.datetime(2018,06,11,23,39,22)   
+#end2018b = datetime.datetime(2018,07,22,18,22,43) 
+#end2018c = datetime.datetime(2018,8,31,03,39,46)
+#end2018d = datetime.datetime(2018,9,10,03,18,45)
+#
+#
+
+
+
 end2011 = datetime.datetime(2011,10,30,9,57,00)
-end2012 = datetime.datetime(2012,12,05,20,53,00)
-end2015 = datetime.datetime(2015,11,02,17,20,00)
+end2012 = datetime.datetime(2012,12,16,11,58,00)
+end2015 = datetime.datetime(2015,11,21,19,22,00)
 end2016 = datetime.datetime(2016,10,26,07,49,00)
-end2017 = datetime.datetime(2017,11,9,12,02,00)
+end2017 = datetime.datetime(2017,11,26,00,29,00)
 end2018 = LS2 #datetime.datetime(2018,10,27,00,00,00)
 end2018a = datetime.datetime(2018,06,11,23,39,22)   
 end2018b = datetime.datetime(2018,07,22,18,22,43) 
 end2018c = datetime.datetime(2018,8,31,03,39,46)
 end2018d = datetime.datetime(2018,9,10,03,18,45)
+
+start2011 = datetime.datetime(2011,3,13,13,35,9)
+start2012 = datetime.datetime(2012,4,6,23,15,36)
+start2015 = datetime.datetime(2015,6,5,23,17,23)
+start2016 = datetime.datetime(2016,4,22,22,38,37)
+start2017 = datetime.datetime(2017,5,23,14,45,27)
+
 
 
 
@@ -222,12 +244,12 @@ f = interp1d(x,yATLAS)
 
 
 
-xsec = 75E-3 #mbar
+xsec = 72E-3 #mbar
 
-lumiCollisions = 1e12*f(-2000)*xsec
+
 
 #2011
-start2011 = datetime.datetime(2011,3,13,13,35,9)
+#start2011 = datetime.datetime(2011,3,13,13,35,9)
 timediff = (end2011 - start2011).total_seconds() 
 lumidiff = f(sinceLS2(end2011)) - f(sinceLS2(start2011)) #picobar
 collisions = 1e12*lumidiff*xsec
@@ -235,10 +257,13 @@ newrow = [timediff/(60*60*24),collisions/timediff,0]
 ATLAS = np.vstack([ATLAS,newrow])
 ATLAS = np.vstack([ATLAS,[0,0,0]])
 
+lumiCollisions = 1e12*f(-2500)*xsec
 
+
+xsec = 75E-3 #mbar
 
 #2012
-start2012 = datetime.datetime(2012,4,6,23,15,36)
+#start2012 = datetime.datetime(2012,4,6,23,15,36)
 timediff = (end2012 - start2012).total_seconds() 
 lumidiff = f(sinceLS2(end2012)) - f(sinceLS2(start2012)) #picobar
 collisions = 1e12*lumidiff*xsec
@@ -246,12 +271,12 @@ newrow = [timediff/(60*60*24),collisions/timediff,0]
 ATLAS = np.vstack([ATLAS,newrow])
 ATLAS = np.vstack([ATLAS,[0,0,0]])
 
-
+lumiCollisions = lumiCollisions + 1e12*(f(-2000) - f(-2500))*xsec
 
 xsec = 80E-3 #mbar
 
 #2015
-start2015 = datetime.datetime(2015,6,5,23,17,23)
+#start2015 = datetime.datetime(2015,6,5,23,17,23)
 timediff = (end2015 - start2015).total_seconds() 
 lumidiff = f(sinceLS2(end2015)) - f(sinceLS2(start2015)) #picobar
 collisions = 1e12*lumidiff*xsec
@@ -263,7 +288,7 @@ ATLAS = np.vstack([ATLAS,[0,0,0]])
 
 
 #2016
-start2016 = datetime.datetime(2016,5,8,12,04,37)
+#start2016 = datetime.datetime(2016,5,8,12,04,37)
 timediff = (end2016 - start2016).total_seconds() 
 lumidiff = f(sinceLS2(end2016)) - f(sinceLS2(start2016)) #picobar
 collisions = 1e12*lumidiff*xsec
@@ -274,7 +299,7 @@ ATLAS = np.vstack([ATLAS,[0,0,0]])
 
 
 #2017
-start2017 = datetime.datetime(2017,5,23,14,45,27)
+#start2017 = datetime.datetime(2017,5,23,14,45,27)
 timediff = (end2017 - start2017).total_seconds() 
 lumidiff = f(sinceLS2(end2017)) - f(sinceLS2(start2017)) #picobar
 collisions = 1e12*lumidiff*xsec
@@ -374,8 +399,11 @@ yCMS = lumi[0:,2]
 f = interp1d(x,yCMS)
 
 
-xsec = 75E-3 #mbar
-lumiCollisions = 1e12*f(-2000)*xsec
+
+
+
+
+xsec = 72E-3 #mbar
 
 #2011
 timediff = (end2011 - start2011).total_seconds() 
@@ -385,8 +413,10 @@ newrow = [timediff/(60*60*24),collisions/timediff,0]
 CMS = np.vstack([CMS,newrow])
 CMS = np.vstack([CMS,[0,0,0]])
 
+lumiCollisions = 1e12*f(-2500)*xsec
 
 
+xsec = 75E-3 #mbar
 #2012
 timediff = (end2012 - start2012).total_seconds() 
 lumidiff = f(sinceLS2(end2012)) - f(sinceLS2(start2012)) #picobar
@@ -395,7 +425,7 @@ newrow = [timediff/(60*60*24),collisions/timediff,0]
 CMS = np.vstack([CMS,newrow])
 CMS = np.vstack([CMS,[0,0,0]])
 
-
+lumiCollisions = lumiCollisions + 1e12*(f(-2000) - f(-2500))*xsec
 
 xsec = 80E-3 #mbar
 
@@ -595,7 +625,7 @@ ax2.set_ylim(0,194000)
 
 
 
-ax2.set_ylabel('Integrated luminocity [pb-1]',  fontsize = 16)
+ax2.set_ylabel('Integrated luminosity [pb-1]',  fontsize = 16)
 
 plt.title('Old Profile', fontsize = 20)
 
@@ -645,7 +675,7 @@ ax2.set_ylim(0,194000)
 #ax.set_xlim(-240,10)
 
 
-ax2.set_ylabel('Integrated luminocity [pb-1]',  fontsize = 16)
+ax2.set_ylabel('Integrated luminosity [pb-1]',  fontsize = 16)
 
 plt.title('New Profile', fontsize = 20)
 
@@ -664,17 +694,88 @@ plt.suptitle('ATLAS/CMS irradiation profiles', fontsize = 22)
 
 
 plt.show()
+print 'ATLAS #Collisions/Lumi collisions = '
+print str(collisionsAtlas/lumiCollisionsATLAS)
+print ' ' 
+print 'CMS #Collisions/Lumi collisions = '
+print str(collisionsCMS/lumiCollisionsCMS)
+print ' ' 
+
 
 print 'Total ATLAS collisions/Total CMS collisions = '
 print str(collisionsAtlas/collisionsCMS)
 print ' '
-print 'Collisions ATLAS/CMS 2018: '
-print sum(ATLAS[11:,1])/sum(CMS[8:,1])
 print ' '
-print 'Collisions ATLAS/CMS 2017: '
-print (newATLAS[9,1]*newATLAS[9,0])/(newCMS[7,1]*newCMS[7,0])
+print '2018 collisions ATLAS new/ATLAS old: '
+print sum(newATLAS[-8:,1]*newATLAS[-8:,0]*(60*60*24))/(ATLASprev[11,1]*ATLASprev[11,0]*(60*60*24))
 print ' '
-print 'Collisions ATLAS/CMS 2016: '
-print (newATLAS[7,1]*newATLAS[7,0])/(newCMS[5,1]*newCMS[5,0])
+print '2017 collisions ATLAS new/ATLAS old: '
+print (newATLAS[-10,1]*newATLAS[-10,0]*(60*60*24))/(ATLASprev[9,1]*ATLASprev[9,0]*(60*60*24))
+print ' '
+print '2016 collisions ATLAS new/ATLAS old: '
+print (newATLAS[-12,1]*newATLAS[-12,0]*(60*60*24))/(ATLASprev[7,1]*ATLASprev[7,0]*(60*60*24))
+#print ' '
+#print 'Collisions ATLAS/CMS 2017: '
+#print (newATLAS[9,1]*newATLAS[9,0])/(newCMS[7,1]*newCMS[7,0])
+#print ' '
+#print 'Collisions ATLAS/CMS 2016: '
+#print (newATLAS[7,1]*newATLAS[7,0])/(newCMS[5,1]*newCMS[5,0])
+#
+
+
+
+
+
+
+
+
+#write
+
+def writeProfile(experiment, outname):
+
+    f = open(outname, 'wb')
+    f.write('* ..+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8\n')
+    for i in range(len(experiment)):
+        if experiment[i,0] == 0:
+            pass
+        else:
+            string = 'IRRPROFI  '
+            val1 = int(round(experiment[i,0]*24*60*60))
+            for j in range(10 - len(str(val1))):
+                string = string + ' ' 
+            string = string + str(val1)
+            val2 = int(round(experiment[i,1]))
+            
+            for j in range(10 - len(str(val2))):
+                string = string + ' '   
+            string = string + str(val2)
+            f.write(string + '\n')
+                
+                
+
+            #f.write(str(int(round(experiment[i,0]*24*60*60))) + ' ' + str(int(round(experiment[i,1]))) + '\n')
+            
+    f.close()
+
+
+writeProfile(newAtlas, 'AtlasProfile.inp')
+writeProfile(newCMS, 'CMSprofile.inp')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

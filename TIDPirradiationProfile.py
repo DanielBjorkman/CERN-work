@@ -287,8 +287,8 @@ dumpedOld = sum(old[0:,1]*old[0:,0])
 
 #collisionsCMS = sum(CMS[0:,1]*CMS[0:,0])
 
-print 'Conservative/Averaged = ' + str(dumpedCons/dumpedAvg)
-print 'Conservative/Previous profile = ' + str(dumpedCons/dumpedOld)
+#print 'Conservative/Averaged = ' + str(dumpedCons/dumpedAvg)
+#print 'Conservative/Previous profile = ' + str(dumpedCons/dumpedOld)
 
 
 

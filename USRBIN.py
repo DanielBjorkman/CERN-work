@@ -33,6 +33,9 @@ class USRBIN():
         self.zcut = []
         self.maxalongz = []
         self.TIDP1meter = []
+        self.feetdose = []
+        self.pipe = []
+        self.centre = []
     
     def read(self):
         import os
@@ -353,10 +356,16 @@ class USRBIN():
         side = np.zeros((cube.shape[2]))
         maxalongz = np.zeros((cube.shape[2]))
         TIDP1meter = np.zeros((cube.shape[2]))
+        feetdose = np.zeros((cube.shape[2]))
+        pipe = np.zeros((cube.shape[2]))
+        centre = np.zeros((cube.shape[2]))
         for r in range(0,cube.shape[2]):
             integration[r] = np.sum(cube[0:,0:,r])
             maxalongz[r] = np.max(cube[0:,0:,r])
             try:
+                centre[r] = cube[int(cube.shape[0]/2), int(cube.shape[1]/2),r]
+                pipe[r] = cube[int(23),13,r]
+                feetdose[r] = cube[20,4,r]
                 TIDP1meter[r] = cube[33,13,r]
                 below[r] = cube[int(cube.shape[0]/2), 5,r]
                 val = 0
@@ -373,12 +382,48 @@ class USRBIN():
         self.side = side
         self.maxalongz = maxalongz
         self.TIDP1meter = TIDP1meter
-        
+        self.feetdose = feetdose
+        self.pipe = pipe
+        self.centre = centre
         
         if self.binningtype == 'CAR':
             self.xcoodinates = np.arange(int(self.info['zmin'][0]),int(self.info['zmax'][0]),self.info['zwidth'][0]*1.0001)
             self.realxcoodinates = np.arange(int(self.info['xmin'][0]),int(self.info['xmax'][0]),self.info['xwidth'][0]*1.0001)
         
+
+
+
+
+
+#normfactor = 0.0036
+#
+#import os
+#
+#
+#
+##
+#path = '//rpclustersrv1/cbjorkma/ALICE'
+#os.chdir(path)
+##
+##try:
+##    print week
+##except:
+#print 'Loading USRBINs...'
+##
+#filename = 'ALICE1_21.bnn.lis'
+#
+#week = USRBIN(filename, path, normfactor)
+#week.read()
+#week.calc()
+#
+#xes = range(0,week.cube.shape[2]*5,5)
+
+
+
+
+
+
+
 
 
 

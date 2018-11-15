@@ -108,8 +108,8 @@ fig = plt.figure()
 for i in range(2):
     ax = plt.subplot(2,1,i+1)
     
-    cube1 = cons[i]
-    cube2 = avg[i]
+    cube1 = cons[i+1]
+    cube2 = avg[i+1]
     ringVal = ring[i] 
     
     from scipy.interpolate import interp1d
@@ -169,5 +169,71 @@ plt.show()
 
 
 
+fig = plt.figure()
 
+
+ax = plt.subplot(111)
+
+cube1 = cons[0]
+cube2 = cons[1]
+cube3 = cons[2]
+#cube2 = avg[0]
+#ringVal = ring[0] 
+
+#    from scipy.interpolate import interp1d
+#x = ringVal[0:,0]
+#y = ringVal[0:,1]
+#f = interp1d(x,y)
+
+
+plt.plot(xes, cube1.TIDP1meter, label = '1h cool down', linestyle = '--')
+plt.plot(xes, cube2.TIDP1meter, label = '30h cool down', linestyle = '--')
+plt.plot(xes, cube3.TIDP1meter, label = '3 months cool down', linestyle = '--')
+#    plt.plot(xes, cube2.TIDP1meter + f(xes), label = 'Averaged + ring', linestyle = '-.')
+#    plt.plot(ringVal[0:,0], ringVal[0:,1], label = 'Ring measurement only')
+
+#plt.plot(ring[0:,0], ring[0:,1], label = 'Ring measuremrnt')    
+
+#    plt.plot(xes, cube1.TIDP1meter, label = 'Conservative', linestyle = '--')
+#    plt.plot(xes, cube2.TIDP1meter, label = 'Averaged', linestyle = '-.')
+#plt.plot(ringVal[0:,0], ringVal[0:,1], label = 'Ring measurement')
+
+ #   plt.axhline(y=1, color='k', linestyle='-')
+
+plt.title('Conservative contribution at 1 meter distance', fontsize = 18)
+plt.legend(loc = 1)
+
+plt.xlabel('z [cm]', fontsize = 18)
+#plt.ylim(0,400)
+#plt.ylim(0,280)
+
+plt.ylim(0,3500)
+    #plt.ylim(0,800)
+#plt.yscale("log", nonposy='clip')
+#plt.ylim(0,800)
+plt.xlim(-400,1700)
+
+plt.ylabel('Dose rate [uSv/h]', fontsize = 18)
+
+
+   # plt.ylabel('Fraction dose rate', fontsize = 12)
+#plt.yscale("log", nonposy='clip')
+#plt.ylim(0,1.2)
+   # ax2 = ax.twinx()
+#    plotSepta(ax2)
+#    ax2.get_yaxis().set_visible(False)
+#    plt.ylim([0,30])
+#    plt.legend(loc = 2)
+#    plt.xlim(-570,2800)
+ax2 = ax.twinx()
+
+r1 = patches.Rectangle((413,0), 430,5, color = 'Green', alpha = 0.3, label = 'TIDP')
+
+ax2.add_patch(r1)
+ax2.get_yaxis().set_visible(False)
+plt.legend(loc = 2)
+
+
+#plt.suptitle('Worse case scenario', fontsize = 16)
+plt.show()
 

@@ -29,9 +29,11 @@ def ActiwizFluence(path,volume = 1):
     from os.path import isfile, join
     
     onlyfiles = [f for f in listdir(path) if isfile(join(path, f))]           
-    files = filter(lambda x: x[-4:] == '.txt' , onlyfiles)             
+    files = filter(lambda x: x[-4:] == '.txt' , onlyfiles)
+    
     #files = filter(lambda x: x[-8:-4] == 'NEUT'or x[-8:-4] == 'PROT' or x[-8:-4] == '_PI+' or x[-8:-4] == '_PI-', files)
-    files = filter(lambda x: x[-7:-4] == 'Neu'or x[-7:-4] == 'Pro' or x[-7:-4] == 'Pi+' or x[-7:-4] == 'Pi-', files)
+    #files = filter(lambda x: x[-7:-4] == 'Neu'or x[-7:-4] == 'Pro' or x[-7:-4] == 'Pi+' or x[-7:-4] == 'Pi-', files)
+    files = filter(lambda x: x[-7:-4] == 'neu'or x[-7:-4] == 'pro' or x[-7:-4] == 'pi+' or x[-7:-4] == 'pi-', files)
     files = sorted(files)      
                    
          
@@ -73,7 +75,10 @@ def ActiwizFluencePlot(In ,ax, prim =1, line = '-'):
         ax.set_xscale("log", nonposx='clip')
         ax.set_yscale("log", nonposy='clip')
         plt.xlabel('E [GeV]', fontsize = 13)
-        plt.ylabel('E * Fluence [cm-2]', fontsize = 16)
+        if prim == 1:
+            plt.ylabel('E * Fluence [cm-2pp-1]', fontsize = 16)
+        else:
+            plt.ylabel('E * Fluence [cm-2]', fontsize = 16)
         plt.grid(True)
         plt.legend()
 

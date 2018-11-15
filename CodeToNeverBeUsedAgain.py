@@ -19,6 +19,93 @@ import math
 import numpy as np
 
 
+
+
+
+
+
+path = '//rpclustersrv1/cbjorkma/ALICE/Fluences/Score1_dir'
+vol = 150*math.pi
+prim = 1
+data = ActiwizFluence(path, vol)
+fig = plt.figure()
+ax = plt.subplot(321)
+ActiwizFluencePlot(data, ax, prim, '-')
+plt.title('Point 1', fontsize = 20)
+#plt.ylim([math.pow(10,-9), math.pow(10,-1)])
+plt.xlabel(' ')
+
+
+
+
+
+path = '//rpclustersrv1/cbjorkma/ALICE/Fluences/Score2_dir'
+vol = 150*math.pi
+prim = 1
+data = ActiwizFluence(path, vol)
+#fig = plt.figure()
+ax = plt.subplot(322)
+ActiwizFluencePlot(data, ax, prim, '-')
+plt.title('Point 2', fontsize = 20)
+#plt.ylim([math.pow(10,-9), math.pow(10,-1)])
+plt.xlabel(' ')
+
+
+
+
+
+path = '//rpclustersrv1/cbjorkma/ALICE/Fluences/Score3_dir'
+vol = 150*math.pi
+prim = 1
+data = ActiwizFluence(path, vol)
+#fig = plt.figure()
+ax = plt.subplot(323)
+ActiwizFluencePlot(data, ax, prim, '-')
+plt.title('Point 3', fontsize = 20)
+#plt.ylim([math.pow(10,-9), math.pow(10,-1)])
+plt.xlabel(' ')
+
+
+
+
+path = '//rpclustersrv1/cbjorkma/ALICE/Fluences/Score4_dir'
+vol = 150*math.pi
+prim = 1
+data = ActiwizFluence(path, vol)
+#fig = plt.figure()
+ax = plt.subplot(324)
+ActiwizFluencePlot(data, ax, prim, '-')
+plt.title('Point 4', fontsize = 20)
+#plt.ylim([math.pow(10,-9), math.pow(10,-1)])
+
+
+
+
+
+
+path = '//rpclustersrv1/cbjorkma/ALICE/Fluences/Score5_dir'
+
+vol = 30*math.pi
+prim = 1
+data = ActiwizFluence(path, vol)
+
+#fig = plt.figure()
+ax = plt.subplot(325)
+ActiwizFluencePlot(data, ax, prim, '-')
+plt.title('Point 5', fontsize = 20)
+#plt.ylim([math.pow(10,-9), math.pow(10,-1)])
+
+
+
+
+
+
+
+
+
+
+
+
 #70 ZShell
 #71 Cathode electric
 #72 Septholder
