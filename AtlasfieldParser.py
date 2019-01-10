@@ -9,7 +9,7 @@ Created on Fri Sep 14 10:52:59 2018
 
 import os
 
-path = '//rpclustersrv1/cluster_temp/cbjorkma/OpeningScenarios/DECAY/Test7/2018-10-23_11h28m03s_ATLAS_Fluences_Daniel4test_JTTPrep'
+path = '//rpclustersrv1/cluster_temp/cbjorkma/OpeningScenarios/PROMPT/2018-12-05_15h36m13s_ATLAS2'
 
 os.chdir(path)
 

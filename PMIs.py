@@ -17,6 +17,7 @@ Created on Wed Mar 21 15:00:39 2018
 class PMI():
     
     def __init__(self, path, origo):
+        import math
         self.path = path
         self.filenames = []
         self.data = []
@@ -77,6 +78,7 @@ class PMI():
             self.data = dataPMI
     def readFluka(self, path, normfactor):
         import os        
+        import numpy as np
         os.chdir(path)
         
         files = os.listdir(path)

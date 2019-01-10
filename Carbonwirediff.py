@@ -180,7 +180,7 @@ normfactor = 0.0036*1 / 0.1772837
 import os
 
 
-path = '//rpclustersrv1/cbjorkma/LSS2/FullActivation8/USRBINs'
+path = '//rpclustersrv1/cbjorkma/LSS2/ref2'
 os.chdir(path)
 filenames = sorted(os.listdir(path))
 try:
@@ -195,35 +195,35 @@ except:
         normal.append(x)
 
 
-path = '//rpclustersrv1/cbjorkma/LSS2/beampipe'
-os.chdir(path)
-filenames = sorted(os.listdir(path))
-try:
-    print beampipe
-except:
-    print 'Loading USRBINs...'
-    beampipe = []
-    for i in range(len(filenames)):
-        x = USRBIN(filenames[i], path, normfactor)
-        x.read()
-        x.calc()
-        beampipe.append(x)
+#path = '//rpclustersrv1/cbjorkma/LSS2/beampipe'
+#os.chdir(path)
+#filenames = sorted(os.listdir(path))
+#try:
+#    print beampipe
+#except:
+#    print 'Loading USRBINs...'
+#    beampipe = []
+#    for i in range(len(filenames)):
+#        x = USRBIN(filenames[i], path, normfactor)
+#        x.read()
+#        x.calc()
+#        beampipe.append(x)
 
-path = '//rpclustersrv1/cbjorkma/LSS2/Aluminium'
-os.chdir(path)
-filenames = sorted(os.listdir(path))
-try:
-    print alu
-except:
-    print 'Loading USRBINs...'
-    alu = []
-    for i in range(len(filenames)):
-        x = USRBIN(filenames[i], path, normfactor)
-        x.read()
-        x.calc()
-        alu.append(x)
-
-
+#path = '//rpclustersrv1/cbjorkma/LSS2/Aluminium'
+#os.chdir(path)
+#filenames = sorted(os.listdir(path))
+#try:
+#    print alu
+#except:
+#    print 'Loading USRBINs...'
+#    alu = []
+#    for i in range(len(filenames)):
+#        x = USRBIN(filenames[i], path, normfactor)
+#        x.read()
+#        x.calc()
+#        alu.append(x)
+#
+#
 
 
 
@@ -244,21 +244,21 @@ except:
 
 
 
-path = '//rpclustersrv1/cbjorkma/LSS2/Modifications'
-os.chdir(path)
-filenames = sorted(os.listdir(path))
-try:
-    print modi
-except:
-    print 'Loading USRBINs...'
-    modi = []
-    for i in range(len(filenames)):
-        x = USRBIN(filenames[i], path, normfactor)
-        x.read()
-        x.calc()
-        modi.append(x)
-
-
+#path = '//rpclustersrv1/cbjorkma/LSS2/Modifications'
+#os.chdir(path)
+#filenames = sorted(os.listdir(path))
+#try:
+#    print modi
+#except:
+#    print 'Loading USRBINs...'
+#    modi = []
+#    for i in range(len(filenames)):
+#        x = USRBIN(filenames[i], path, normfactor)
+#        x.read()
+#        x.calc()
+#        modi.append(x)
+#
+#
 
 
 
@@ -301,6 +301,43 @@ for i in range(3):
 
 plt.suptitle('Improvement for Graphite wires for ZS 1 and 2. Sampling 1 meter from beam axis', fontsize = 16)
 plt.show()
+
+
+
+fig = plt.figure()
+
+
+ax = plt.subplot(111)
+
+cube1 = normal[i]
+cube2 = carbon[i]
+
+#plt.plot(xes, cube1.side, label = 'Normal septa')
+plt.plot(xes, cube2.depthdeposition/cube1.depthdeposition, label = 'Graphite/Current setup')
+plt.axhline(y=1, color='k', linestyle='-')
+
+plt.title('Ratio integrated dose rate along z ', fontsize = 26)
+plt.legend(loc = 1,  prop={'size': 16})
+
+plt.xlabel('z [cm from quad 216]',  fontsize = 16)
+plt.ylabel('Fraction dose rate', fontsize = 16)
+#plt.yscale("log", nonposy='clip')
+plt.ylim(0,1.2)
+ax2 = ax.twinx()
+plotSepta(ax2)
+ax2.get_yaxis().set_visible(False)
+plt.ylim([0,30])
+plt.legend(loc = 2,  prop={'size': 12})
+plt.xlim(200,2830)
+
+
+#plt.suptitle('Improvement for Graphite wires for ZS 1 and 2. Sampling 1 meter from beam axis', fontsize = 16)
+plt.show()
+
+
+
+
+
 
 
 

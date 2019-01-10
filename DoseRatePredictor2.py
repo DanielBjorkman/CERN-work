@@ -24,6 +24,7 @@ from PMIs import PMI
 from ManualClass import ManualClass
 import datetime
 from scipy.interpolate import interp1d
+
 #filename = 'LSS2_exp_24.bnn.lis'
 septaColor = 'limegreen'
 
@@ -593,7 +594,7 @@ xmin = -500
 xmax = 10100
 
 ymin = 5
-ymax = 1.7*10**4
+ymax = 1.2*10**4
 
 
 #xes = np.arange(-500,10100,(10100+500)/float(1000))
@@ -601,32 +602,33 @@ ymax = 1.7*10**4
 fig = plt.figure()
 
 #ax = plt.subplot(221)
-ax = fig.add_subplot(gs[0:2,0])
+ax = fig.add_subplot(111)
 
 
-plt.plot(manual.data[0:,0],manual.data[0:,1], label = 'Manual measurement')
+plt.plot(manual.data[0:,0],manual.data[0:,1], label = 'Ring measurement')
 
-plt.errorbar(manual.xes, manual.fluka1, yerr = manual.fluka1*manual.errors1/100, label = 'Fluka only', color = 'r')
+#plt.errorbar(manual.xes, manual.fluka1, yerr = manual.fluka1*manual.errors1/100, label = 'Fluka only', color = 'r')
 #plt.plot(Predicted[0].xcoodinates,Predicted[0].side[0:], label = 'Prediction', color = 'g')
 
 plt.xlim(xmin, xmax)
 plt.ylim(ymin,ymax)
-plt.ylabel('uSv/h',fontsize = 16)
+plt.ylabel('uSv/h',fontsize = 22)
+plt.xlabel('z [cm from quad216]',fontsize = 20)
 #plt.xlabel('z [cm from quad216]')
 #plt.yscale("log", nonposy='clip')
 
 
-plt.legend()
+plt.legend( prop={'size': 16})
 
 
-plt.title('30h cool down', fontsize = 22)
+#plt.title('30h cool down', fontsize = 22)
 
 ax2 = ax.twinx()
 plotSepta(ax2)
 plt.ylim(0,25)
 
 ax2.get_yaxis().set_visible(False)
-
+plt.legend(loc = 2, prop={'size': 16})
 
 
 

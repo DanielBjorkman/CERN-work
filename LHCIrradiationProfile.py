@@ -19,15 +19,20 @@ import numpy as np
 
 ATLASdata = np.loadtxt('ATLASirradiatonprofile2.txt')
 CMSdata = np.loadtxt('CMSirradiatonprofile.txt')
+LHCdata = np.loadtxt('LHCirradiatonprofile.txt')
 
 ATLAS = np.zeros([ATLASdata.shape[0]+2,3])
 CMS = np.zeros([CMSdata.shape[0]+2,3])
+LHC = np.zeros([LHCdata.shape[0]+2,3])
 
 ATLAS[1:len(ATLAS)-1,0:2] = ATLASdata
 CMS[1:len(CMS)-1,0:2] = CMSdata
+LHC[1:len(LHC)-1,0:2] = LHCdata
+
 
 ATLAS[0:,0] = ATLAS[0:,0]/(60*60*24)
 CMS[0:,0] = CMS[0:,0]/(60*60*24)
+LHC[0:,0] = LHC[0:,0]/(60*60*24)
 
 
 import datetime
@@ -63,7 +68,7 @@ def calcTimeline(experiment):
 
 ATLAS = calcTimeline(ATLAS)
 CMS = calcTimeline(CMS)
-    
+LHC = calcTimeline(LHC)    
     
 ###    
 #lastidx = len(ATLAS)-3
@@ -682,9 +687,7 @@ plt.title('New Profile', fontsize = 20)
 
 
 
-
-
-
+#atlasLumi = lumi
 
 
 
@@ -694,6 +697,18 @@ plt.suptitle('ATLAS/CMS irradiation profiles', fontsize = 22)
 
 
 plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
 print 'ATLAS #Collisions/Lumi collisions = '
 print str(collisionsAtlas/lumiCollisionsATLAS)
 print ' ' 
@@ -735,6 +750,8 @@ def writeProfile(experiment, outname):
 
     f = open(outname, 'wb')
     f.write('* ..+....1....+....2....+....3....+....4....+....5....+....6....+....7....+....8\n')
+    now = datetime.datetime.now()
+    f.write('* Profile written by irradiation profile script on '+str(now) + '\n')
     for i in range(len(experiment)):
         if experiment[i,0] == 0:
             pass
@@ -758,20 +775,276 @@ def writeProfile(experiment, outname):
     f.close()
 
 
-writeProfile(newAtlas, 'AtlasProfile.inp')
-writeProfile(newCMS, 'CMSprofile.inp')
+#writeProfile(newAtlas, 'AtlasProfile.inp')
+#writeProfile(newCMS, 'CMSprofile.inp')
 
 
 
 
 
 
+fig = plt.figure()
+
+
+
+ax = fig.add_subplot(111)
+
+ax.step(ATLASprev[0:,2], ATLASprev[0:,1], label = 'Old profile, #Collisons= ' + str(prevcollisionsAtlas),where='post')
+
+#ax.step(CMSprev[0:,2], CMSprev[0:,1], label = 'CMS, #Collisons= ' + str(prevcollisionsCMS),where='post')
+
+ax.step(newATLAS[0:,2], newATLAS[0:,1], label = 'New Profile, #Collisons= ' + str(collisionsAtlas),where='post')    
+
+
+plt.axvline(x=-365*1 - newyearsLS2difference, color = 'k', linestyle = '--', label = 'Year shift')
+plt.axvline(x=-365*2 - newyearsLS2difference, color = 'k', linestyle = '--')
+plt.axvline(x=-365*3 - newyearsLS2difference, color = 'k', linestyle = '--')
+plt.axvline(x=-365*4 - newyearsLS2difference, color = 'k', linestyle = '--')
+plt.axvline(x=-365*5 - newyearsLS2difference, color = 'k', linestyle = '--')
+plt.axvline(x=-365*6 - newyearsLS2difference, color = 'k', linestyle = '--')
+plt.axvline(x=-365*7 - newyearsLS2difference, color = 'k', linestyle = '--')
+plt.axvline(x=-365*8 - newyearsLS2difference, color = 'k', linestyle = '--')
+#plt.axvline(x=newyearsLS2difference, color = 'r', linestyle = ':', linewidth = 2, label = 'LS2 starts')
+
+plt.legend(loc = 2)
+
+plt.xlabel('Time [days until LS2]',  fontsize = 16)
+        
+#ax.set_ylim(0,1e9)
+
+#plt.xlabel('Time [days until LS2]',  fontsize = 16)
+ax.set_ylabel('Beam intensity [collisions/s]',  fontsize = 16)
+
+ax2 = ax.twinx()
+
+#ax2 = fig.add_subplot(111)
+
+lumicolor = 'm'
+
+ax2.plot(lumi[0:,0],lumi[0:,1], label = 'ATLAS', linestyle = '--', color = lumicolor)
+
+#ax2.plot(lumi[0:,0],lumi[0:,2], label = 'CMS', linestyle = '--')
+
+#ax2.legend()
+
+ax2.set_ylim(0,194000)
+#ax2.set_xlim(-240,10)
+
+
+
+ax2.set_ylabel('Integrated luminosity [pb-1]',  fontsize = 16)
+
+#plt.title('Old Profile', fontsize = 20)
+
+
+
+ax2.tick_params(axis='y', colors=lumicolor)
+
+
+#ax = fig.add_subplot(212)
+
+plt.title('ATLAS irradiation profiles comparison',  fontsize = 22)
+
+
+#ax.step(newCMS[0:,2], newCMS[0:,1], label = 'CMS, #Collisons= ' + str(collisionsCMS),where='post')
+
+plt.show()        
 
 
 
 
 
 
+fig = plt.figure()
+
+
+
+ax = fig.add_subplot(111)
+
+ax.step(ATLASprev[0:,2], ATLASprev[0:,1], label = 'Old profile, #Collisons= ' + str(prevcollisionsAtlas),where='post')
+
+#ax.step(CMSprev[0:,2], CMSprev[0:,1], label = 'CMS, #Collisons= ' + str(prevcollisionsCMS),where='post')
+
+ax.step(newATLAS[0:,2], newATLAS[0:,1], label = 'New Profile, #Collisons= ' + str(collisionsAtlas),where='post')    
+
+
+#plt.axvline(x=-365*1 - newyearsLS2difference, color = 'k', linestyle = '--', label = 'Year shift')
+plt.axvline(x=-365*2 - newyearsLS2difference, color = 'k', linestyle = '--')
+plt.axvline(x=-365*3 - newyearsLS2difference, color = 'k', linestyle = '--')
+plt.axvline(x=-365*4 - newyearsLS2difference, color = 'k', linestyle = '--')
+plt.axvline(x=-365*5 - newyearsLS2difference, color = 'k', linestyle = '--')
+plt.axvline(x=-365*6 - newyearsLS2difference, color = 'k', linestyle = '--')
+plt.axvline(x=-365*7 - newyearsLS2difference, color = 'k', linestyle = '--')
+plt.axvline(x=-365*8 - newyearsLS2difference, color = 'k', linestyle = '--')
+#plt.axvline(x=newyearsLS2difference, color = 'r', linestyle = ':', linewidth = 2, label = 'LS2 starts')
+
+plt.legend(loc = 2, prop={'size': 16})
+
+plt.xlabel('Time [days until LS2]',  fontsize = 16)
+
+ax.set_xlim(-200,0)
+
+#plt.xlabel('Time [days until LS2]',  fontsize = 16)
+ax.set_ylabel('Beam intensity [collisions/s]',  fontsize = 16)
+
+ax2 = ax.twinx()
+
+#ax2 = fig.add_subplot(111)
+
+lumicolor = 'm'
+
+ax2.plot(lumi[0:,0],lumi[0:,1], label = 'ATLAS', linestyle = '--', color = lumicolor)
+
+#ax2.plot(lumi[0:,0],lumi[0:,2], label = 'CMS', linestyle = '--')
+
+#ax2.legend()
+
+ax2.set_ylim(0,194000)
+#ax2.set_xlim(-240,10)
+
+
+
+ax2.set_ylabel('Integrated luminosity [pb-1]',  fontsize = 16)
+
+#plt.title('Old Profile', fontsize = 20)
+
+
+
+ax2.tick_params(axis='y', colors=lumicolor)
+
+
+#ax = fig.add_subplot(212)
+
+plt.title('ATLAS irradiation profiles, Last year',  fontsize = 26)
+
+
+#ax.step(newCMS[0:,2], newCMS[0:,1], label = 'CMS, #Collisons= ' + str(collisionsCMS),where='post')
+
+plt.show()        
+
+
+#
+#
+#
+#
+#fig = plt.figure()
+#
+#
+#
+#ax = fig.add_subplot(211)
+#
+#ax.step(ATLASprev[0:,2], ATLASprev[0:,1], label = 'ATLAS, #Collisons= ' + str(prevcollisionsAtlas),where='post')
+#
+#ax.step(CMSprev[0:,2], CMSprev[0:,1], label = 'CMS, #Collisons= ' + str(prevcollisionsCMS),where='post')
+#
+#ax.step(LHC[0:,2], LHC[0:,1], label = 'LHC',where='post')       
+#
+#
+#plt.axvline(x=-365*1 - newyearsLS2difference, color = 'k', linestyle = '--', label = 'Year shift')
+#plt.axvline(x=-365*2 - newyearsLS2difference, color = 'k', linestyle = '--')
+#plt.axvline(x=-365*3 - newyearsLS2difference, color = 'k', linestyle = '--')
+#plt.axvline(x=-365*4 - newyearsLS2difference, color = 'k', linestyle = '--')
+#plt.axvline(x=-365*5 - newyearsLS2difference, color = 'k', linestyle = '--')
+#plt.axvline(x=-365*6 - newyearsLS2difference, color = 'k', linestyle = '--')
+#plt.axvline(x=-365*7 - newyearsLS2difference, color = 'k', linestyle = '--')
+#plt.axvline(x=-365*8 - newyearsLS2difference, color = 'k', linestyle = '--')
+##plt.axvline(x=newyearsLS2difference, color = 'r', linestyle = ':', linewidth = 2, label = 'LS2 starts')
+#
+#plt.legend(loc = 2)
+#
+#
+##ax.set_ylim(0,1e9)
+#
+##plt.xlabel('Time [days until LS2]',  fontsize = 16)
+#ax.set_ylabel('Beam intensity [collisions/s]',  fontsize = 16)
+#
+#ax2 = ax.twinx()
+#
+##ax2 = fig.add_subplot(111)
+#
+#ax2.plot(lumi[0:,0],lumi[0:,1], label = 'ATLAS', linestyle = '--')
+#
+#ax2.plot(lumi[0:,0],lumi[0:,2], label = 'CMS', linestyle = '--')
+#
+##ax2.legend()
+#
+#ax2.set_ylim(0,194000)
+##ax2.set_xlim(-240,10)
+#
+#
+#
+#ax2.set_ylabel('Integrated luminosity [pb-1]',  fontsize = 16)
+#
+#plt.title('Old Profile', fontsize = 20)
+#
+#
+#
+#
+#
+#
+#ax = fig.add_subplot(212)
+#
+#ax.step(newATLAS[0:,2], newATLAS[0:,1], label = 'ATLAS, #Collisons= ' + str(collisionsAtlas),where='post')
+#
+#ax.step(newCMS[0:,2], newCMS[0:,1], label = 'CMS, #Collisons= ' + str(collisionsCMS),where='post')
+#ax.step(LHC[0:,2], LHC[0:,1], label = 'LHC',where='post')       
+#         
+#
+#
+#plt.axvline(x=-365*1 - newyearsLS2difference, color = 'k', linestyle = '--', label = 'Year shift')
+#plt.axvline(x=-365*2 - newyearsLS2difference, color = 'k', linestyle = '--')
+#plt.axvline(x=-365*3 - newyearsLS2difference, color = 'k', linestyle = '--')
+#plt.axvline(x=-365*4 - newyearsLS2difference, color = 'k', linestyle = '--')
+#plt.axvline(x=-365*5 - newyearsLS2difference, color = 'k', linestyle = '--')
+#plt.axvline(x=-365*6 - newyearsLS2difference, color = 'k', linestyle = '--')
+#plt.axvline(x=-365*7 - newyearsLS2difference, color = 'k', linestyle = '--')
+#plt.axvline(x=-365*8 - newyearsLS2difference, color = 'k', linestyle = '--')
+##plt.axvline(x=newyearsLS2difference, color = 'r', linestyle = ':', linewidth = 2, label = 'LS2 starts')
+#
+#plt.legend(loc = 2)
+#
+#
+##ax.set_ylim(0,1e9)
+#
+#plt.xlabel('Time [days until LS2]',  fontsize = 16)
+#ax.set_ylabel('Beam intensity [collisions/s]',  fontsize = 16)
+#
+#ax2 = ax.twinx()
+#
+##ax2 = fig.add_subplot(111)
+#
+#ax2.plot(lumi[0:,0],lumi[0:,1], label = 'ATLAS', linestyle = '--')
+#
+#ax2.plot(lumi[0:,0],lumi[0:,2], label = 'CMS', linestyle = '--')
+#
+##ax2.legend()
+#
+#ax2.set_ylim(0,194000)
+##ax.set_xlim(-240,10)
+#
+#
+#ax2.set_ylabel('Integrated luminosity [pb-1]',  fontsize = 16)
+#
+#plt.title('New Profile', fontsize = 20)
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#plt.suptitle('ATLAS/CMS irradiation profiles', fontsize = 22)
+#
+#
+#plt.show()
+#
+#
+#
 
 
 

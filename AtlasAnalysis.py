@@ -54,12 +54,54 @@ os.chdir(path)
 #    print danielold
 #except:
 print 'Loading USRBINs...'
-#
-filename = 'ATLAS_Daniel_22.bnn.lis'
 
-danielold = USRBIN(filename, path, normfactor)
-danielold.read()
-danielold.calc()
+
+filenames = []
+filenames.append('ATLAS1comp1_72.bnn.lis')
+filenames.append('ATLAS1comp1_73.bnn.lis')
+filenames.append('ATLAS1comp1_24.bnn.lis')
+filenames.append('ATLAS1comp1_25.bnn.lis')
+filenames.append('ATLAS1comp1_26.bnn.lis')
+filenames.append('ATLAS1comp1_27.bnn.lis')
+#filenames.append('ATLAS1_28.bnn.lis')
+
+new = []
+
+for i in range(len(filenames)):
+    filename = filenames.pop(0)
+    
+    x = USRBIN(filename, path, normfactor)
+    x.read()
+    x.calc()
+    new.append(x.centre)
+
+
+
+
+
+filenames = []
+filenames.append('ATLAS1comp2_72.bnn.lis')
+filenames.append('ATLAS1comp2_73.bnn.lis')
+filenames.append('ATLAS1comp2_24.bnn.lis')
+filenames.append('ATLAS1comp2_25.bnn.lis')
+filenames.append('ATLAS1comp2_26.bnn.lis')
+filenames.append('ATLAS1comp2_27.bnn.lis')
+#filenames.append('ATLAS1oldprofile_28.bnn.lis')
+
+old = []
+
+for i in range(len(filenames)):
+    filename = filenames.pop(0)
+    
+    x = USRBIN(filename, path, normfactor)
+    x.read()
+    x.calc()
+    xes = range(0,x.cube.shape[2]*5,5/2)
+    old.append(x.centre)
+
+
+
+
 
 #filename = 'ATLAS_Daniel_23.bnn.lis'
 #
@@ -78,13 +120,13 @@ danielold.calc()
 
 
 
-path = '//rpclustersrv1/cluster_temp/cbjorkma/2018-11-09_14h38m21s_ATLAS1'
-os.chdir(path)
-filename = 'ATLAS1_72.bnn.lis'
-
-danielnew = USRBIN(filename, path, normfactor)
-danielnew.read()
-danielnew.calc()
+##path = '//rpclustersrv1/cluster_temp/cbjorkma/2018-11-09_14h38m21s_ATLAS1'
+#os.chdir(path)
+#filename = 'ATLAS1_72.bnn.lis'
+#
+#danielnew = USRBIN(filename, path, normfactor)
+#danielnew.read()
+#danielnew.calc()
 
 #filename = 'ATLAS1_73.bnn.lis'
 #
@@ -99,45 +141,64 @@ danielnew.calc()
 
 fig = plt.figure()
 
-fig.add_subplot(211)
+
+cooldowns = ['1 week', '1 months', '2 months', '4 months', '1 year', '2 years']
+
+#for i in range(len(cooldowns)):
 #
-xes = range(0,danielold.cube.shape[2]*5,5)
+#    ax =plt.subplot(3,1,i +1)
+#    
+#    
+#    
+#    
+#    xes = range(0,new[0].cube.shape[2]*5,5)
+#    
+#    
+#    #plt.plot(xes, carmona.depthdeposition, label = 'Carmona')
+#    #plt.plot(xes, daniel.depthdeposition, label = 'Daniel')
+#    #plt.legend()
+#    ##plt.xlabel('z [cm]')
+#    #plt.ylabel('Integrated dose rate [uSv/h]')
+#    #plt.title('Integrated dose rate along z')
+#    #plt.yscale("log", nonposy='clip')
+#    #plt.grid(linewidth = 0.4)
+#    #
+#    #fig.add_subplot(212)
+#    
+#    #plt.plot(xes, carmona.maxalongz, label = 'Carmona, Standard opening scenario', linestyle = '--')
+#    #plt.plot(xes, daniel.maxalongz, label = 'Daniel, JTT exchange opening', linestyle = ':')
+#    
+#    
+#    plt.plot(xes, old[i].centre, label = 'Old Profile ' , linestyle = '--')
+#    plt.plot(xes, new[i].centre, label = 'New Profile ' , linestyle = '-.')
+#    plt.legend()
+#    if i == 2:
+#        plt.xlabel('z [cm from IP]', fontsize = 18)
+#    plt.ylabel('dose rate [uSv/h]' , fontsize = 18)
+#    plt.title(cooldowns[i], fontsize = 15)
+#    plt.yscale("log", nonposy='clip', fontsize = 18)
+#    plt.grid(linewidth = 0.3)
+#        
+#    plt.suptitle('ATLAS dose rate comparison of centre bin', fontsize = 22)
 #
-#plt.plot(xes, carmona.depthdeposition, label = 'Carmona')
-#plt.plot(xes, daniel.depthdeposition, label = 'Daniel')
-#plt.legend()
-##plt.xlabel('z [cm]')
-#plt.ylabel('Integrated dose rate [uSv/h]')
-#plt.title('Integrated dose rate along z')
-#plt.yscale("log", nonposy='clip')
-#plt.grid(linewidth = 0.4)
-#
+#plt.show()
+import matplotlib.cm as cm
+
+xes = range(0,2500,2500/250)
+
+
+fig = plt.figure()
+
+colors = cm.rainbow(np.linspace(0, 1, len(cooldowns)))
+
 #fig.add_subplot(212)
 
-#plt.plot(xes, carmona.maxalongz, label = 'Carmona, Standard opening scenario', linestyle = '--')
-#plt.plot(xes, daniel.maxalongz, label = 'Daniel, JTT exchange opening', linestyle = ':')
-plt.plot(xes, danielold.centre, label = 'Old Profile', linestyle = '--')
-plt.plot(xes, danielnew.centre, label = 'New Profile', linestyle = '-.')
-plt.legend()
-#plt.xlabel('z [cm from IP]', fontsize = 18)
-plt.ylabel('dose rate [uSv/h]' , fontsize = 18)
-plt.title('Sampled along beam axis', fontsize = 15)
-plt.yscale("log", nonposy='clip', fontsize = 18)
-plt.grid(linewidth = 0.3)
-
-plt.suptitle('ATLAS dose rate comparison. 1 month cool down', fontsize = 22)
-
-
-
-
-
-fig.add_subplot(212)
-
-plt.title('Ratio comparison', fontsize = 15)
-plt.plot(xes, danielnew.centre/danielold.centre, label = 'New profile/old profile', linestyle = '-')
+plt.title('ATLAS beam axis activation dependence on irradiation profile', fontsize = 22)
+for i in range(len(cooldowns)):
+    plt.plot(xes, old[i]/new[i], label = cooldowns[i], linestyle = '-', color = colors[len(cooldowns) - i -1 ])
 
 plt.xlabel('z [cm from IP]', fontsize = 18)
-plt.ylabel('Ratio dose rate' , fontsize = 18)
+plt.ylabel('Ratio dose rate eq, old/new profile' , fontsize = 18)
 #plt.title('Max values along z', fontsize = 15)
 plt.axhline(y=1, color='k', linestyle='-')
 plt.grid(linewidth = 0.3)
