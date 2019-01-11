@@ -11,8 +11,6 @@ import os
 import numpy as np
 
 
-path = '//cern.ch/dfs/Users/c/cbjorkma/Documents/Irrprofi'
-os.chdir(path)
 
 
 
@@ -39,10 +37,10 @@ def calcTimeline(experiment):
     
     experiment[len(experiment)-2,2] = - experiment[len(experiment)-2,0]
     for i in range(lastidx,-1,-1):
-        #print i
+        
         experiment[i,2] = -experiment[i,0] - abs(experiment[i+1,2])
     return experiment;
-        #print ATLAS[i,3] 
+ 
         
 
 #CMS = calcTimeline(CMS)
@@ -81,7 +79,8 @@ def readLumi(filename,origo):
         timedifference = instant - origo
         timeindays = timedifference.total_seconds()/(60*60*24)
         lumi[i,0] = timeindays
-        lumi[i,1] = data.ALICE[i]
+        global experiment
+        lumi[i,1] = data[experiment][i]
         
     #                print 'file ' + str(j) + '. Seconds ' + str(amountOfSeconds) + '. value ' + str(thefile.Value[i] )
     #        assert dataPMI[1200,1,2] != dataPMI[1200,1,3]
@@ -235,21 +234,22 @@ def setMagnitude(lumi):
     
     
     
+    global experiment
+    if experiment == 'ALICE':
     
-    
-    #Ion run
-    xsec = 8. #barn
-    protonToIonFactor = 500/float(6)
-    T4end = LS2ion
-    T4start = datetime.datetime(2018,11,8,00,00,00)
-    timediff = (T4end - T4start).total_seconds() 
-    #lumidiff = f(sinceLS2(T4end)) - f(sinceLS2(T4start)) #picobarn
-    lumidiff = 1E9 #barn 
-    collisions = lumidiff*xsec
-    #newrow = [timediff/(60*60*24),collisions/timediff,0]
-    newrow = [timediff/(60*60*24),protonToIonFactor*collisions/timediff,0]
-    ATLAS = np.vstack([ATLAS,newrow])
-    ATLAS = np.vstack([ATLAS,[0,0,0]])
+        #Ion run
+        xsec = 8. #barn
+        protonToIonFactor = 500/float(6)
+        
+        
+        timediff = (ionEnd- ionStart).total_seconds() 
+        #lumidiff = f(sinceLS2(T4end)) - f(sinceLS2(T4start)) #picobarn
+        lumidiff = 1E9 #barn 
+        collisions = lumidiff*xsec
+        #newrow = [timediff/(60*60*24),collisions/timediff,0]
+        newrow = [timediff/(60*60*24),protonToIonFactor*collisions/timediff,0]
+        ATLAS = np.vstack([ATLAS,newrow])
+        ATLAS = np.vstack([ATLAS,[0,0,0]])
     
     return ATLAS;
 
@@ -261,9 +261,9 @@ def setMagnitude(lumi):
 
 
 #
-def calcTimingNewProfile(dates,experimentMagnitudes, origo):
+def calcTimingNewprofile(dates,experimentMagnitudes, origo):
     experiment = np.zeros(experimentMagnitudes.shape)
-    experiment[0:,1] = ATLAS[0:,1]    
+    experiment[0:,1] = experimentMagnitudes[0:,1]    
     for i in range(len(experiment)-2,0,-1):
         if experiment[i,1] == 0:
             instance = dates.pop(0)
@@ -285,6 +285,65 @@ def calcTimingNewProfile(dates,experimentMagnitudes, origo):
     return experiment
 
 
+
+
+def plot(prev, new, origo, title):
+
+    
+    import matplotlib.pyplot as plt
+    
+    
+    timedifference = origo - newyear2018
+    newyearsLS2difference = timedifference.total_seconds()/(60*60*24)
+    
+    fig = plt.figure()
+    
+    
+    
+    
+    
+    
+    ax = fig.add_subplot(111)
+    
+    ax.step(ALICE[0:,2], ALICE[0:,1], label = 'Old Profile, #Collisons= ' + str(prevcollisionsALICE) ,where='post') #
+    
+    #ax.step(CMSprev[0:,2], CMSprev[0:,1], label = 'CMS, #Collisons= ' + str(prevcollisionsCMS),where='post')
+    ax.step(newATLAS[0:,2], newATLAS[0:,1], label = 'New Profile, #Collisons= ' + str(collisionsAtlas),where='post') 
+             
+    
+    
+    plt.axvline(x=-365*1 - newyearsLS2difference, color = 'k', linestyle = '--', label = 'Year shift')
+    plt.axvline(x=-365*2 - newyearsLS2difference, color = 'k', linestyle = '--')
+    plt.axvline(x=-365*3 - newyearsLS2difference, color = 'k', linestyle = '--')
+    plt.axvline(x=-365*4 - newyearsLS2difference, color = 'k', linestyle = '--')
+    plt.axvline(x=-365*5 - newyearsLS2difference, color = 'k', linestyle = '--')
+    plt.axvline(x=-365*6 - newyearsLS2difference, color = 'k', linestyle = '--')
+    plt.axvline(x=-365*7 - newyearsLS2difference, color = 'k', linestyle = '--')
+    plt.axvline(x=-365*8 - newyearsLS2difference, color = 'k', linestyle = '--')
+    #plt.axvline(x=newyearsLS2difference, color = 'r', linestyle = ':', linewidth = 2, label = 'LS2 starts')
+    
+    plt.legend(loc = 2)
+    
+    
+    ax.set_ylabel('Beam intensity [collisions/s]',  fontsize = 16)
+    
+    ax2 = ax.twinx()
+    
+    lumicolor = 'm'
+    
+    ax2.plot(lumi[0:,0],lumi[0:,1], label = 'Integrated Luminosity', linestyle = '--', color = lumicolor)
+    
+    
+    ax2.tick_params(axis='y', colors=lumicolor)
+    
+    ax2.set_ylabel('Integrated luminosity [pb-1]',  fontsize = 16)
+    
+    plt.title(title, fontsize = 20)
+    
+    
+    plt.xlabel('Time [days until ' + str(origo.day) + '/' + str(origo.month) + '/' + str(origo.year) + ']',  fontsize = 16)
+    
+    plt.show()
 
 
 import datetime
@@ -339,6 +398,10 @@ T4end =  LS2 #end of proton-proton run
 T4start = datetime.datetime(2018,9,23,17,55,33)
 
 
+# Ion run
+ionEnd = LS2ion
+ionStart = datetime.datetime(2018,11,8,00,00,00)
+
 
 
 datesAtlas = []
@@ -356,17 +419,23 @@ datesAtlas.append(end2011)
 
 
 
+path = '//cern.ch/dfs/Users/c/cbjorkma/Documents/Irrprofi'
+os.chdir(path)
+
+
 #
 #newATLASfactorless = newATLAS
 
+experiment = 'ALICE'
 origo = LS2ion
 ALICE = readProfile('LHCirradiatonprofile.txt')
+ALICE[0:,1] = ALICE[0:,1]*0.0001
 ALICE = calcTimeline(ALICE)
 filename = 'lumiData.csv'
 lumi = readLumi(filename, origo)
 ATLAS = setMagnitude(lumi)
-newAtlas = calcTimingNewProfile(datesAtlas, ATLAS, origo)
-
+newATLAS = calcTimingNewprofile(datesAtlas, ATLAS, origo)
+plot(ALICE, newATLAS, origo, 'ALICE')
 
 
 
@@ -384,161 +453,90 @@ newAtlas = calcTimingNewProfile(datesAtlas, ATLAS, origo)
 #lumiCollisions = lumiCollisions + 1e12*(f(0) - f(-2000))*xsec
 
 
-xsec = 80E-3
-lumiCollisions = 1e12*max(lumi[0:,1])*xsec
-
-
-
-PPcollisionsAtlas = sum(newATLAS[:-3,1]*newATLAS[:-3,0])*24*60*60
-
+#xsec = 80E-3
+#lumiCollisions = 1e12*max(lumi[0:,1])*xsec
+#
+#
+#
+#PPcollisionsAtlas = sum(newATLAS[:-3,1]*newATLAS[:-3,0])*24*60*60
+#
 collisionsAtlas = sum(newATLAS[0:,1]*newATLAS[0:,0])*24*60*60
-
+#
 prevcollisionsALICE = sum(ALICE[0:,1]*ALICE[0:,0])*24*60*60
-
-
-
-
-
-
-print '# PP collisions/Lumi collisions = '
-print str(PPcollisionsAtlas/lumiCollisions)
-print ' ' 
-print 'Fraction of #Collisions increased for ALICE = '
-print str(collisionsAtlas/prevcollisionsALICE)
-
-
-
-
-
-
-
-
-
-
-
-
-
-import matplotlib.pyplot as plt
-
-
-timedifference = origo - newyear2018
-newyearsLS2difference = timedifference.total_seconds()/(60*60*24)
-
-fig = plt.figure()
-
-
-
-
-
-
-ax = fig.add_subplot(211)
-
-ax.step(ALICE[0:,2], ALICE[0:,1], label = 'ALICE, #Collisons= ' + str(prevcollisionsALICE),where='post')
-
-#ax.step(CMSprev[0:,2], CMSprev[0:,1], label = 'CMS, #Collisons= ' + str(prevcollisionsCMS),where='post')
-
-         
-
-
-plt.axvline(x=-365*1 - newyearsLS2difference, color = 'k', linestyle = '--', label = 'Year shift')
-plt.axvline(x=-365*2 - newyearsLS2difference, color = 'k', linestyle = '--')
-plt.axvline(x=-365*3 - newyearsLS2difference, color = 'k', linestyle = '--')
-plt.axvline(x=-365*4 - newyearsLS2difference, color = 'k', linestyle = '--')
-plt.axvline(x=-365*5 - newyearsLS2difference, color = 'k', linestyle = '--')
-plt.axvline(x=-365*6 - newyearsLS2difference, color = 'k', linestyle = '--')
-plt.axvline(x=-365*7 - newyearsLS2difference, color = 'k', linestyle = '--')
-plt.axvline(x=-365*8 - newyearsLS2difference, color = 'k', linestyle = '--')
-#plt.axvline(x=newyearsLS2difference, color = 'r', linestyle = ':', linewidth = 2, label = 'LS2 starts')
-
-plt.legend(loc = 2)
-
-
-#ax.set_ylim(0,1e9)
-
-#plt.xlabel('Time [days until LS2]',  fontsize = 16)
-ax.set_ylabel('Beam intensity [collisions/s]',  fontsize = 16)
-
-ax2 = ax.twinx()
-
-#ax2 = fig.add_subplot(111)
-
-ax2.plot(lumi[0:,0],lumi[0:,1], label = 'Integrated Luminosity', linestyle = '--', color = 'Orange')
-
-
-#ax2.legend()
-
-#ax2.set_ylim(0,194000)
-#ax2.set_xlim(-240,10)
-
-
-
-ax2.set_ylabel('Integrated luminosity [pb-1]',  fontsize = 16)
-
-plt.title('Old Profile', fontsize = 20)
-
-
-
-
-
-
-
-
-
-
-
-ax = fig.add_subplot(212)
-
-ax.step(newATLAS[0:,2], newATLAS[0:,1], label = 'ALICE, #Collisons= ' + str(collisionsAtlas),where='post')
 #
-#ax.step(newCMS[0:,2], newCMS[0:,1], label = 'CMS, #Collisons= ' + str(collisionsCMS),where='post')
 #
-#         
-#ax.set_yscale('log')
-
-plt.axvline(x=-365*1 - newyearsLS2difference, color = 'k', linestyle = '--', label = 'Year shift')
-plt.axvline(x=-365*2 - newyearsLS2difference, color = 'k', linestyle = '--')
-plt.axvline(x=-365*3 - newyearsLS2difference, color = 'k', linestyle = '--')
-plt.axvline(x=-365*4 - newyearsLS2difference, color = 'k', linestyle = '--')
-plt.axvline(x=-365*5 - newyearsLS2difference, color = 'k', linestyle = '--')
-plt.axvline(x=-365*6 - newyearsLS2difference, color = 'k', linestyle = '--')
-plt.axvline(x=-365*7 - newyearsLS2difference, color = 'k', linestyle = '--')
-plt.axvline(x=-365*8 - newyearsLS2difference, color = 'k', linestyle = '--')
-#plt.axvline(x=newyearsLS2difference, color = 'r', linestyle = ':', linewidth = 2, label = 'LS2 starts')
-
-plt.legend(loc = 2)
 
 
-#ax.set_ylim(0,1e9)
-
-plt.xlabel('Time [days until end of 2018 ion run]',  fontsize = 16)
-ax.set_ylabel('Beam intensity [collisions/s]',  fontsize = 16)
-
-ax2 = ax.twinx()
-
-#ax2 = fig.add_subplot(111)
-
-ax2.plot(lumi[0:,0],lumi[0:,1], label = 'Integrated Luminosity', linestyle = '--', color = 'Orange')
-
-#ax2.plot(lumi[0:,0],lumi[0:,2], label = 'CMS', linestyle = '--')
-
-#ax2.legend()
-
-#ax2.set_ylim(0,194000)
-#ax.set_xlim(-240,10)
 
 
-ax2.set_ylabel('Integrated luminosity [pb-1]',  fontsize = 16)
-
-#plt.title('New Profile', fontsize = 20)
-
-
-plt.title('New Profile', fontsize = 20)
-
-
-plt.suptitle('ALICE irradiation profile', fontsize = 22)
+#print '# PP collisions/Lumi collisions = '
+#print str(PPcollisionsAtlas/lumiCollisions)
+#print ' ' 
+#print 'Fraction of #Collisions increased for ALICE = '
+#print str(collisionsAtlas/prevcollisionsALICE)
+#
 
 
-plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+#
+#
+#
+#ax = fig.add_subplot(212)
+#
+#
+##
+##ax.step(newCMS[0:,2], newCMS[0:,1], label = 'CMS, #Collisons= ' + str(collisionsCMS),where='post')
+##
+##         
+##ax.set_yscale('log')
+#
+#plt.axvline(x=-365*1 - newyearsLS2difference, color = 'k', linestyle = '--', label = 'Year shift')
+#plt.axvline(x=-365*2 - newyearsLS2difference, color = 'k', linestyle = '--')
+#plt.axvline(x=-365*3 - newyearsLS2difference, color = 'k', linestyle = '--')
+#plt.axvline(x=-365*4 - newyearsLS2difference, color = 'k', linestyle = '--')
+#plt.axvline(x=-365*5 - newyearsLS2difference, color = 'k', linestyle = '--')
+#plt.axvline(x=-365*6 - newyearsLS2difference, color = 'k', linestyle = '--')
+#plt.axvline(x=-365*7 - newyearsLS2difference, color = 'k', linestyle = '--')
+#plt.axvline(x=-365*8 - newyearsLS2difference, color = 'k', linestyle = '--')
+##plt.axvline(x=newyearsLS2difference, color = 'r', linestyle = ':', linewidth = 2, label = 'LS2 starts')
+#
+#plt.legend(loc = 2)
+#
+#
+##ax.set_ylim(0,1e9)
+#
+#plt.xlabel('Time [days until end of 2018 ion run]',  fontsize = 16)
+#ax.set_ylabel('Beam intensity [collisions/s]',  fontsize = 16)
+#
+#ax2 = ax.twinx()
+#
+##ax2 = fig.add_subplot(111)
+#
+#ax2.plot(lumi[0:,0],lumi[0:,1], label = 'Integrated Luminosity', linestyle = '--', color = 'Orange')
+#
+##ax2.plot(lumi[0:,0],lumi[0:,2], label = 'CMS', linestyle = '--')
+#
+##ax2.legend()
+#
+##ax2.set_ylim(0,194000)
+##ax.set_xlim(-240,10)
+#
+#
+#ax2.set_ylabel('Integrated luminosity [pb-1]',  fontsize = 16)
+#
+##plt.title('New Profile', fontsize = 20)
+
 
 
 
@@ -579,7 +577,7 @@ def writeProfile(experiment, outname):
             
     f.close()
 
-writeProfile(newAtlas, 'AliceProfile.txt')
+writeProfile(newATLAS, 'AliceProfile.txt')
 
 
 
