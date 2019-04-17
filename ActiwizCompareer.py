@@ -81,7 +81,7 @@ fig = plt.figure()
 
 ax = plt.subplot(111)
 
-path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/ZSa/Out73_dir'
+path = '//rpclustergw/cbjorkma/LSS2/Fluence/ZSa/Out73_dir'
 os.chdir(path)
 
 rhe = np.loadtxt('W-26ReaEvolution.txt', skiprows = 4)
@@ -90,7 +90,7 @@ rhe[0:,1] = rhe[0:,1]/(148)
 
 
 
-path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/Carbon wire/ZSa/Out73_dir'
+path = '//rpclustergw/cbjorkma/LSS2/Fluence/Carbon wire/ZSa/Out73_dir'
 os.chdir(path)
 
 graphite = np.loadtxt('CarbonEvolution.txt', skiprows = 4)
@@ -100,7 +100,7 @@ graphite[0:,1] = graphite[0:,1]/(148)
 
 
 
-path = '//rpclustersrv1/cbjorkma/LSS2/TitaniumWir/'
+path = '//rpclustergw/cbjorkma/LSS2/TitaniumWir/'
 os.chdir(path)
 
 titanium1 = np.loadtxt('TI-AL6-Vevolution.txt', skiprows = 4)
@@ -193,7 +193,7 @@ fig = plt.figure()
 
 ax = plt.subplot(111)
 
-path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/ZSa/Out70_dir'
+path = '//rpclustergw/cbjorkma/LSS2/Fluence/ZSa/Out70_dir'
 
 os.chdir(path)
 
@@ -272,7 +272,7 @@ fig = plt.figure()
 
 ax = plt.subplot(111)
 
-path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/ZSa/Out72_dir'
+path = '//rpclustergw/cbjorkma/LSS2/Fluence/ZSa/Out72_dir'
 
 os.chdir(path)
 
@@ -316,7 +316,7 @@ fig = plt.figure()
 
 ax = plt.subplot(111)
 
-path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/ZSd/Out80_dir'
+path = '//rpclustergw/cbjorkma/LSS2/Fluence/ZSd/Out80_dir'
 
 os.chdir(path)
 
@@ -368,7 +368,7 @@ fig = plt.figure()
 
 ax = plt.subplot(111)
 
-path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/ZSa/Out71_dir'
+path = '//rpclustergw/cbjorkma/LSS2/Fluence/ZSa/Out71_dir'
 
 os.chdir(path)
 
@@ -419,7 +419,7 @@ lines = ['-', '--',':','-.']
 
 ax = plt.subplot(111)
 
-path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/ZSa/Out71_dir'
+path = '//rpclustergw/cbjorkma/LSS2/Fluence/ZSa/Out71_dir'
 os.chdir(path)
 
 cathode = np.loadtxt('Peraluman300evolution.txt', skiprows = 4)
@@ -427,7 +427,7 @@ cathode[0:,0] = cathode[0:,0]/(60*60*24)
 cathode[0:,1] = cathode[0:,1]/(4784)
 
 
-path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/ZSa/Out72_dir'
+path = '//rpclustergw/cbjorkma/LSS2/Fluence/ZSa/Out72_dir'
 os.chdir(path)
 
 support = np.loadtxt('InvarEvolution.txt', skiprows = 4)
@@ -435,7 +435,7 @@ support[0:,0] = support[0:,0]/(60*60*24)
 support[0:,1] = support[0:,1]/(29584)
 
 
-path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/ZSa/Out70_dir'
+path = '//rpclustergw/cbjorkma/LSS2/Fluence/ZSa/Out70_dir'
 os.chdir(path)
 
 tank = np.loadtxt('SSEvolution.txt', skiprows = 4)
@@ -444,35 +444,35 @@ tank[0:,0] = tank[0:,0]/(60*60*24)
 tank[0:,1] = tank[0:,1]/(35368)
 
 
-path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/ZSa/Out73_dir'
+path = '//rpclustergw/cbjorkma/LSS2/Fluence/ZSa/Out73_dir'
 os.chdir(path)
 
 rhe = np.loadtxt('W-26ReaEvolution.txt', skiprows = 4)
 rhe[0:,0] = rhe[0:,0]/(60*60*24)
 rhe[0:,1] = rhe[0:,1]/(26.208)
 
-path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/Lead blocks/NewFormat/Block1_dir' 
+path = '//rpclustergw/cbjorkma/LSS2/Fluence/Lead blocks/NewFormat/Block1_dir' 
 os.chdir(path)
 
 block1 = np.loadtxt('Block1Evolution.txt', skiprows = 4)
 block1[0:,0] = block1[0:,0]/(60*60*24)
 block1[0:,1] = block1[0:,1]/(5280*2)
 
-path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/Lead blocks/NewFormat/Block2_dir' 
+path = '//rpclustergw/cbjorkma/LSS2/Fluence/Lead blocks/NewFormat/Block2_dir' 
 os.chdir(path)
 
 block2 = np.loadtxt('Block2Evolution.txt', skiprows = 4)
 block2[0:,0] = block2[0:,0]/(60*60*24)
 block2[0:,1] = block2[0:,1]/(5280*2)
 
-path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/Lead blocks/NewFormat/Block3_dir' 
+path = '//rpclustergw/cbjorkma/LSS2/Fluence/Lead blocks/NewFormat/Block3_dir' 
 os.chdir(path)
 
 block3 = np.loadtxt('Block3Evolution.txt', skiprows = 4)
 block3[0:,0] = block3[0:,0]/(60*60*24)
 block3[0:,1] = block3[0:,1]/(5280*2)
 
-path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/Lead blocks/NewFormat/Block4_dir' 
+path = '//rpclustergw/cbjorkma/LSS2/Fluence/Lead blocks/NewFormat/Block4_dir' 
 os.chdir(path)
 
 block4 = np.loadtxt('Block4Evolution.txt', skiprows = 4)
@@ -543,7 +543,7 @@ lines = ['-', '--',':','-.']
 
 ax = plt.subplot(111)
 
-path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/ZSa/Out71_dir'
+path = '//rpclustergw/cbjorkma/LSS2/Fluence/ZSa/Out71_dir'
 os.chdir(path)
 
 cathode = np.loadtxt('Peraluman300evolution.txt', skiprows = 4)
@@ -551,7 +551,7 @@ cathode[0:,0] = cathode[0:,0]/(60*60*24)
 cathode[0:,1] = cathode[0:,1]/(1)
 
 
-path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/ZSa/Out72_dir'
+path = '//rpclustergw/cbjorkma/LSS2/Fluence/ZSa/Out72_dir'
 os.chdir(path)
 
 support = np.loadtxt('InvarEvolution.txt', skiprows = 4)
@@ -559,7 +559,7 @@ support[0:,0] = support[0:,0]/(60*60*24)
 support[0:,1] = support[0:,1]/(1)
 
 
-path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/ZSa/Out70_dir'
+path = '//rpclustergw/cbjorkma/LSS2/Fluence/ZSa/Out70_dir'
 os.chdir(path)
 
 tank = np.loadtxt('SSEvolution.txt', skiprows = 4)
@@ -568,35 +568,35 @@ tank[0:,0] = tank[0:,0]/(60*60*24)
 tank[0:,1] = tank[0:,1]/(1)
 
 
-path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/ZSa/Out73_dir'
+path = '//rpclustergw/cbjorkma/LSS2/Fluence/ZSa/Out73_dir'
 os.chdir(path)
 
 rhe = np.loadtxt('W-26ReaEvolution.txt', skiprows = 4)
 rhe[0:,0] = rhe[0:,0]/(60*60*24)
 rhe[0:,1] = rhe[0:,1]/(1)
 
-path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/Lead blocks/NewFormat/Block1_dir' 
+path = '//rpclustergw/cbjorkma/LSS2/Fluence/Lead blocks/NewFormat/Block1_dir' 
 os.chdir(path)
 
 block1 = np.loadtxt('Block1Evolution.txt', skiprows = 4)
 block1[0:,0] = block1[0:,0]/(60*60*24)
 block1[0:,1] = block1[0:,1]/(1)
 
-path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/Lead blocks/NewFormat/Block2_dir' 
+path = '//rpclustergw/cbjorkma/LSS2/Fluence/Lead blocks/NewFormat/Block2_dir' 
 os.chdir(path)
 
 block2 = np.loadtxt('Block2Evolution.txt', skiprows = 4)
 block2[0:,0] = block2[0:,0]/(60*60*24)
 block2[0:,1] = block2[0:,1]/(1)
 
-path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/Lead blocks/NewFormat/Block3_dir' 
+path = '//rpclustergw/cbjorkma/LSS2/Fluence/Lead blocks/NewFormat/Block3_dir' 
 os.chdir(path)
 
 block3 = np.loadtxt('Block3Evolution.txt', skiprows = 4)
 block3[0:,0] = block3[0:,0]/(60*60*24)
 block3[0:,1] = block3[0:,1]/(1)
 
-path = '//rpclustersrv1/cbjorkma/LSS2/Fluence/Lead blocks/NewFormat/Block4_dir' 
+path = '//rpclustergw/cbjorkma/LSS2/Fluence/Lead blocks/NewFormat/Block4_dir' 
 os.chdir(path)
 
 block4 = np.loadtxt('Block4Evolution.txt', skiprows = 4)

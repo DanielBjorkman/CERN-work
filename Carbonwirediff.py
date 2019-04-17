@@ -180,55 +180,58 @@ normfactor = 0.0036*1 / 0.1772837
 import os
 
 
-path = '//rpclustersrv1/cbjorkma/LSS2/ref2'
+path = '//rpclustergw/cbjorkma/LSS2/ref2'
 os.chdir(path)
 filenames = sorted(os.listdir(path))
 try:
-    print normal
+    print ref
 except:
     print 'Loading USRBINs...'
-    normal = []
+    ref = []
     for i in range(len(filenames)):
         x = USRBIN(filenames[i], path, normfactor)
         x.read()
         x.calc()
-        normal.append(x)
+        ref.append(x)
 
 
-#path = '//rpclustersrv1/cbjorkma/LSS2/beampipe'
-#os.chdir(path)
-#filenames = sorted(os.listdir(path))
-#try:
-#    print beampipe
-#except:
-#    print 'Loading USRBINs...'
-#    beampipe = []
-#    for i in range(len(filenames)):
-#        x = USRBIN(filenames[i], path, normfactor)
-#        x.read()
-#        x.calc()
-#        beampipe.append(x)
-
-#path = '//rpclustersrv1/cbjorkma/LSS2/Aluminium'
-#os.chdir(path)
-#filenames = sorted(os.listdir(path))
-#try:
-#    print alu
-#except:
-#    print 'Loading USRBINs...'
-#    alu = []
-#    for i in range(len(filenames)):
-#        x = USRBIN(filenames[i], path, normfactor)
-#        x.read()
-#        x.calc()
-#        alu.append(x)
-#
-#
+path = '//rpclustergw/cbjorkma/LSS2/beampipe'
+os.chdir(path)
+filenames = sorted(os.listdir(path))
+try:
+    print beampipe
+except:
+    print 'Loading USRBINs...'
+    beampipe = []
+    for i in range(len(filenames)):
+        x = USRBIN(filenames[i], path, normfactor)
+        x.read()
+        x.calc()
+        beampipe.append(x)
 
 
 
 
-path = '//rpclustersrv1/cbjorkma/LSS2/Carbon Wire/USRBINs'
+path = '//rpclustergw/cbjorkma/LSS2/Aluminium'
+os.chdir(path)
+filenames = sorted(os.listdir(path))
+try:
+    print alu
+except:
+    print 'Loading USRBINs...'
+    alu = []
+    for i in range(len(filenames)):
+        x = USRBIN(filenames[i], path, normfactor)
+        x.read()
+        x.calc()
+        alu.append(x)
+
+
+
+
+
+
+path = '//rpclustergw/cbjorkma/LSS2/Carbon Wire/USRBINs'
 os.chdir(path)
 filenames = sorted(os.listdir(path))
 try:
@@ -244,63 +247,173 @@ except:
 
 
 
-#path = '//rpclustersrv1/cbjorkma/LSS2/Modifications'
-#os.chdir(path)
-#filenames = sorted(os.listdir(path))
-#try:
-#    print modi
-#except:
-#    print 'Loading USRBINs...'
-#    modi = []
-#    for i in range(len(filenames)):
-#        x = USRBIN(filenames[i], path, normfactor)
-#        x.read()
-#        x.calc()
-#        modi.append(x)
+path = '//rpclustergw/cbjorkma/LSS2/Modifications'
+os.chdir(path)
+filenames = sorted(os.listdir(path))
+try:
+    print modi
+except:
+    print 'Loading USRBINs...'
+    modi = []
+    for i in range(len(filenames)):
+        x = USRBIN(filenames[i], path, normfactor)
+        x.read()
+        x.calc()
+        modi.append(x)
+
+
+
+
+import numpy as np
+
+
+
 #
+#fig = plt.figure()
+#
+#ax = plt.subplot(111)
+
+path = '//rpclustergw/cbjorkma/LSS2/Fluence/ZSa/Out73_dir'
+os.chdir(path)
+
+rhe = np.loadtxt('W-26ReaEvolution.txt', skiprows = 4)
+rhe[0:,0] = rhe[0:,0]/(60*60*24)
+rhe[0:,1] = rhe[0:,1]/(148)
+
+
+
+path = '//rpclustergw/cbjorkma/LSS2/Fluence/Carbon wire/ZSa/Out73_dir'
+os.chdir(path)
+
+graphite = np.loadtxt('CarbonEvolution.txt', skiprows = 4)
+
+graphite[0:,0] = graphite[0:,0]/(60*60*24)
+graphite[0:,1] = graphite[0:,1]/(148)
+
+
+
+path = '//rpclustergw/cbjorkma/LSS2/TitaniumWir/'
+os.chdir(path)
+
+titanium1 = np.loadtxt('TI-AL6-Vevolution.txt', skiprows = 4)
+
+titanium1[0:,0] = titanium1[0:,0]/(60*60*24)
+titanium1[0:,1] = titanium1[0:,1]/(148)
+
+#titanium2 = np.loadtxt('TitaniumGrade1evolution.txt', skiprows = 4)
+#
+#titanium2[0:,0] = titanium2[0:,0]/(60*60*24)
+#titanium2[0:,1] = titanium2[0:,1]/(148)
+#
+#titanium3 = np.loadtxt('TitaniumGrade12evolution.txt', skiprows = 4)
+#
+#titanium3[0:,0] = titanium3[0:,0]/(60*60*24)
+#titanium3[0:,1] = titanium3[0:,1]/(148)
+
+
+#SS = np.loadtxt('SSEvolution.txt', skiprows = 4)
+#
+#SS[0:,0] = SS[0:,0]/(60*60*24)
+#SS[0:,1] = SS[0:,1]/(148)
+
+
+#plt.plot(rhe[0:,0], rhe[0:,1], label = 'Rhenium/Tungsten', linewidth = 3)
+#
+#plt.plot(graphite[0:,0], graphite[0:,1], label = 'Graphite', linewidth = 3)
+#
+#plt.plot(titanium1[0:,0], titanium1[0:,1], label = 'Ti-Al6-V', linewidth = 1.5, color = 'k')
 #
 
 
+#plt.plot(titanium[0:,0], titanium[0:,1], label = 'Titanium', linewidth = 3)
+
+#plt.legend()
+#
+#plt.xlabel('Days after operations', fontsize = 16)
+#
+#plt.ylabel('Relative hazard', fontsize = 16)
+#
+#plt.title('ZS wire material. H*(10) at 1 meter distance', fontsize = 16)
+#
+#plt.grid(linewidth = 0.3)
+#ax.set_yscale("log", nonposy='clip')
+#
+#plt.show()
 
 
 
 
 
 
-xes = normal[0].xcoodinates
-
-cooldowns = ['1h','30h','1 week']
 
 
 fig = plt.figure()
 
-for i in range(3):
-    ax = plt.subplot(3,1,i+1)
+#for i in range(2):
+ax = plt.subplot(2,1,1)    
     
-    cube1 = normal[i]
-    cube2 = carbon[i]
-    
-    #plt.plot(xes, cube1.side, label = 'Normal septa')
-    plt.plot(xes, cube2.side/cube1.side, label = 'Graphite/Current setup')
-    plt.axhline(y=1, color='k', linestyle='-')
-    
-    plt.title(cooldowns.pop(0), fontsize = 12)
-    plt.legend(loc = 1)
-    if i == 2:
-        plt.xlabel('cm from quad 216')
-    plt.ylabel('Fraction dose rate', fontsize = 12)
-    #plt.yscale("log", nonposy='clip')
-    plt.ylim(0,1.2)
-    ax2 = ax.twinx()
-    plotSepta(ax2)
-    ax2.get_yaxis().set_visible(False)
-    plt.ylim([0,30])
-    plt.legend(loc = 2)
-    plt.xlim(-570,2800)
+plt.plot(rhe[0:,0], rhe[0:,1], label = 'Rhenium/Tungsten', linewidth = 3)
+
+plt.plot(titanium1[0:,0], titanium1[0:,1], label = 'Ti-Al6-V', linewidth = 3, color = 'k')    
+
+plt.plot(graphite[0:,0], graphite[0:,1], label = 'Graphite', linewidth = 3)
 
 
-plt.suptitle('Improvement for Graphite wires for ZS 1 and 2. Sampling 1 meter from beam axis', fontsize = 16)
+
+plt.legend()
+
+plt.xlabel('Time [Days after operations]', fontsize = 16)
+
+plt.ylabel('Relative dose rate eq.', fontsize = 14)
+
+#plt.title('ZS wire material. H*(10) at 1 meter distance', fontsize = 16)
+
+plt.grid(linewidth = 0.3)
+ax.set_yscale("log", nonposy='clip')
+
+    
+ax = plt.subplot(2,1,2)
+
+xes = ref[0].xcoodinates
+
+cooldowns = ['1h','30h','1 week']
+
+
+i = 2
+
+cube1 = ref[i]
+cube2 = carbon[i]
+
+#plt.plot(xes, cube1.side, label = 'Normal septa')
+plt.plot(xes, cube2.side/cube1.side, label = 'Graphite septa/Current setup @ 1 meter distance')
+plt.axhline(y=1, color='k', linestyle='-')
+
+#plt.title(cooldowns.pop(0), fontsize = 12)
+plt.legend(loc = 1)
+plt.xlabel('z [cm from quad 216]',  fontsize = 16)
+plt.ylabel('Fraction dose rate rate eq.', fontsize = 14)
+#plt.yscale("log", nonposy='clip')
+plt.ylim(0,1.2)
+ax2 = ax.twinx()
+plotSepta(ax2)
+ax2.get_yaxis().set_visible(False)
+plt.ylim([0,30])
+plt.legend(loc = 2)
+plt.xlim(-570,4800)
+
+
+
+
+
+#plt.suptitle('Improvement for Graphite wires for ZS 1 and 2. Sampling 1 meter from beam axis', fontsize = 16)
 plt.show()
+
+
+
+
+
+
+
 
 
 
@@ -309,7 +422,7 @@ fig = plt.figure()
 
 ax = plt.subplot(111)
 
-cube1 = normal[i]
+cube1 = ref[i]
 cube2 = carbon[i]
 
 #plt.plot(xes, cube1.side, label = 'Normal septa')
@@ -349,10 +462,10 @@ cooldowns = ['1h','30h','1 week']
 
 fig = plt.figure()
 
-for i in range(3):
-    ax = plt.subplot(3,1,i+1)
+for i in range(2):
+    ax = plt.subplot(2,1,i+1)
     
-    cube1 = normal[i]
+    cube1 = ref[i]
     cube2 = modi[i]
     
 #    plt.plot(xes, cube1.side, label = 'Current setup')
@@ -388,10 +501,10 @@ cooldowns = ['1h','30h','1 week']
 
 fig = plt.figure()
 
-for i in range(3):
-    ax = plt.subplot(3,1,i+1)
+for i in range(2):
+    ax = plt.subplot(2,1,i+1)
     
-    cube1 = normal[i]
+    cube1 = ref[i]
     cube2 = beampipe[i]
     cube3 = alu[i]
     
@@ -422,15 +535,19 @@ plt.suptitle('Stainless steel --> Al6061. Sampling 1 meter from beam axis', font
 plt.show()
 
 
+
+
+
+
 cooldowns = ['1h','30h','1 week']
 
 
 fig = plt.figure()
 
-for i in range(3):
+for i in range(2):
     ax = plt.subplot(3,1,i+1)
     
-    cube1 = normal[i]
+    cube1 = ref[i]
 #    cube2 = beampipe[i]
 #    cube3 = alu[i]
     

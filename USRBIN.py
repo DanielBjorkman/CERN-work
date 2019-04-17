@@ -23,6 +23,12 @@ class USRBIN():
         self.depthdeposition = []
         self.horizontal = []
         self.vertical = []
+        self.maxY = []
+        self.widthY = []
+        self.maxX = []
+        self.widthX = []
+        self.X = []
+        self.Y = []
         self.max = []
         self.min = []
         self.normfactor = normfactor
@@ -36,6 +42,10 @@ class USRBIN():
         self.feetdose = []
         self.pipe = []
         self.centre = []
+        self.Xs = []
+        self.Ys = []
+        self.contourfilename = []
+        self.contourpath = []        
     
     def read(self):
         import os
@@ -43,6 +53,7 @@ class USRBIN():
     
         directory = self.path
         filename = self.filename
+        print "Loading " + filename
         
         startTime = time.time()
         os.chdir(directory)
@@ -129,8 +140,26 @@ class USRBIN():
         if (RZ or RPZ) and not info['rmin'][0] == 0 :
             print("Function currently not defined for minimum rbins other than 0")
             return;
-    
-
+ 
+        import math
+        import numpy as np
+        
+        if CAR:
+            #for horizontal image, ie Z as x-axis and X as y-axis
+            minX = info['xmin'][0]
+            maxX = info['xmax'][0]
+            widthX = info['xwidth'][0]
+            minZ = info['zmin'][0]
+            maxZ = info['zmax'][0]
+            widthZ = info['zwidth'][0]*1.0001
+            self.X, self.Y = np.meshgrid(np.arange(minZ,maxZ, widthZ),np.arange(minX,maxX, widthX))
+        elif (RZ or RPZ):
+            #For ATLAS
+            maxY = int(info['rmax'][0])
+            widthY = int(info['rwidth'][0])
+            maxX = int(info['zmax'][0])
+            widthX = int(info['zwidth'][0])
+            self.X, self.Y = np.meshgrid(range(0,maxX, widthX),range(-maxY,maxY, widthY))            
 #        with open(filename) as file:
 #            row = 0
 ##            stop = len(file.readlines())
@@ -148,17 +177,18 @@ class USRBIN():
             for line in file.readlines():
                 if line == '\n':
                     indecies.append(counter)
+                    print counter
                 counter = counter +1
         filelength = counter
-        print indecies  
+        #print indecies  
+        print indecies
         stop = indecies[1]
-        print stop
-        print start
+        #print stop
+        #print start
 
     
                 
-        import math
-        import numpy as np
+
     
 #        data = np.genfromtxt(filename, skip_header= start -1, skip_footer= stop -9)
         data = np.genfromtxt(filename, skip_header= start -1, skip_footer= filelength - stop -2)
@@ -268,12 +298,56 @@ class USRBIN():
     
         end = time.time()
         print("Cube reconstructed in " + str(round(end - startTime,2)) + " seconds")
-    
+        print ' '
     
         self.cube = cube * self.normfactor
         self.max = np.amax(cube)
         self.min = np.amin(cube)
         self.info = info
+    
+    def loadGeometryFile(self, filename, firstIndex = 2, lastIndex = 4):
+    
+    	""" Reads in a geometry file from FLUKA 
+    	x Axis -> Index 2
+    	y Axis -> Index 3
+    	z Axis -> Index 4
+    	Default: x and z Axis
+    	"""
+        import os
+        os.chdir(self.contourpath)       
+        
+    	import copy
+    	X = []	
+    	Y = []
+    	Xs = []	
+    	Ys = []
+    	for line in file(filename):
+    		if line[0] == "#":
+    			continue
+    		if line.strip() == "":
+    			if X:
+    				Xs.append(copy.copy(X))
+    				Ys.append(copy.copy(Y))				
+    
+    				X = []	
+    				Y = []
+    		else:
+    			splitted = map(float, line.split())
+    			X.append(splitted[firstIndex])
+    			Y.append(splitted[lastIndex])
+            
+    
+    	if X:
+    		Xs.append(copy.copy(X))
+    		Ys.append(copy.copy(Y))				
+    		X = []	
+    		Y = []
+    
+        self.Xs = Xs
+        self.Ys = Ys
+    
+#    	return Xs, Ys    
+    
     
     def plot(self):
         
@@ -393,164 +467,6 @@ class USRBIN():
 
 
 
-
-
-#normfactor = 0.0036
-#
-#import os
-#
-#
-#
-##
-#path = '//rpclustersrv1/cbjorkma/ALICE'
-#os.chdir(path)
-##
-##try:
-##    print week
-##except:
-#print 'Loading USRBINs...'
-##
-#filename = 'ALICE1_21.bnn.lis'
-#
-#week = USRBIN(filename, path, normfactor)
-#week.read()
-#week.calc()
-#
-#xes = range(0,week.cube.shape[2]*5,5)
-
-
-
-
-
-
-
-
-
-
-
-#path = '//rpclustersrv1/cbjorkma/ATLAS/Previous'
-#os.chdir(path)
-#
-##try:
-##    print carmona
-##except:
-##    print 'Loading USRBINs...'
-##    
-#filename = 'ATLAS_LS2_Carmona'
-#
-#carmona = USRBIN(filename, path, normfactor)
-#carmona.read()
-#carmona.calc()
-#
-#
-#
-
-
-#
-#
-#
-#
-#
-#path = '//rpclustersrv1/cluster_temp/cbjorkma'
-#os.chdir(path)
-#
-##try:
-##    print carmona
-##except:
-#print 'Loading USRBINs...'
-#
-#filename = 'ATLAS_LS3_Carmona2'
-#
-#carmona = USRBIN(filename, path, normfactor)
-#carmona.read()
-#carmona.calc()
-#
-#
-#
-#
-##Find when to stop reading the input data
-#with open(filename) as file:
-#    a = file.readlines()
-#    row = 0
-##            stop = len(file.readlines())
-#    for line in file.readlines():
-#        line_content = line.split()   
-#        if 0 and len(line_content) != 10:
-#            stop = row -1
-#            print stop  
-#        row = row +1
-# 
-#indecies = []   
-#counter = 0    
-#with open(filename) as file:       
-#    for line in file.readlines():
-#        if line == '\n':
-#            indecies.append(counter)
-#        counter = counter +1
-#            
-#print indecies  
-#
-#stop = indecies[1]
-#
-#filelength = counter
-#
-#import numpy as np
-#
-#data = np.genfromtxt(filename, skip_header= 9, skip_footer= filelength - stop -2)
-#
-#    
-        
-#import math
-#import numpy as np
-#import matplotlib.pyplot as plt
-#from matplotlib.colors import LogNorm
-#import matplotlib.gridspec as gridspec
-#import matplotlib.ticker as ticker       
-#
-#filename = 'LSS2_exp_24.bnn.lis'
-#
-#path = '//rpclustersrv1/cbjorkma/LSS2'
-#    
-#x = USRBIN(filename, path)
-##
-##
-#print x.filename
-#
-#print x.cube
-#
-#x.read()
-#
-#print x.cube
-#
-#print x.max
-#
-#print x.info['xbin'][0]
-#
-#
-#
-#x.plot()
-#
-#
-#x.calc()
-#
-#fig = plt.figure()
-#
-#plt.plot(x.depthdeposition)
-#plt.yscale("log", nonposy='clip')
-#
-#plt.show()
-#
-
-#
-#a = np.arange(int(x.info['zmin'][0]),int(x.info['zmax'][0]),x.info['zwidth'][0]*1.0001)
-#
-#assert a.shape == x.below.shape
-#
-###
-###
-##
-#
-#
 
 
 

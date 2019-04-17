@@ -8,14 +8,7 @@
 
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
-plt.close()
-plt.close()
-plt.close()
-plt.close()
-plt.close()
-plt.close()
-plt.close()
-plt.close()
+
 
 
 from USRBIN import USRBIN
@@ -164,55 +157,51 @@ import os
 #        tungsten.append(x)
 #
 #
-path = '//rpclustersrv1/cbjorkma/Dump studies/Impact'
+#path = '//rpclustersrv1/cbjorkma/Dump studies/Impact'
+#os.chdir(path)
+#filenames = sorted(os.listdir(path))
+#try:
+#    print impact
+#except:
+#    print 'Loading USRBINs...'
+#    impact = []
+#    for i in range(len(filenames)):
+#        x = USRBIN(filenames[i], path, normfactor)
+#        x.read()
+#        x.calc()
+#        impact.append(x)
+
+
+path = '//rpclustergw/cbjorkma/Dump studies/Dump19/Ref'
 os.chdir(path)
 filenames = sorted(os.listdir(path))
-try:
-    print impact
-except:
-    print 'Loading USRBINs...'
-    impact = []
-    for i in range(len(filenames)):
-        x = USRBIN(filenames[i], path, normfactor)
-        x.read()
-        x.calc()
-        impact.append(x)
+
+print 'Loading USRBINs...'
+ref = []
+for i in range(len(filenames)):
+    x = USRBIN(filenames[i], path, normfactor)
+    x.read()
+    x.calc()
+    ref.append(x)
 
 
-path = '//rpclustersrv1/cbjorkma/Dump studies/Dump17/Reference'
+path = '//rpclustergw/cbjorkma/Dump studies/Dump19/MaskMod'
 os.chdir(path)
 filenames = sorted(os.listdir(path))
-try:
-    print Dump17
-except:
-    print 'Loading USRBINs...'
-    Dump17 = []
-    for i in range(len(filenames)):
-        x = USRBIN(filenames[i], path, normfactor)
-        x.read()
-        x.calc()
-        Dump17.append(x)
 
-
-path = '//rpclustersrv1/cbjorkma/Dump studies/Dump17/Radius'
-os.chdir(path)
-filenames = sorted(os.listdir(path))
-try:
-    print radius17
-except:
-    print 'Loading USRBINs...'
-    radius17 = []
-    for i in range(len(filenames)):
-        x = USRBIN(filenames[i], path, normfactor)
-        x.read()
-        x.calc()
-        radius17.append(x)
+print 'Loading USRBINs...'
+mod = []
+for i in range(len(filenames)):
+    x = USRBIN(filenames[i], path, normfactor)
+    x.read()
+    x.calc()
+    mod.append(x)
 
 
 
 
 
-xes = Dump17[0].xcoodinates
+xes = ref[0].xcoodinates
 
 cooldowns = ['1h','1d','1 week']
 
@@ -220,67 +209,24 @@ cooldowns = ['1h','1d','1 week']
 fig = plt.figure()
 
 for i in range(3):
-    ax = plt.subplot(4,1,i+1)
+    ax = plt.subplot(3,1,i+1)
     
-    cube1 = Dump17[i]
-    cube2 = radius17[i]
+    cube1 = ref[i]
+    cube2 = mod[i]
     
-    plt.plot(xes, cube1.depthdeposition, label = '2 masks')
-    plt.plot(xes, cube2.depthdeposition, label = '1 mask')
+    plt.plot(xes, cube2.depthdeposition/cube1.depthdeposition, label = 'Smaller mask/Reference')
+    
+    #plt.plot(xes, cube1.depthdeposition, label = 'Reference')
+    #plt.plot(xes, cube2.depthdeposition, label = 'Smaller mask')
  #   plt.axhline(y=1, color='k', linestyle='-')
     
     plt.title(cooldowns.pop(0), fontsize = 12)
     plt.legend(loc = 1)
-    if i == 3:
+    if i == 2:
         plt.xlabel('z [cm]')
-    plt.yscale("log", nonposy='clip')
-   # plt.ylabel('Fraction dose rate', fontsize = 12)
-    #plt.yscale("log", nonposy='clip')
-    #plt.ylim(0,1.2)
-   # ax2 = ax.twinx()
-#    plotSepta(ax2)
-#    ax2.get_yaxis().set_visible(False)
-#    plt.ylim([0,30])
-#    plt.legend(loc = 2)
-#    plt.xlim(-570,2800)
-    ax2 = ax.twinx()
-    
-    r1 = patches.Rectangle((-925,0), 860,5, color = 'Brown', alpha = 0.3)
-    
-    ax2.add_patch(r1)
-    ax2.get_yaxis().set_visible(False)
-
-#plt.suptitle('Improvement for Graphite wires for ZS 1 and 2. Sampling 1 meter from beam axis', fontsize = 16)
-plt.show()
-
-
-
-
-
-xes = normal[0].xcoodinates
-
-cooldowns = ['1h','1d','1 week','1month']
-
-
-fig = plt.figure()
-
-for i in range(3):
-    ax = plt.subplot(4,1,i+1)
-    
-    cube1 = normal[i]
-    cube2 = modi[i]
-    
-    plt.plot(xes, cube1.depthdeposition/cube2.depthdeposition, label = '2 masks/1 mask')
     plt.axhline(y=1, color='k', linestyle='-')
-    #plt.plot(xes, cube2.depthdeposition, label = '1 mask')
- #   plt.axhline(y=1, color='k', linestyle='-')
-    
-    plt.title(cooldowns.pop(0), fontsize = 12)
-    plt.legend(loc = 1)
-    if i == 3:
-        plt.xlabel('z [cm]')
     #plt.yscale("log", nonposy='clip')
-   # plt.ylabel('Fraction dose rate', fontsize = 12)
+    plt.ylabel('Fraction dose rate', fontsize = 12)
     #plt.yscale("log", nonposy='clip')
     #plt.ylim(0,1.2)
    # ax2 = ax.twinx()
@@ -291,156 +237,85 @@ for i in range(3):
 #    plt.xlim(-570,2800)
     ax2 = ax.twinx()
     
-    r1 = patches.Rectangle((-925,0), 860,5, color = 'Brown', alpha = 0.3)
+    r1 = patches.Rectangle((-860/2,0), 860,5, color = 'Brown', alpha = 0.3, label = 'Dump shielding')
     
     ax2.add_patch(r1)
     ax2.get_yaxis().set_visible(False)
+    plt.legend(loc = 2)
 
-#plt.suptitle('Improvement for Graphite wires for ZS 1 and 2. Sampling 1 meter from beam axis', fontsize = 16)
+plt.suptitle('Integrated residual dose rate', fontsize = 16)
+#plt.suptitle('Residual dose rate at walking path', fontsize = 16)
 plt.show()
 
-i = 0
 
-cube1 = normal[i]
-cube2 = modi[i]
-
-
-sum1 = 0
-sum2 = 0
-for j in range(65,len(cube1.depthdeposition)):
-    sum1 = sum1 + cube1.depthdeposition[j]
-    sum2 = sum2 + cube2.depthdeposition[j]
-
-print 'Normal/modi = ' + str(sum1/sum2)
-#print 'Modi = ' + str(sum2)
-
-
-
-start = 0
-maxVal = 0
-
-def calcThis(cube):
-    vector = np.zeros([cube.shape[2]])
-    for z in range( cube.shape[2]):
-        tot = 0
-        numberBins = 0
-        for x in range( cube.shape[0]):
-            for y in range( cube.shape[1]):
-    #            if math.pow(xbin*(x - i),2) + math.pow(ybin*(y - j),2) < math.pow(outerRadi,2) and math.pow(xbin*(x - i),2) + math.pow(ybin*(y - j),2) > math.pow(innerRadi,2):
-                #if abs(xbin*(x - i)) < 20 and y < j and ybin*abs(y - j) < 100 and ybin*abs(y - j) > 70:
-                if x  > 8 and x < 12 and y > 55 and y < 60:
-                    tot = tot + cube[x,y,z]
-                    numberBins = numberBins + 1
-#        print tot
-#        print numberBins
-        val = tot/numberBins
-        vector[z] = val
-#        if val > maxVal and z >= start:
-#            maxVal = val
-    return vector
-
-
-def calcWalkingPath(dump16, plot = 0):
-    zes = dump16[0].xcoodinates
-    xes = dump16[0].realxcoodinates
-    
-    vector = np.ones(len(zes))*(-100)
-    
-    indecies = (zes > -10000).astype(int) - (zes > 520).astype(int) - (zes < -500).astype(int)
-    
-    vector = vector - np.ones(len(zes))*indecies*200
-    
-    
-    
-    indecies = (zes > -10000).astype(int) - (zes > -520).astype(int) - (zes < -600).astype(int)
-    #indecies[30] = 1/3
-    #indecies[31] = 1/2
-    #indecies[32] = 1*2/3
-    
-    vector[30] = vector[30] - 200/3
-    vector[31] = vector[31] - 200/2
-    vector[32] = vector[32] - 200*2/3
-    vector[33] = vector[33] - 200*5/6
-    
-    
-    
-    indecies = (zes > -10000).astype(int) - (zes < 520).astype(int) - (zes > 603).astype(int)
-    
-    vector[71] = vector[71] - 200/3
-    vector[70] = vector[70] - 200/2
-    vector[69] = vector[69] - 200*2/3
-    vector[68] = vector[68] - 200*5/6
-    
-    #vector = vector - np.ones(len(zes))*indecies*200
-    
-    
-    
-    
-    zmin,zmax = -1500, 1500
-    xmin, xmax = -400, 400
-    
-    if plot:
-        fig = plt.figure()
-        
-        ax = plt.subplot(111)
-        
-        plt.axhline(y=-100, color='k', linestyle='-', label = 'Line1')
-        plt.axhline(y=-300, color='k', linestyle='-', label = 'Line2')
-        
-        plt.plot(zes,vector, label = 'Walking path')
-        
-        
-        plt.xlim(zmin,zmax)
-        plt.ylim(xmin,xmax)
-        
-        
-        #ax2 = ax.twinx()
-        
-        r1 = patches.Rectangle((-430,-230), 860,460, color = 'Brown', alpha = 0.3, label = 'Beam Dump')
-        #
-        ax.add_patch(r1)
-        plt.legend()
-        plt.ylabel('cm from beam axis')
-        plt.xlabel('cm from TIDVG5 center')
-        #ax2.get_yaxis().set_visible(False)
-        #plt.legend(loc = 2)
-        
-        #plt.xlim(zmin,zmax)
-        #plt.ylim(xmin,xmax)
-    
-        plt.show()
-    
-    path = vector
-    return path
-
-
-walkingpath = calcWalkingPath(dump16,1)
-
-
-
-
-
-
-def calcThis2(cube,path):
-    #cube = dump16[0].cube
-    vector = np.zeros(len(path))
-#    xbinsize = cube1.info['xwidth']
-    #print range( cube.shape[2])
-    for z in range(0, len(path)):
-        #print int(path[z]/xbinsize)
-#        x = int(path[z]/xbinsize)
-#        y = int(cube.cube.shape[1]/2)
-        tot = 0
-        numberBins = 0     
-        for i in range(-1,2):
-            for j in range(-1,2):            
-                    tot = tot + cube1.cube[x +i,y + j,z]
-                    numberBins = numberBins + 1       
-        
-        vector[z] = tot/numberBins
-        
-    print len(vector)
-        
+#
+#
+#
+#xes = normal[0].xcoodinates
+#
+#cooldowns = ['1h','1d','1 week','1month']
+#
+#
+#fig = plt.figure()
+#
+#for i in range(3):
+#    ax = plt.subplot(4,1,i+1)
+#    
+#    cube1 = normal[i]
+#    cube2 = modi[i]
+#    
+#    plt.plot(xes, cube1.depthdeposition/cube2.depthdeposition, label = '2 masks/1 mask')
+#    plt.axhline(y=1, color='k', linestyle='-')
+#    #plt.plot(xes, cube2.depthdeposition, label = '1 mask')
+# #   plt.axhline(y=1, color='k', linestyle='-')
+#    
+#    plt.title(cooldowns.pop(0), fontsize = 12)
+#    plt.legend(loc = 1)
+#    if i == 3:
+#        plt.xlabel('z [cm]')
+#    #plt.yscale("log", nonposy='clip')
+#   # plt.ylabel('Fraction dose rate', fontsize = 12)
+#    #plt.yscale("log", nonposy='clip')
+#    #plt.ylim(0,1.2)
+#   # ax2 = ax.twinx()
+##    plotSepta(ax2)
+##    ax2.get_yaxis().set_visible(False)
+##    plt.ylim([0,30])
+##    plt.legend(loc = 2)
+##    plt.xlim(-570,2800)
+#    ax2 = ax.twinx()
+#    
+#    r1 = patches.Rectangle((-925,0), 860,5, color = 'Brown', alpha = 0.3)
+#    
+#    ax2.add_patch(r1)
+#    ax2.get_yaxis().set_visible(False)
+#
+##plt.suptitle('Improvement for Graphite wires for ZS 1 and 2. Sampling 1 meter from beam axis', fontsize = 16)
+#plt.show()
+#
+#i = 0
+#
+#cube1 = normal[i]
+#cube2 = modi[i]
+#
+#
+#sum1 = 0
+#sum2 = 0
+#for j in range(65,len(cube1.depthdeposition)):
+#    sum1 = sum1 + cube1.depthdeposition[j]
+#    sum2 = sum2 + cube2.depthdeposition[j]
+#
+#print 'Normal/modi = ' + str(sum1/sum2)
+##print 'Modi = ' + str(sum2)
+#
+#
+#
+#start = 0
+#maxVal = 0
+#
+#def calcThis(cube):
+#    vector = np.zeros([cube.shape[2]])
+#    for z in range( cube.shape[2]):
 #        tot = 0
 #        numberBins = 0
 #        for x in range( cube.shape[0]):
@@ -450,14 +325,133 @@ def calcThis2(cube,path):
 #                if x  > 8 and x < 12 and y > 55 and y < 60:
 #                    tot = tot + cube[x,y,z]
 #                    numberBins = numberBins + 1
-#        print tot
+##        print tot
 ##        print numberBins
 #        val = tot/numberBins
 #        vector[z] = val
-#        if val > maxVal and z >= start:
-#            maxVal = val
-    return vector
-
+##        if val > maxVal and z >= start:
+##            maxVal = val
+#    return vector
+#
+#
+#def calcWalkingPath(dump16, plot = 0):
+#    zes = dump16[0].xcoodinates
+#    xes = dump16[0].realxcoodinates
+#    
+#    vector = np.ones(len(zes))*(-100)
+#    
+#    indecies = (zes > -10000).astype(int) - (zes > 520).astype(int) - (zes < -500).astype(int)
+#    
+#    vector = vector - np.ones(len(zes))*indecies*200
+#    
+#    
+#    
+#    indecies = (zes > -10000).astype(int) - (zes > -520).astype(int) - (zes < -600).astype(int)
+#    #indecies[30] = 1/3
+#    #indecies[31] = 1/2
+#    #indecies[32] = 1*2/3
+#    
+#    vector[30] = vector[30] - 200/3
+#    vector[31] = vector[31] - 200/2
+#    vector[32] = vector[32] - 200*2/3
+#    vector[33] = vector[33] - 200*5/6
+#    
+#    
+#    
+#    indecies = (zes > -10000).astype(int) - (zes < 520).astype(int) - (zes > 603).astype(int)
+#    
+#    vector[71] = vector[71] - 200/3
+#    vector[70] = vector[70] - 200/2
+#    vector[69] = vector[69] - 200*2/3
+#    vector[68] = vector[68] - 200*5/6
+#    
+#    #vector = vector - np.ones(len(zes))*indecies*200
+#    
+#    
+#    
+#    
+#    zmin,zmax = -1500, 1500
+#    xmin, xmax = -400, 400
+#    
+#    if plot:
+#        fig = plt.figure()
+#        
+#        ax = plt.subplot(111)
+#        
+#        plt.axhline(y=-100, color='k', linestyle='-', label = 'Line1')
+#        plt.axhline(y=-300, color='k', linestyle='-', label = 'Line2')
+#        
+#        plt.plot(zes,vector, label = 'Walking path')
+#        
+#        
+#        plt.xlim(zmin,zmax)
+#        plt.ylim(xmin,xmax)
+#        
+#        
+#        #ax2 = ax.twinx()
+#        
+#        r1 = patches.Rectangle((-430,-230), 860,460, color = 'Brown', alpha = 0.3, label = 'Beam Dump')
+#        #
+#        ax.add_patch(r1)
+#        plt.legend()
+#        plt.ylabel('cm from beam axis')
+#        plt.xlabel('cm from TIDVG5 center')
+#        #ax2.get_yaxis().set_visible(False)
+#        #plt.legend(loc = 2)
+#        
+#        #plt.xlim(zmin,zmax)
+#        #plt.ylim(xmin,xmax)
+#    
+#        plt.show()
+#    
+#    path = vector
+#    return path
+#
+#
+#walkingpath = calcWalkingPath(dump16,1)
+#
+#
+#
+#
+#
+#
+#def calcThis2(cube,path):
+#    #cube = dump16[0].cube
+#    vector = np.zeros(len(path))
+##    xbinsize = cube1.info['xwidth']
+#    #print range( cube.shape[2])
+#    for z in range(0, len(path)):
+#        #print int(path[z]/xbinsize)
+##        x = int(path[z]/xbinsize)
+##        y = int(cube.cube.shape[1]/2)
+#        tot = 0
+#        numberBins = 0     
+#        for i in range(-1,2):
+#            for j in range(-1,2):            
+#                    tot = tot + cube1.cube[x +i,y + j,z]
+#                    numberBins = numberBins + 1       
+#        
+#        vector[z] = tot/numberBins
+#        
+#    print len(vector)
+#        
+##        tot = 0
+##        numberBins = 0
+##        for x in range( cube.shape[0]):
+##            for y in range( cube.shape[1]):
+##    #            if math.pow(xbin*(x - i),2) + math.pow(ybin*(y - j),2) < math.pow(outerRadi,2) and math.pow(xbin*(x - i),2) + math.pow(ybin*(y - j),2) > math.pow(innerRadi,2):
+##                #if abs(xbin*(x - i)) < 20 and y < j and ybin*abs(y - j) < 100 and ybin*abs(y - j) > 70:
+##                if x  > 8 and x < 12 and y > 55 and y < 60:
+##                    tot = tot + cube[x,y,z]
+##                    numberBins = numberBins + 1
+##        print tot
+###        print numberBins
+##        val = tot/numberBins
+##        vector[z] = val
+##        if val > maxVal and z >= start:
+##            maxVal = val
+#    return vector
+#
 
 #print calcThis2(dump16,walkingpath)
 
@@ -957,104 +951,104 @@ def calcThis2(cube,path):
 #plt.show()
 #
 #
-
-
-cooldowns = ['1h','1d','1 week']
-
-for i in range(0,3):
-    
-    xes = Dump17[0].xcoodinates
-    
-    cooldown = cooldowns.pop(0)
-    
-    fig = plt.figure()
-    
-    ax = plt.subplot(211)
-    
-    #cube1 = normal[i]
-    #cube2 = fill[i]
-    #cube3 = radi[i]
-    #cube4 = extend[i]
-    #
-    #plt.plot(xes, cube1.depthdeposition, label = 'No fill')
-    #plt.plot(xes, cube2.depthdeposition, label = 'Bottom fill')
-    #plt.plot(xes, cube3.depthdeposition, label = 'Radial fill')
-    #plt.plot(xes, cube4.depthdeposition, label = 'Extended shielding')
-     #   plt.axhline(y=1, color='k', linestyle='-')
-    
-    
-    
-    #cube1 = normal[i]
-    #cube2 = dump16[i]
-    
-    cube1 = Dump17[i]
-    cube2 = radius17[i]
-    #cube3 = tungsten[i]
-    
-    plt.plot(xes, cube1.depthdeposition, label = 'Reference')
-    plt.plot(xes, cube2.depthdeposition, label = 'Reduced inner shielding')
-    
-    val = sum(cube2.depthdeposition)/sum(cube1.depthdeposition)
-    
-    print 'Reduced inner shielding/Reference for ' + cooldown + ' = ' + str(val) 
-    #plt.plot(xes, cube2.depthdeposition, label = 'Inner Tungsten')
-    
-    
-    plt.title('Integrated dose rate along z', fontsize = 12)
-    plt.legend()
-    
-    plt.yscale("log", nonposy='clip')
-    
-    plt.ylabel('Integrated dose rate [uSv/h]', fontsize = 12)
-    plt.grid(linewidth =0.15)
-    
-    #
-    #ax.text(0.01, 0.05, 'colored text in axes coords', color='black')
-    
-    
-    
-    
-    ax2 = ax.twinx()
-    
-    r1 = patches.Rectangle((-425,0), 860,5, color = 'Brown', alpha = 0.3, label = 'Beam Dump')
-    
-    ax2.add_patch(r1)
-    ax2.get_yaxis().set_visible(False)
-    plt.legend(loc = 2)
-    #plt.legend()
-    
-    
-    
-    
-    
-    
-    ax = plt.subplot(212)
-    
-    #plt.plot(xes, cube2.depthdeposition/cube1.depthdeposition, label = 'Bottom fill/No fill')
-    #plt.plot(xes, cube3.depthdeposition/cube1.depthdeposition, label = 'Radial fill/No fill')
-    #plt.plot(xes, cube4.depthdeposition/cube1.depthdeposition, label = 'Extended shielding/No fill')
-    
-    plt.plot(xes, cube2.depthdeposition/cube1.depthdeposition, label = 'Reduced inner shielding/Reference')
-    #plt.plot(xes, cube3.depthdeposition/cube1.depthdeposition, label = 'Inner Tungsten/Reference')
-    
-    
-    plt.axhline(y=1, color='k', linestyle='-')
-    plt.ylabel('Ratio')
-    plt.grid(linewidth =0.15)
-    plt.title('Ratio integrated dose rate along z')
-    plt.legend()
-    plt.xlabel('z [cm from TIDVG5 center]')
-
-    
-    ax2 = ax.twinx()
-    
-    r1 = patches.Rectangle((-425,0), 860,5, color = 'Brown', alpha = 0.3)
-    
-    ax2.add_patch(r1)
-    ax2.get_yaxis().set_visible(False)
-    plt.legend()
-    plt.suptitle('Reduced inner shielding for ' + cooldown + ' cool down')
-
+#
+#
+#cooldowns = ['1h','1d','1 week']
+#
+#for i in range(0,3):
+#    
+#    xes = Dump17[0].xcoodinates
+#    
+#    cooldown = cooldowns.pop(0)
+#    
+#    fig = plt.figure()
+#    
+#    ax = plt.subplot(211)
+#    
+#    #cube1 = normal[i]
+#    #cube2 = fill[i]
+#    #cube3 = radi[i]
+#    #cube4 = extend[i]
+#    #
+#    #plt.plot(xes, cube1.depthdeposition, label = 'No fill')
+#    #plt.plot(xes, cube2.depthdeposition, label = 'Bottom fill')
+#    #plt.plot(xes, cube3.depthdeposition, label = 'Radial fill')
+#    #plt.plot(xes, cube4.depthdeposition, label = 'Extended shielding')
+#     #   plt.axhline(y=1, color='k', linestyle='-')
+#    
+#    
+#    
+#    #cube1 = normal[i]
+#    #cube2 = dump16[i]
+#    
+#    cube1 = Dump17[i]
+#    cube2 = radius17[i]
+#    #cube3 = tungsten[i]
+#    
+#    plt.plot(xes, cube1.depthdeposition, label = 'Reference')
+#    plt.plot(xes, cube2.depthdeposition, label = 'Reduced inner shielding')
+#    
+#    val = sum(cube2.depthdeposition)/sum(cube1.depthdeposition)
+#    
+#    print 'Reduced inner shielding/Reference for ' + cooldown + ' = ' + str(val) 
+#    #plt.plot(xes, cube2.depthdeposition, label = 'Inner Tungsten')
+#    
+#    
+#    plt.title('Integrated dose rate along z', fontsize = 12)
+#    plt.legend()
+#    
+#    plt.yscale("log", nonposy='clip')
+#    
+#    plt.ylabel('Integrated dose rate [uSv/h]', fontsize = 12)
+#    plt.grid(linewidth =0.15)
+#    
+#    #
+#    #ax.text(0.01, 0.05, 'colored text in axes coords', color='black')
+#    
+#    
+#    
+#    
+#    ax2 = ax.twinx()
+#    
+#    r1 = patches.Rectangle((-425,0), 860,5, color = 'Brown', alpha = 0.3, label = 'Beam Dump')
+#    
+#    ax2.add_patch(r1)
+#    ax2.get_yaxis().set_visible(False)
+#    plt.legend(loc = 2)
+#    #plt.legend()
+#    
+#    
+#    
+#    
+#    
+#    
+#    ax = plt.subplot(212)
+#    
+#    #plt.plot(xes, cube2.depthdeposition/cube1.depthdeposition, label = 'Bottom fill/No fill')
+#    #plt.plot(xes, cube3.depthdeposition/cube1.depthdeposition, label = 'Radial fill/No fill')
+#    #plt.plot(xes, cube4.depthdeposition/cube1.depthdeposition, label = 'Extended shielding/No fill')
+#    
+#    plt.plot(xes, cube2.depthdeposition/cube1.depthdeposition, label = 'Reduced inner shielding/Reference')
+#    #plt.plot(xes, cube3.depthdeposition/cube1.depthdeposition, label = 'Inner Tungsten/Reference')
+#    
+#    
+#    plt.axhline(y=1, color='k', linestyle='-')
+#    plt.ylabel('Ratio')
+#    plt.grid(linewidth =0.15)
+#    plt.title('Ratio integrated dose rate along z')
+#    plt.legend()
+#    plt.xlabel('z [cm from TIDVG5 center]')
+#
+#    
+#    ax2 = ax.twinx()
+#    
+#    r1 = patches.Rectangle((-425,0), 860,5, color = 'Brown', alpha = 0.3)
+#    
+#    ax2.add_patch(r1)
+#    ax2.get_yaxis().set_visible(False)
+#    plt.legend()
+#    plt.suptitle('Reduced inner shielding for ' + cooldown + ' cool down')
+#
 
 
 
@@ -1098,7 +1092,7 @@ for i in range(0,3):
     
     #plt.suptitle('Motivation for first downstream mask', fontsize = 22)
     
-    plt.show()
+#    plt.show()
 
 
 
@@ -1108,31 +1102,31 @@ for i in range(0,3):
 
 
 
-
-
-
-
-for i in range(3):
-    cubeN = normal[i].cube
-    cubeF = fill[i].cube
-    cubeR = radi[i].cube
-    
-    val = sum(calcThis(cubeF))/sum(calcThis(cubeN))
-    print 'Normal/Bottom fill = ' + str(val)
-    val = sum(calcThis(cubeR))/sum(calcThis(cubeN))
-    print 'Normal/radial fill = ' + str(val)
-
-for i in range(3):
+#
+#
+#
+#
+#for i in range(3):
 #    cubeN = normal[i].cube
-#    cubeM = modi[i].cube
-    
-    val = sum(fill[i].depthdeposition)/sum(normal[i].depthdeposition)
-    print 'Bottomfill/No fill = ' + str(val)
-
-    val = sum(radi[i].depthdeposition)/sum(normal[i].depthdeposition)
-    print 'Radial fill/No fill = ' + str(val)
-
-
+#    cubeF = fill[i].cube
+#    cubeR = radi[i].cube
+#    
+#    val = sum(calcThis(cubeF))/sum(calcThis(cubeN))
+#    print 'Normal/Bottom fill = ' + str(val)
+#    val = sum(calcThis(cubeR))/sum(calcThis(cubeN))
+#    print 'Normal/radial fill = ' + str(val)
+#
+#for i in range(3):
+##    cubeN = normal[i].cube
+##    cubeM = modi[i].cube
+#    
+#    val = sum(fill[i].depthdeposition)/sum(normal[i].depthdeposition)
+#    print 'Bottomfill/No fill = ' + str(val)
+#
+#    val = sum(radi[i].depthdeposition)/sum(normal[i].depthdeposition)
+#    print 'Radial fill/No fill = ' + str(val)
+#
+#
 
 
 

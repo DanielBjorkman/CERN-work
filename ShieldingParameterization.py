@@ -13,7 +13,7 @@ from USRBIN import USRBIN
 
 import os
 
-path = '//rpclustersrv1/cbjorkma/Scrapers/ShieldingParameterization'
+path = '//rpclustergw/cbjorkma/Scrapers/ShieldingParameterization'
 
 os.chdir(path)
 
@@ -104,7 +104,20 @@ plt.show()
 
 
 
+fig = plt.figure()
 
+
+ax = plt.subplot(1,2,1)
+for i in range(len(files)):
+
+    plt.plot(xes, list[i].cube[11:None:-1, 5:6,0]/2, label = 'Shielding width: ' +str(lengths[i]) + ' cm')
+    
+plt.legend()
+plt.title('1 day cool down', fontsize = 20)
+plt.grid(linewidth = 0.25)
+plt.ylabel('uSv/h', fontsize = 16)
+plt.xlabel('cm from marble shielding', fontsize = 16)
+props = dict(boxstyle='round', facecolor='white', alpha=1)
 
 
 
