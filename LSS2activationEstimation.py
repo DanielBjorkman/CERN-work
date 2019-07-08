@@ -359,7 +359,19 @@ except:
         x.calc()
         mod2.append(x)
 
-
+path = '//rpclustergw/cbjorkma/LSS2/2alu'
+os.chdir(path)
+filenames = sorted(os.listdir(path))
+try:
+    print alu2
+except:
+    print 'Loading USRBINs...'
+    alu2 = []
+    for i in range(len(filenames)):
+        x = USRBIN(filenames[i], path, normfactor)
+        x.read()
+        x.calc()
+        alu2.append(x)
 
 
 import matplotlib.pyplot as plt
@@ -447,54 +459,56 @@ plt.show()
     
 xes = ref[0].xcoodinates
     
-if 0:    
-    #cooldowns = ['1h','30h','1 week']
+
+#cooldowns = ['1h','30h','1 week']
+
+cooldowns = ['1h','30h', '1 week']
+
+fig = plt.figure()
+
+count = 1
+for i in [0,2]:
     
-    cooldowns = ['1h','1 week']
+    ax = plt.subplot(2,1,count)
+    count = count +1
+
+    cube1 = ref[i]
+    cube2 = cont2[i]
+    cube3 = alu2[i]
+    #cube3 = alu[i]
     
-    fig = plt.figure()
+#    plt.plot(xes, cube1.side, label = 'Current setup')
+#    plt.plot(xes, cube2.side, label = 'Modified setup')
     
-    for i in range(0,3,2):
-        
-        if i ==0:
-            ax = plt.subplot(2,1,1)
-        else:
-            ax = plt.subplot(2,1,2)
-        cube1 = ref[i]
-        cube2 = cont2[i]
-        #cube3 = alu[i]
-        
-    #    plt.plot(xes, cube1.side, label = 'Current setup')
-    #    plt.plot(xes, cube2.side, label = 'Modified setup')
-        
-        plt.plot(xes, cube2.side/cube1.side, label = 'Al6061 container/Reference')
-        #plt.plot(xes, cube3.side/cube1.side, label = 'Al6061 tanks + beampipe/Current setup')
-        plt.axhline(y=1, color='k', linestyle='-')
-        
-        
-        plt.title(cooldowns.pop(0), fontsize = 12)
-        plt.legend(loc = 1)
-        if i == 2:
-            plt.xlabel('cm from quad 216')
-        plt.ylabel('Fraction dose rate', fontsize = 12)
-        plt.ylim(0.3,1.4)
-        #plt.yscale("log", nonposy='clip')
-        ax2 = ax.twinx()
-        plotSepta(ax2)
-        ax2.get_yaxis().set_visible(False)
-        plt.ylim([0,30])
-        plt.legend(loc = 2)
-        #plt.xlim(-570,2800)
+    plt.plot(xes, cube2.side/cube1.side, label = 'Al6061')
+    plt.plot(xes, cube3.side/cube1.side, label = 'Al2219')
+    #plt.plot(xes, cube3.side/cube1.side, label = 'Al6061 tanks + beampipe/Current setup')
+    plt.axhline(y=1, color='k', linestyle='-')
     
     
-    plt.suptitle('Container --> Al6061. Sampling 1 meter from beam axis', fontsize = 16)
-    plt.show()
+    plt.title(cooldowns[i], fontsize = 12)
+    plt.legend(loc = 1)
+    if i == 2:
+        plt.xlabel('z [cm from quad 216]')
+    plt.ylabel('Fraction dose rate', fontsize = 12)
+    plt.ylim(0.3,1.4)
+    #plt.yscale("log", nonposy='clip')
+    ax2 = ax.twinx()
+    plotSepta(ax2)
+    ax2.get_yaxis().set_visible(False)
+    plt.ylim([0,30])
+    plt.legend(loc = 2)
+    plt.xlim(3173,9566)
+
+
+plt.suptitle('Al6061 and Al2219 comparison for vacuum tanks', fontsize = 16)
+plt.show()
     
     
     
     
     
-    cooldowns = ['1h','1 week']
+cooldowns = ['1h','1 week']
     
 
 #    
@@ -593,7 +607,62 @@ if 0:
     plt.show()
     
 
+
+
+
+
+
+
+
+
+
 fig = plt.figure()
+
+
+ax = plt.subplot(211)
+    
+
+plt.plot(data[0:,0], data[0:,1], label = '2018 Ring measurement', linewidth = 2)
+
+
+
+#plt.plot(data[0:,2], data[0:,3], label = '2017')
+
+#plt.plot(ref[1].xcoodinates, ref[1].side*20, label = 'Fluka')
+
+#plt.plot(xes, cube3.side/cube1.side, label = 'Al6061 tanks + beampipe/Current setup')
+#plt.axhline(y=1, color='k', linestyle='-')
+
+
+#plt.title('', fontsize = 12)
+#plt.legend(loc = 1)
+
+plt.legend(loc = 1, prop={'size': 18})
+
+#plt.xlabel('z [cm from quad 216]', fontsize = 22)
+#plt.ylabel('[uSv/h]', fontsize = 18)
+plt.xlim(3200,6770)
+#plt.yscale("log", nonposy='clip')
+ax2 = ax.twinx()
+plotSepta(ax2)
+ax2.get_yaxis().set_visible(False)
+plt.ylim([3.5,12])
+plt.legend(loc = 2, prop={'size': 18})
+#plt.xlim(-570,2800)
+
+
+ax2.text(1150, 4.7, '5 ZSs', fontsize = 12 ) #math.degrees(1.414490E-3)
+ax2.text(4650, 4.6, 'TPST', fontsize = 12 )
+ax2.text(5150, 5.0, '3 MSTs', fontsize = 12 )
+ax2.text(7850, 6, '5 MSEs', fontsize = 12 )
+
+
+xlength = 9
+
+fig.set_size_inches(xlength, xlength/(1.618*1))
+
+
+
 
 #for i in [1]: #range(0,3,2):
 i = 1
@@ -601,7 +670,7 @@ i = 1
 #        ax = plt.subplot(2,1,1)
 #    else:
 #        ax = plt.subplot(2,1,2)
-ax = plt.subplot(1,1,1) 
+ax = plt.subplot(2,1,2) 
     
 cube1 = ref[i]
 #cube2 = TPST15[i]
@@ -624,10 +693,10 @@ plt.axhline(y=1, color='k', linestyle='-')
 #plt.title(cooldowns.pop(0), fontsize = 12)
 #plt.title('Reduced residual dose rate from Shielding implementation', fontsize = 12)
 
-plt.legend(loc = 1, prop={'size': 20})
+plt.legend(loc = 1, prop={'size': 12})
 #if i == 2:
-plt.xlabel('z [cm from quad 216]', fontsize = 18)
-plt.ylabel('Fraction dose rate eq.', fontsize = 18)
+plt.xlabel('z [cm from quad 216]', fontsize = 16)
+#plt.ylabel('Fraction residual ambient dose equivalent rate', fontsize = 18)
 plt.ylim(0.05,1.4)
 plt.xlim(3200,6770)
 #plt.yscale("log", nonposy='clip')
@@ -635,11 +704,11 @@ ax2 = ax.twinx()
 plotSepta(ax2)
 ax2.text(1150, 4.7, '5 ZSs', fontsize = 12 ) #math.degrees(1.414490E-3)
 ax2.text(4650, 4.6, 'TPST', fontsize = 12 )
-ax2.text(5150, 3.0, '3 MSTs', fontsize = 12 )
+ax2.text(5150, 5.0, '3 MSTs', fontsize = 12 )
 ax2.text(7850, 6, '5 MSEs', fontsize = 12 )
 
 ax2.get_yaxis().set_visible(False)
-plt.ylim([0,30])
+plt.ylim([3.5,12])
 plt.legend(loc = 2, prop={'size': 16})
 #plt.xlim(-570,2800)
 
@@ -652,7 +721,7 @@ fig.set_size_inches(xlength, xlength/1.618)
 
 plt.show()
 #
-plt.savefig('AllShielding.pdf')  
+#plt.savefig('AllShielding.pdf')  
 
     
 
@@ -685,7 +754,7 @@ ax = plt.subplot(1,1,1)
 cube1 = ref[i]
 cube2 = cont2[i]
 cube3 = pipe[i]
-cube4 = sepHold[0]
+cube4 = sepHold[i]
 cube5 = carbon[i]
 
 stop = 300
@@ -696,31 +765,42 @@ stop2 = 1000
 linewidth = 3
 #    plt.plot(xes, cube1.side, label = 'Current setup')
 #    plt.plot(xes, cube2.side, label = 'Modified setup')
-lowess = sm.nonparametric.lowess(cube2.side/cube1.side, xes, frac=0.05)
-plt.plot(lowess[:, 0], lowess[:, 1], label = 'Al6061 vacuum tanks @ 1 meter from beam axis', linewidth = linewidth)
+#lowess = sm.nonparametric.lowess(cube2.side/cube1.side, xes, frac=0.05)
+#plt.plot(lowess[:, 0], lowess[:, 1], label = 'Al6061 vacuum tanks @ 1 meter from beam axis', linewidth = linewidth)
+
+
+
 #plt.plot(xes, cube2.side/cube1.side, label = 'Al6061 vacuum tanks @ 1 meter from beam axis')
 
-lowess = sm.nonparametric.lowess(cube3.pipe/cube1.pipe, xes, frac=0.05)
-plt.plot(lowess[:, 0], lowess[:, 1], label = 'Al6061 beampipe @ contact with beampipe', linewidth = linewidth)
+#lowess = sm.nonparametric.lowess(cube3.pipe/cube1.pipe, xes, frac=0.05)
+plt.plot(xes, cube3.pipe/cube1.pipe, label = 'Al6061 beampipe @ contact with beampipe', linewidth = linewidth)
 #plt.plot(xes, cube3.pipe/cube1.pipe, label = 'Al6061 beampipe @ contact with beampipe')
 
-lowess = sm.nonparametric.lowess(cube4.side/cube1.side, xes, frac=0.05)
-plt.plot(lowess[:, 0], lowess[:, 1], label = 'Titanium ZS anode support @ 1 meter from beam axis', linewidth = linewidth)
+#lowess = sm.nonparametric.lowess(cube4.side/cube1.side, xes, frac=0.05)
+#plt.plot(lowess[:, 0], lowess[:, 1], label = 'Titanium ZS anode support @ 1 meter from beam axis', linewidth = linewidth)
+
+#lowess = sm.nonparametric.lowess(cube4.pipe/cube1.pipe, xes, frac=0.05)
+#plt.plot(lowess[:, 0], lowess[:, 1], label = 'Titanium ZS anode support @ Contact with vacuum tank', linewidth = linewidth)
+
+
 #plt.plot(xes[:stop], cube4.side[:stop]/cube1.side[:stop], label = 'Titanium ZS anode support @ 1 meter from beam axis')
 
-lowess = sm.nonparametric.lowess(cube5.side[:stop2]/cube1.side[:stop2], xes[:stop2], frac=0.05)
-plt.plot(lowess[:, 0], lowess[:, 1], label = 'Carbon ZS anode septa @ 1 meter from beam axis', linewidth = linewidth)
-#plt.plot(xes[:stop2], cube5.side[:stop2]/cube1.side[:stop2], label = 'Carbon ZS anode septa @ 1 meter from beam axis')
-#plt.plot(xes, cube3.side/cube1.side, label = 'Al6061 tanks + beampipe/Current setup')
+#lowess = sm.nonparametric.lowess(cube5.side[:stop2]/cube1.side[:stop2], xes[:stop2], frac=0.05)
+#plt.plot(lowess[:, 0], lowess[:, 1], label = 'Carbon ZS anode septa @ 1 meter from beam axis', linewidth = linewidth)
+##plt.plot(xes[:stop2], cube5.side[:stop2]/cube1.side[:stop2], label = 'Carbon ZS anode septa @ 1 meter from beam axis')
+##plt.plot(xes, cube3.side/cube1.side, label = 'Al6061 tanks + beampipe/Current setup')
+
+
 plt.axhline(y=1, color='k', linestyle='-')
 
 
 #plt.title(cooldowns.pop(0), fontsize = 12)
 plt.legend(loc = 1, prop={'size': 12})
 plt.xlabel('z [cm from quad 216]', fontsize = 18)
-plt.ylabel('Reduction factor, dose rate eq.', fontsize = 18)
-plt.ylim(0.05,1.3)
+plt.ylabel('Fraction residual ambient dose equivalent rate', fontsize = 18)
+plt.ylim(0.001,1.3)
 plt.xlim(200,9586)
+
 #plt.yscale("log", nonposy='clip')
 ax2 = ax.twinx()
 plotSepta(ax2)
@@ -759,7 +839,7 @@ fig.set_size_inches(xlength, xlength/1.618)
 
 plt.show()
 #
-plt.savefig('MaterialReduction.pdf')  
+#plt.savefig('MaterialReduction.pdf')  
     
 
 

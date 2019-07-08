@@ -1,0 +1,18 @@
+Traceback (most recent call last):
+  File "C:\Users\cbjorkma\AppData\Local\Continuum\anaconda\lib\site-packages\spyder\app\mainwindow.py", line 3099, in main
+    mainwindow = run_spyder(app, options, args)
+  File "C:\Users\cbjorkma\AppData\Local\Continuum\anaconda\lib\site-packages\spyder\app\mainwindow.py", line 3001, in run_spyder
+    main.setup()
+  File "C:\Users\cbjorkma\AppData\Local\Continuum\anaconda\lib\site-packages\spyder\app\mainwindow.py", line 830, in setup
+    self.workingdirectory = WorkingDirectory(self, self.init_workdir, main=self)
+  File "C:\Users\cbjorkma\AppData\Local\Continuum\anaconda\lib\site-packages\spyder\plugins\workingdirectory.py", line 162, in __init__
+    self.refresh_plugin()
+  File "C:\Users\cbjorkma\AppData\Local\Continuum\anaconda\lib\site-packages\spyder\plugins\workingdirectory.py", line 204, in refresh_plugin
+    self.save_wdhistory()
+  File "C:\Users\cbjorkma\AppData\Local\Continuum\anaconda\lib\site-packages\spyder\plugins\workingdirectory.py", line 234, in save_wdhistory
+    encoding.writelines(text, self.LOG_PATH)
+  File "C:\Users\cbjorkma\AppData\Local\Continuum\anaconda\lib\site-packages\spyder\utils\encoding.py", line 236, in writelines
+    return write(os.linesep.join(lines), filename, encoding, mode)
+  File "C:\Users\cbjorkma\AppData\Local\Continuum\anaconda\lib\site-packages\spyder\utils\encoding.py", line 227, in write
+    with open(filename, mode) as textfile:
+IOError: [Errno 22] invalid mode ('wb') or filename: u'C:\\Users\\cbjorkma\\.spyder\\workingdir'

@@ -1,0 +1,15 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Jun 21 16:26:47 2017
+
+@author: cbjorkma
+"""
+import Flukato3dMatrix from Flukato3dMatrix
+
+
+directory = '//rpclustersrv1/cbjorkma/Dump studies'
+filename = 'Dump2Res_22.bnn.lis'
+
+cube = Flukato3dMatrix(filename, directory,1)
+np.save('filename', cube)
+# #np.load('filename.npy')

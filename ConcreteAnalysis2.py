@@ -229,7 +229,7 @@ foamed2.append(0)
 
 
 
-path = '//rpclustersrv1/cbjorkma/Dump studies/Uppstream Hole study/Fluence'
+path = '//rpclustergw/cbjorkma/Dump studies/Uppstream Hole study/Fluence'
 os.chdir(path)
 
 filename = 'Concrete2ChangedFormat.mat'

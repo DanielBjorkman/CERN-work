@@ -191,7 +191,6 @@ os.chdir(path)
 
 filenames = sorted(glob.glob('*.lis'))
 
-
 carmona = USRBIN(filenames[0], path, normfactor)
 carmona.read()
 carmona.calc()
@@ -209,6 +208,7 @@ carmonaError.calc()
 path = '//rpclustergw/cluster_temp/cbjorkma/OpeningScenarios/DECAY/Master/2019-03-22_15h03m18s_ATLAS2_JTTPrep'
 os.chdir(path)
 filenames = sorted(glob.glob('*.lis'))
+
 
 master = USRBIN(filenames[0], path, normfactor)
 master.read()

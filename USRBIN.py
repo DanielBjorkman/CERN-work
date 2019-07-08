@@ -262,7 +262,7 @@ class USRBIN():
                     tracker = tracker +1 
                     for r in range(0,int(info['rbin'][0])):
                         val = Rvector[r]
-                        steps = int(math.ceil(math.pi * (r + 1) * float(phiBinAngle) / 180))
+                        steps = int(math.ceil(math.pi * (r + 1) * float(phiBinAngle) / 180)*3) #number of steps
                         for p in range(0,stepConverter * phiBinAngle, stepConverter * phiBinAngle / steps):
                             angle = p * math.pi / (180 * stepConverter)
                             x = int(round(x0 + (r + 0.5) * math.cos(angle)))
