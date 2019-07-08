@@ -5,7 +5,7 @@ class USRBIN():
     """
     Class for reconstructing and handling ASCII formatted Fluka USRBIN outputs
     
-    Developed by Daniel Björkman 2018, daniel.bjorkman@cern.ch
+    Developed by Daniel Björkman 2016-2019, daniel.bjorkman@cern.ch
     
     call:
     from USRBIN import USRBIN
@@ -19,7 +19,10 @@ class USRBIN():
         self.filename = filename
         self.path = path
         self.cube = []
+        self.cubeErrors = []
         self.info = []
+        self.starts = []
+        self.stops = []
         self.depthdeposition = []
         self.horizontal = []
         self.vertical = []
@@ -45,162 +48,31 @@ class USRBIN():
         self.Xs = []
         self.Ys = []
         self.contourfilename = []
-        self.contourpath = []        
-    
-    def read(self):
-        import os
-        import time
-    
-        directory = self.path
-        filename = self.filename
-        print "Loading " + filename
+        self.contourpath = []
         
-        startTime = time.time()
-        os.chdir(directory)
-    
-        RPZ = 0
-        RZ = 0
-        CAR = 0
-        row = 0
-    
-        #Predefine information into meta info directory and find starting position
-        with open(filename) as file:
-            for line in file.readlines():
-                line_content = line.split()
-                row = row + 1
-                if len(line_content) > 5:
-                    if line_content[5] == 'A(ir,ip,iz),':
-                        info = {'rbin':[],'zbin':[],'pbin':[], 'rmin':[],'rmax':[], 'zmin':[],'zmax':[], 'rwidth':[], 'zwidth':[],'prad':[]}
-                        RPZ = 1
-                        self.binningtype = 'RPZ'
-                        print('R-Phi-Z binning detected')
-                    if line_content[5] == 'A(ix,iy,iz),':
-                        info = {'xbin':[], 'ybin':[],'zbin':[], 'xmin':[],'xmax':[], 'ymin':[],'ymax':[], 'zmin':[],'zmax':[], 'xwidth':[], 'ywidth':[], 'zwidth':[]}
-                        CAR = 1
-                        self.binningtype = 'CAR'
-                        print('Cartesian binning detected')
-                    if line_content[5] == 'A(ir,iz),':
-                        info = {'rbin':[],'zbin':[],'pbin':[], 'rmin':[],'rmax':[], 'zmin':[],'zmax':[], 'rwidth':[], 'zwidth':[],'prad':[]}
-                        info['pbin'].append(float(1))
-                        RZ = 1
-                        self.binningtype = 'RZ'
-                        print('R-Z binning detected')
-                    try:
-                        a = float(line_content[0])
-                        if isinstance(a, float) and len(line_content) > 1:
-                            start = row
-                            break
-                    except Exception:
-                        pass
-    
-        #Return if file is of wrong format
-        if not (RPZ or RZ or CAR):
-            print("Unable to read file")
-            return
-    
-        #Extract dimensional information
-        if RPZ or RZ:
-            with open(filename) as file:
-                for line in file.readlines():
-                    line_content = line.split()
-                    if line.lstrip(' ').partition(' ')[0] == 'R':
-                        if line_content[1] != '-':
-                            info['rbin'].append(float(line_content[7]))
-                            info['rmin'].append(float(line_content[3]))
-                            info['rmax'].append(float(line_content[5]))
-                            info['rwidth'].append(float(line_content[10]))
-                    if line.lstrip(' ').partition(' ')[0] == 'Z':
-                        info['zbin'].append(float(line_content[7]))
-                        info['zmin'].append(float(line_content[3]))
-                        info['zmax'].append(float(line_content[5]))
-                        info['zwidth'].append(float(line_content[10]))
-                    if line.lstrip(' ').partition(' ')[0] == 'P':
-                        info['pbin'].append(float(line_content[7]))
-                        info['prad'].append(float(line_content[10]))
-        elif CAR:
-             with open(filename) as file:
-                for line in file.readlines():
-                     line_content = line.split()
-                     if line.lstrip(' ').partition(' ')[0] == 'X':
-                         info['xbin'].append(float(line_content[7]))
-                         info['xmin'].append(float(line_content[3]))
-                         info['xmax'].append(float(line_content[5]))
-                         info['xwidth'].append(float(line_content[10]))
-                     if line.lstrip(' ').partition(' ')[0] == 'Y':
-                         info['ybin'].append(float(line_content[7]))
-                         info['ymin'].append(float(line_content[3]))
-                         info['ymax'].append(float(line_content[5]))
-                         info['ywidth'].append(float(line_content[10]))
-                     if line.lstrip(' ').partition(' ')[0] == 'Z':
-                         info['zbin'].append(float(line_content[7]))
-                         info['zmin'].append(float(line_content[3]))
-                         info['zmax'].append(float(line_content[5]))
-                         info['zwidth'].append(float(line_content[10]))
-    
-        if (RZ or RPZ) and not info['rmin'][0] == 0 :
-            print("Function currently not defined for minimum rbins other than 0")
-            return;
- 
-        import math
+    def readRaw(self, start, stop):
+
         import numpy as np
-        
-        if CAR:
-            #for horizontal image, ie Z as x-axis and X as y-axis
-            minX = info['xmin'][0]
-            maxX = info['xmax'][0]
-            widthX = info['xwidth'][0]
-            minZ = info['zmin'][0]
-            maxZ = info['zmax'][0]
-            widthZ = info['zwidth'][0]*1.0001
-            self.X, self.Y = np.meshgrid(np.arange(minZ,maxZ, widthZ),np.arange(minX,maxX, widthX))
-        elif (RZ or RPZ):
-            #For ATLAS
-            maxY = int(info['rmax'][0])
-            widthY = int(info['rwidth'][0])
-            maxX = int(info['zmax'][0])
-            widthX = int(info['zwidth'][0])
-            self.X, self.Y = np.meshgrid(range(0,maxX, widthX),range(-maxY,maxY, widthY))            
-#        with open(filename) as file:
-#            row = 0
-##            stop = len(file.readlines())
-#            for line in file.readlines():
-#                line_content = line.split()   
-#                if row > start and len(line_content) != 10:
-#                    stop = row -1
-#                row = row +1
-            
-            
-        #Find when to stop reading the input data                
-        indecies = []   
-        counter = 0    
-        with open(filename) as file:       
-            for line in file.readlines():
-                if line == '\n':
-                    indecies.append(counter)
-                    print counter
-                counter = counter +1
-        filelength = counter
-        #print indecies  
-        print indecies
-        stop = indecies[1]
-        #print stop
-        #print start
 
-    
-                
-
-    
 #        data = np.genfromtxt(filename, skip_header= start -1, skip_footer= stop -9)
-        data = np.genfromtxt(filename, skip_header= start -1, skip_footer= filelength - stop -2)
+        data = np.genfromtxt(self.filename, skip_header= start -1, skip_footer= len(self.file) - stop -2)
         
         #print data.size
         data = np.reshape(data ,(data.size,1))
+    
+        return data;        
+    
+    def constructCube(self, data):
         
-    
-    
+        import numpy as np
+        import math
+        
+        info = self.info
+
+        
         #Cube reconstruction from list
         print("Reconstructing 3D cube...")
-        if RPZ:
+        if self.binningtype == 'RPZ':
             cube = np.zeros((int(info['rbin'][0]) * 2,int(info['rbin'][0]) * 2,int(info['zbin'][0])))
             phiBinAngle = int(360 / info['pbin'][0])
             checkedVal = np.zeros((int(info['rbin'][0]) * 2,int(info['rbin'][0]) * 2,int(info['zbin'][0])))
@@ -246,7 +118,7 @@ class USRBIN():
             cube = np.rot90(cube)
             cube = np.fliplr(cube)
     
-        elif RZ:
+        elif self.binningtype == 'RZ':
             cube = np.zeros((int(info['rbin'][0]) * 2,int(info['rbin'][0]) * 2,int(info['zbin'][0])))
             phiBinAngle = int(360 / 4)
             checkedVal = np.zeros((int(info['rbin'][0]) * 2,int(info['rbin'][0]) * 2,int(info['zbin'][0])))
@@ -295,7 +167,159 @@ class USRBIN():
     
         else:
             cube = np.reshape(data, (int(info['xbin'][0]),int(info['ybin'][0]),int(info['zbin'][0])),order='F')
+        
+        
+        return cube;
     
+    
+    
+    def read(self):
+        import os
+        import time
+        import numpy as np
+    
+        directory = self.path
+        filename = self.filename
+        print "Loading " + filename
+        
+        startTime = time.time()
+        os.chdir(directory)
+    
+        #Binning type
+        RPZ = 0
+        RZ = 0
+        CAR = 0
+        
+        file = open(self.filename).readlines()
+    
+        #Predefine meta info
+        for i in range(1,len(file)):
+            line_content = file[i].split()
+            if len(line_content) > 5:
+                if line_content[5] == 'A(ir,ip,iz),':
+                    self.info = {'rbin':[],'zbin':[],'pbin':[], 'rmin':[],'rmax':[], 'zmin':[],'zmax':[], 'rwidth':[], 'zwidth':[],'prad':[]}
+                    RPZ = 1
+                    self.binningtype = 'RPZ'
+                    print('R-Phi-Z binning detected')
+                if line_content[5] == 'A(ix,iy,iz),':
+                    self.info = {'xbin':[], 'ybin':[],'zbin':[], 'xmin':[],'xmax':[], 'ymin':[],'ymax':[], 'zmin':[],'zmax':[], 'xwidth':[], 'ywidth':[], 'zwidth':[]}
+                    CAR = 1
+                    self.binningtype = 'CAR'
+                    print('Cartesian binning detected')
+                if line_content[5] == 'A(ir,iz),':
+                    self.info = {'rbin':[],'zbin':[],'pbin':[], 'rmin':[],'rmax':[], 'zmin':[],'zmax':[], 'rwidth':[], 'zwidth':[],'prad':[]}
+                    self.info['pbin'].append(float(1))
+                    RZ = 1
+                    self.binningtype = 'RZ'
+                    print('R-Z binning detected')
+                try:
+                    a = float(line_content[0])
+                    if isinstance(a, float) and len(line_content) > 1:
+                        break
+                except Exception:
+                        pass
+    
+        #Return if file is of wrong format
+        if not (RPZ or RZ or CAR):
+            print("Unable to read file")
+            return
+    
+        #Extract dimensional information
+        if RPZ or RZ:
+                for line in file:
+                    line_content = line.split()
+                    if line.lstrip(' ').partition(' ')[0] == 'R':
+                        if line_content[1] != '-':
+                            self.info['rbin'].append(float(line_content[7]))
+                            self.info['rmin'].append(float(line_content[3]))
+                            self.info['rmax'].append(float(line_content[5]))
+                            self.info['rwidth'].append(float(line_content[10]))
+                    if line.lstrip(' ').partition(' ')[0] == 'Z':
+                        self.info['zbin'].append(float(line_content[7]))
+                        self.info['zmin'].append(float(line_content[3]))
+                        self.info['zmax'].append(float(line_content[5]))
+                        self.info['zwidth'].append(float(line_content[10]))
+                    if line.lstrip(' ').partition(' ')[0] == 'P':
+                        self.info['pbin'].append(float(line_content[7]))
+                        self.info['prad'].append(float(line_content[10]))
+        elif CAR:
+                for line in file:
+                     line_content = line.split()
+                     if line.lstrip(' ').partition(' ')[0] == 'X':
+                         self.info['xbin'].append(float(line_content[7]))
+                         self.info['xmin'].append(float(line_content[3]))
+                         self.info['xmax'].append(float(line_content[5]))
+                         self.info['xwidth'].append(float(line_content[10]))
+                     if line.lstrip(' ').partition(' ')[0] == 'Y':
+                         self.info['ybin'].append(float(line_content[7]))
+                         self.info['ymin'].append(float(line_content[3]))
+                         self.info['ymax'].append(float(line_content[5]))
+                         self.info['ywidth'].append(float(line_content[10]))
+                     if line.lstrip(' ').partition(' ')[0] == 'Z':
+                         self.info['zbin'].append(float(line_content[7]))
+                         self.info['zmin'].append(float(line_content[3]))
+                         self.info['zmax'].append(float(line_content[5]))
+                         self.info['zwidth'].append(float(line_content[10]))
+        #self.info = info
+    
+        if (RZ or RPZ) and not self.info['rmin'][0] == 0 :
+            print("Function currently not defined for minimum rbins other than 0")
+            return;
+ 
+
+        
+        if CAR:
+            #for horizontal image, ie Z as x-axis and X as y-axis
+            minX = self.info['xmin'][0]
+            maxX = self.info['xmax'][0]
+            widthX = self.info['xwidth'][0]
+            minZ = self.info['zmin'][0]
+            maxZ = self.info['zmax'][0]
+            widthZ = self.info['zwidth'][0]*1.0001
+            self.X, self.Y = np.meshgrid(np.arange(minZ,maxZ, widthZ),np.arange(minX,maxX, widthX))
+        elif (RZ or RPZ):
+            #For ATLAS fluka model
+            maxY = int(self.info['rmax'][0])
+            widthY = int(self.info['rwidth'][0])
+            maxX = int(self.info['zmax'][0])
+            widthX = int(self.info['zwidth'][0])
+            self.X, self.Y = np.meshgrid(range(0,maxX, widthX),range(-maxY,maxY, widthY))            
+
+            
+        
+        
+        #Find start and stop for reading      
+        for i in range(1,len(file)):
+    
+            isPrevString = False
+            try:
+                float(file[i -1].split()[0])
+                
+            except:
+                isPrevString = True;
+            
+            try:        
+                firstCurr = float(file[i].split()[0])
+                if isinstance(firstCurr, float) and isPrevString and len(file[i].split()) == 10:      
+                    self.starts.append(i +1)
+            except:
+                pass
+            
+            try:
+                if (len(file[i].split()) == 10 and file[i+1][0] == "\n"):
+                    self.stops.append(i+1)
+            except:
+                pass
+            
+        if len(self.stops) == 1:
+            self.stops.append(self.starts[1] + self.stops[0] - self.starts[0]  )        
+
+    
+        self.file = file
+        data = self.readRaw(  self.starts[0], self.stops[0])
+        cube = self.constructCube(data)
+    
+                
         end = time.time()
         print("Cube reconstructed in " + str(round(end - startTime,2)) + " seconds")
         print ' '
@@ -303,7 +327,20 @@ class USRBIN():
         self.cube = cube * self.normfactor
         self.max = np.amax(cube)
         self.min = np.amin(cube)
-        self.info = info
+
+
+    def readError(self):
+
+        import numpy as np
+        
+        data = self.readRaw(  self.starts[1], self.stops[1])
+        cube = self.constructCube(data)
+        
+        print 'Error values reconstructed'
+        
+        self.cubeErrors = cube;
+
+
     
     def loadGeometryFile(self, filename, firstIndex = 2, lastIndex = 4):
     
@@ -346,7 +383,7 @@ class USRBIN():
         self.Xs = Xs
         self.Ys = Ys
     
-#    	return Xs, Ys    
+  
     
     
     def plot(self):
@@ -464,16 +501,6 @@ class USRBIN():
             self.xcoodinates = np.arange(int(self.info['zmin'][0]),int(self.info['zmax'][0]),self.info['zwidth'][0]*1.0001)
             self.realxcoodinates = np.arange(int(self.info['xmin'][0]),int(self.info['xmax'][0]),self.info['xwidth'][0]*1.0001)
         
-
-
-
-
-
-
-
-
-
-
 
 
 
