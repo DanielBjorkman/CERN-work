@@ -20,42 +20,35 @@ path = '//rpclustergw/cluster_temp/cbjorkma/OpeningScenarios/DECAY/2019-07-03_16
 os.chdir(path)
 
 filenames = sorted(glob.glob('*.lis'))
-errorfilenames = sorted(glob.glob('*.error'))
-bins = []
 
 
 point1 = USRBIN(filenames[1], path, normfactor)
 point1.read()
+point1.readError()
 point1.calc()
 
-point1error = USRBIN(filenames[1], path, normfactor)
-point1error.read()
-#point1error.calc()
 
 
 
 point2 = USRBIN(filenames[2], path, normfactor)
 point2.read()
 point2.calc()
+point2.readError()
 
-point2error = USRBIN(errorfilenames[2], path, normfactor)
-point2error.read()
-point2error.calc()
+
 
 point3 = USRBIN(filenames[4], path, normfactor)
 point3.read()
 point3.calc()
+point3.readError()
 
-point3error = USRBIN(errorfilenames[4], path, normfactor)
-point3error.read()
-#point3error.calc()
+
 
 point4 = USRBIN(filenames[5], path, normfactor)
 point4.read()
 point4.calc()
+point4.readError()
 
-point4error = USRBIN(errorfilenames[5], path, normfactor)
-point4error.read()
 
 
 import matplotlib.pyplot as plt
@@ -63,18 +56,7 @@ from scipy.interpolate import interp1d
 
 import numpy as np
 
-def rebin( xes, yes):
 
-    newx = range(0,max(xes), 8)
-    newy = np.zeros(len(newx))
-    count = 0
-    for i in range(0,len(xes), 2):
-        try:
-            newy[count] =  (yes[i] + yes[i +1])/2
-        except:
-            pass
-        count = count +1
-    return newx, newy
 
 import matplotlib.cm as cm
 import matplotlib.gridspec as gridspec
@@ -103,9 +85,9 @@ plt.step(xes, yes , label = 'FLUKA', color = "C0" )
 
 
 
-yeserrorSim = point1error.cube[xmid:, ymid, zmid]/100
+yeserrorSim = point1.cubeErrors[xmid:, ymid, zmid]/100
 yerrorsabsolut = yes*yeserrorSim
-plt.errorbar(xes -0.5* np.ones(len(xes)),yes, yerr = yerrorsabsolut  , linestyle='None', color = "C0")
+plt.errorbar(xes -0.5* rwidth*np.ones(len(xes)),yes, yerr = yerrorsabsolut  , linestyle='None', color = "C0")
 
 
 locs = [40 , 80, 120 , 160 , 200 , 240, 280]
@@ -208,9 +190,9 @@ zContact = zend -3
 yes = point2.cube[xmid:, ymid, zContact]
 plt.step(xes, yes , label = 'FLUKA')
 
-yeserrorSim = point2error.cube[xmid:, ymid, zContact]/100
+yeserrorSim = point2.cubeErrors[xmid:, ymid, zContact]/100
 yerrorsabsolut = yes*yeserrorSim
-plt.errorbar(xes -2* np.ones(len(xes)),yes, yerr = yerrorsabsolut , linestyle='None' , color = "C0")
+plt.errorbar(xes -0.5*rwidth* np.ones(len(xes)),yes, yerr = yerrorsabsolut , linestyle='None' , color = "C0")
 
 locs = [104 , 239]
 
@@ -286,9 +268,9 @@ yes = point2.cube[xmid:, ymid, z40]
 plt.step(xes, yes , label = 'FLUKA')
 
 
-yeserrorSim = point2error.cube[xmid:, ymid, z40]/100
+yeserrorSim = point2.cubeErrors[xmid:, ymid, z40]/100
 yerrorsabsolut = yes*yeserrorSim
-plt.errorbar(xes -2* np.ones(len(xes)),yes, yerr = yerrorsabsolut , linestyle='None' , color = "C0")
+plt.errorbar(xes -0.5*rwidth* np.ones(len(xes)),yes, yerr = yerrorsabsolut , linestyle='None' , color = "C0")
 
 
 yerrorsMes = 0.2*np.ones(len(locs));
@@ -349,13 +331,14 @@ ax = plt.subplot(gs[0:stop, 0])
 
 zes = range(int(point2.info['zmin'][0]) , int(point2.info['zmax'][0]), int(point2.info['zwidth'][0]))
 
+zwidth = int(point2.info['zwidth'][0])
 
 yes = point2.cube[xmid, ymid, 0:]
 plt.step(zes, yes , label = 'FLUKA')
 
-yeserrorSim = point2error.cube[xmid, ymid, 0:]/100
+yeserrorSim = point2.cubeErrors[xmid, ymid, 0:]/100
 yerrorsabsolut = yes*yeserrorSim
-plt.errorbar(zes -0.5* np.ones(len(zes)),yes, yerr = yerrorsabsolut , linestyle='None' , color = "C0")
+plt.errorbar(zes -0.5*zwidth* np.ones(len(zes)),yes, yerr = yerrorsabsolut , linestyle='None' , color = "C0")
 
 
 midloc = [int(point2.info['zmax'][0]) -3  , int(point2.info['zmax'][0]) -3 -26 ]
@@ -447,9 +430,9 @@ plt.step(xes, yes , label = 'FLUKA', color = "C0" )
 
 
 
-yeserrorSim = point3error.cube[xmid:, ymid, zmid]/100
+yeserrorSim = point3.cubeErrors[xmid:, ymid, zmid]/100
 yerrorsabsolut = yes*yeserrorSim
-plt.errorbar(xes -0.5* np.ones(len(xes)),yes, yerr = yerrorsabsolut  , linestyle='None', color = "C0")
+plt.errorbar(xes -0.5*rwidth* np.ones(len(xes)),yes, yerr = yerrorsabsolut  , linestyle='None', color = "C0")
 
 locs = [ 80, 120 , 160 , 200 , 240]
 
@@ -545,9 +528,9 @@ plt.step(xes, yes , label = 'FLUKA', color = "C0" )
 
 
 
-yeserrorSim = point4error.cube[xmid:, ymid, zcontact]/100
+yeserrorSim = point4.cubeErrors[xmid:, ymid, zcontact]/100
 yerrorsabsolut = yes*yeserrorSim
-plt.errorbar(xes -0.5* np.ones(len(xes)),yes, yerr = yerrorsabsolut  , linestyle='None', color = "C0")
+plt.errorbar(xes -0.5*rwidth* np.ones(len(xes)),yes, yerr = yerrorsabsolut  , linestyle='None', color = "C0")
 
 locs = [ 28.2 , 74.91 , 130.6 , 220]
 
@@ -618,9 +601,9 @@ plt.step(xes, yes , label = 'FLUKA', color = "C0" )
 
 
 
-yeserrorSim = point4error.cube[xmid:, ymid, zdist]/100
+yeserrorSim = point4.cubeErrors[xmid:, ymid, zdist]/100
 yerrorsabsolut = yes*yeserrorSim
-plt.errorbar(xes -0.5* np.ones(len(xes)),yes, yerr = yerrorsabsolut  , linestyle='None', color = "C0")
+plt.errorbar(xes -0.5*rwidth* np.ones(len(xes)),yes, yerr = yerrorsabsolut  , linestyle='None', color = "C0")
 
 locs = [ 28.2 , 74.91 , 130.6 , 220]
 
@@ -715,10 +698,10 @@ fig = plt.figure()
 
 ax = plt.subplot(111)
 
-n, bins, patches = plt.hist(point1error.cube.flatten(), bins = 0.01*np.arange(0, 100*int(np.max(point1error.cube)), 10), label = "Point1 errors", alpha = 0.5, log=False)
-plt.hist(point2error.cube.flatten(), bins = bins, label = "Point2 errors", alpha = 0.5, log=False)
-plt.hist(point3error.cube.flatten(), bins = bins, label = "Point3 errors", alpha = 0.5, log=False)
-plt.hist(point4error.cube.flatten(), bins = bins, label = "Point4 errors", alpha = 0.5, log=False)
+n, bins, patches = plt.hist(point1.cubeErrors.flatten(), bins = 0.01*np.arange(0, 100*int(np.max(point1.cubeErrors)), 10), label = "Point1 errors", alpha = 0.5, log=False)
+plt.hist(point2.cubeErrors.flatten(), bins = bins, label = "Point2 errors", alpha = 0.5, log=False)
+plt.hist(point3.cubeErrors.flatten(), bins = bins, label = "Point3 errors", alpha = 0.5, log=False)
+plt.hist(point4.cubeErrors.flatten(), bins = bins, label = "Point4 errors", alpha = 0.5, log=False)
 
 plt.legend()
 plt.title('Error distribution', fontsize = 22)
@@ -728,13 +711,3 @@ plt.ylabel('Counts', fontsize =16)
 plt.show()
 
 
-#
-#xes = range(-rmax + rwidth/2, rmax + rwidth/2 , rwidth)
-#plt.plot(xes, point2.cube[0:,ymid, zend], label = 'zend')
-#plt.plot(xes, point2.cube[0:,ymid, zend -1], label = 'zend - 1')
-#plt.plot(xes, point2.cube[0:,ymid, zend -2], label = 'zend - 2')
-#plt.plot(xes, point2.cube[0:,ymid, zend -3], label = 'zend - 3')
-
-
-#plt.plot(xes, point2.cube[0:,ymid, 0], label = 'z start')
-#plt.xlim(-10, 16)
