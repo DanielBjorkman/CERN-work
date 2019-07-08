@@ -382,7 +382,11 @@ class USRBIN():
     
         self.Xs = Xs
         self.Ys = Ys
-    
+
+    def drawGeo(self):
+        import matplotlib.pyplot as plt
+        for j in range(len(self.Xs)):
+            plt.plot(self.Ys[j], self.Xs[j], 'k-',  linewidth=0.5, alpha = 0.5)
   
     
     
